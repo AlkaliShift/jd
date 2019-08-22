@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <title>JD</title>
+    <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}">
+    <script th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/home.css}" media="all"/>
+</head>
+<body>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>基本信息</legend>
+</fieldset>
+<div class="layui-row layui-col-space10 panel_box" style="margin-top: 10px; margin-left: 10px; margin-right: 10px">
+    <div class="panel layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
+        <a href="javascript:;" data-url="http://fly.layui.com/case/u/3198216" target="_blank">
+            <div class="panel_icon layui-bg-green">
+                <i class="layui-icon layui-icon-app"></i>
+            </div>
+            <div class="panel_word">
+                <span th:text="${sourceAmount}">0</span>
+                <cite>业务系统</cite>
+            </div>
+        </a>
+    </div>
+    <div class="panel layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
+        <a href="javascript:;" data-url="https://github.com/BrotherMa/layuicms2.0" target="_blank">
+            <div class="panel_icon layui-bg-black">
+                <i class="layui-icon layui-icon-set"></i>
+            </div>
+            <div class="panel_word">
+                <span th:text="${typeAmount}">0</span>
+                <cite>消息业务类型</cite>
+            </div>
+        </a>
+    </div>
+    <div class="panel layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
+        <a href="javascript:;" data-url="https://gitee.com/layuicms/layuicms2.0" target="_blank">
+            <div class="panel_icon layui-bg-blue">
+                <i class="layui-icon layui-icon-notice"></i>
+            </div>
+            <div class="panel_word">
+                <span th:text="${infoAmount}">0</span>
+                <cite>今日处理</cite>
+            </div>
+        </a>
+    </div>
+    <div class="panel layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
+        <a href="javascript:;" data-url="page/user/userList.html">
+            <div class="panel_icon layui-bg-orange">
+                <i class="layui-icon layui-icon-chart"></i>
+            </div>
+            <div class="panel_word userAll">
+                <span th:text="${sendAmount}">0</span>
+                <cite>今日发送消息</cite>
+            </div>
+        </a>
+    </div>
+</div>
+</body>
+</html>

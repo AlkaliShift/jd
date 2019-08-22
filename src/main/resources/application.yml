@@ -1,0 +1,29 @@
+server:
+  port: 8000
+
+spring:
+  thymeleaf:
+    cache: false
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.206.128:3306/jd?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false
+    username: root
+    password: Qwer1234!
+    hikari:
+      connection-test-query: select 1
+
+pagehelper:
+  helper-dialect: mysql
+
+mybatis:
+  mapper-locations: classpath:mybatis-mappers/*.xml
+
+swagger2:
+  title: JD
+  description: JD Online Shopping
+  contact-name: Shenghui Wu
+  contact-email: wushenghui_195481@baosight.com
+
+#logging:
+#  level:
+#    cn.shenghui.jd.dao.mapper: debug
