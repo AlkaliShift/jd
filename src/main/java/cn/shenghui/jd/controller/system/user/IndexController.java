@@ -25,7 +25,6 @@ public class IndexController {
         return mv;
     }
 
-
     @RequestMapping("/home")
     public ModelAndView home() {
         ModelAndView mv = new ModelAndView();
