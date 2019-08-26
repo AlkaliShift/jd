@@ -5,5 +5,5 @@ package cn.shenghui.jd.dao.system.user.mapper;
  * @version 1.0
  * @since 2019/8/22 13:30
  */
-public class UserMapper {
+public interface UserMapper {
 }
