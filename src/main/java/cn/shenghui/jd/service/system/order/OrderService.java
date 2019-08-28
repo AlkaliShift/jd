@@ -4,6 +4,8 @@ import cn.shenghui.jd.dao.system.order.mapper.OrderMapper;
 import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.dao.system.order.model.OrderDetails;
 import cn.shenghui.jd.dao.system.product.model.Product;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,10 +15,12 @@ import java.util.List;
  * @version 1.0
  * @since 2019/8/22 13:29
  */
+@Service
 public class OrderService {
     private OrderMapper orderMapper;
     private static int ID = 0;
 
+    @Autowired
     public void setOrderMapper(OrderMapper orderMapper) {
         this.orderMapper = orderMapper;
     }
@@ -38,7 +42,6 @@ public class OrderService {
      * @param products   商品集
      * @param totalPrice 订单总价
      * @param address    收货地址
-     *                   TODO id & details
      */
     public void addOrder(String userId, List<Product> products, BigDecimal totalPrice, String address) {
         Order order = new Order();
@@ -61,6 +64,7 @@ public class OrderService {
             orderDetails.setDescription(product.getDescription());
             orderMapper.addOrderDetails(orderDetails);
         }
+        //TODO id & details
     }
 
     public void mainOrder(){

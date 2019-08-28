@@ -34,7 +34,8 @@ public class WarehouseController {
      * @return 仓库列表和状态码：1
      */
     @ApiOperation(value = "获取仓库列表", notes = "状态码1:查询成功")
-    @RequestMapping(value = "/getWarehouseList")
+    @RequestMapping(value = "/list")
+    @ResponseBody
     public WarehouseResponse getWarehouseList(@RequestParam(name = "warehouseId") String warehouseId) {
         WarehouseResponse response = new WarehouseResponse();
         response.setWarehouses(warehouseService.getWarehouseList(warehouseId));

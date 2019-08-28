@@ -34,7 +34,9 @@ public class CategoryController {
      * @param categoryId 商品种类ID
      * @return 商品种类列表和状态码：1
      */
-    @RequestMapping(value = "/getCategoryList")
+    @ApiOperation(value = "获取商品种类列表", notes = "状态码1:查询成功")
+    @RequestMapping(value = "/list")
+    @ResponseBody
     public CategoryResponse getCategoryList(@RequestParam(name = "categoryId") String categoryId) {
         CategoryResponse response = new CategoryResponse();
         response.setCategories(categoryService.getCategoryList(categoryId));

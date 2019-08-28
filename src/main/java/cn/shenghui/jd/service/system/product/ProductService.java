@@ -5,6 +5,7 @@ import cn.shenghui.jd.dao.system.product.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,8 +39,8 @@ public class ProductService {
      * @param productIds 商品ID
      * @return 特定多件商品
      */
-    public List<Product> getProductsById(List<String> productIds) {
-        return productMapper.getProductsById(productIds);
+    public List<Product> getProductsByIds(List<String> productIds) {
+        return productMapper.getProductsByIds(productIds);
     }
 
     /**
@@ -52,6 +53,8 @@ public class ProductService {
         ID = ID + 1;
         String productId = categoryId + "-" + ID;
         product.setProductId(productId);
+        String startTime = new Date() + "";
+        product.setStartTime(startTime);
         productMapper.addProduct(product);
     }
 
@@ -71,6 +74,7 @@ public class ProductService {
      * @param productStatus 商品上下架状态
      */
     public void setProductStatus(String productId, char productStatus) {
-        productMapper.setProductStatus(productId, productStatus);
+        String endTime = new Date() + "";
+        productMapper.setProductStatus(productId, productStatus, endTime);
     }
 }

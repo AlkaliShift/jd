@@ -28,7 +28,7 @@ public interface ProductMapper {
      * @param productIds 商品ID
      * @return 商品列表
      */
-    List<Product> getProductsById(List<String> productIds);
+    List<Product> getProductsByIds(List<String> productIds);
 
     /**
      * 增加单件商品
@@ -49,6 +49,8 @@ public interface ProductMapper {
      *
      * @param productId     商品ID
      * @param productStatus 商品上下架状态
+     * @param orderTime     商品下架时间
      */
-    void setProductStatus(@Param("productId") String productId, @Param("productStatus") char productStatus);
+    void setProductStatus(@Param("productId") String productId, @Param("productStatus") char productStatus,
+                          @Param("orderTime") String orderTime);
 }

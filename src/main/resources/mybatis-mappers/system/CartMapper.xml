@@ -12,7 +12,27 @@
     </resultMap>
 
     <select id="getCartList" parameterType="java.lang.String" resultMap="cartResult">
-
+        select user_id, c.product_id, product_num, product_name, unit_price, description
+        from cart c, product p where c.product_id = p.product_id;
     </select>
 
+    <select id="getProductNumFromCart" resultType="int">
+        select product_num from cart
+        where user_id = #{userId,jdbcType=VARCHAR} and product_id = #{productId,jdbcType=VARCHAR};
+    </select>
+
+    <update id="setProductNumOfCart">
+        update cart set product_num = #{productNum,jdbcType=INTEGER}
+        where user_id = #{userId,jdbcType=VARCHAR} and product_id = #{productId,jdbcType=VARCHAR};
+    </update>
+
+    <insert id="addToCart" parameterType="cn.shenghui.jd.dao.system.cart.model.Cart">
+        insert into cart values
+        (#{userId,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{productNum,jdbcType=INTEGER});
+    </insert>
+
+    <update id="deleteProducts" parameterType="java.util.List">
+        delete from cart where user_id = #{userId,jdbcType=VARCHAR} and product_id in
+        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>
+    </update>
 </mapper>

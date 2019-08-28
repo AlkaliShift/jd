@@ -13,7 +13,7 @@ import java.util.List;
  * @since 2019/8/27 11:17
  */
 @Data
-@ApiModel(value = "仓库信息列表")
+@ApiModel(value = "仓库列表")
 public class WarehouseResponse extends AbstractResponse {
     protected List<Warehouse> warehouses;
 }

@@ -21,9 +21,9 @@
         order by product_name;
     </select>
 
-    <select id="getProductsById" parameterType="java.util.List" resultMap="productResult">
+    <select id="getProductsByIds" parameterType="java.util.List" resultMap="productResult">
         select * from product where del_flag = 0 and product_id in
-        <foreach collection="products" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>
+        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>
     </select>
 
     <insert id="addProduct" parameterType="cn.shenghui.jd.dao.system.product.model.Product">
@@ -51,7 +51,7 @@
     </update>
 
     <update id="setProductStatus">
-        update product set product_status = #{productStatus,jdbcType=CHAR}
+        update product set product_status = #{productStatus,jdbcType=CHAR}, end_time = #{orderTime,jdbcType=VARCHAR}
         where product_id = #{productId,jdbcType=VARCHAR};
     </update>
 </mapper>

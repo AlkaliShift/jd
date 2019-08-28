@@ -3,8 +3,8 @@ package cn.shenghui.jd.service.system.cart;
 import cn.shenghui.jd.dao.system.cart.dto.CartProduct;
 import cn.shenghui.jd.dao.system.cart.mapper.CartMapper;
 import cn.shenghui.jd.dao.system.cart.model.Cart;
-import cn.shenghui.jd.dao.system.product.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import java.util.List;
  * @version 1.0
  * @since 2019/8/22 13:29
  */
+@Service
 public class CartService {
 
     private CartMapper cartMapper;
@@ -40,50 +41,46 @@ public class CartService {
      * @param num          用户选择的数量
      * @param availableNum 商品可用库存数量
      */
-    public int addToCart(String userId, String productId, int num, int availableNum) {
-        int previousNum = cartMapper.getFromCart(userId, productId).getProductNum();
-        if (previousNum != 0) {
-            int currentNum = previousNum + num;
-            this.setProductNum(userId, productId, currentNum, availableNum);
+    public boolean addToCart(String userId, String productId, int num, int availableNum) {
+        int productNum = cartMapper.getProductNumFromCart(userId, productId);
+        if (productNum != 0) {
+            num = productNum + num;
+        }
+
+        if (num > availableNum) {
+            return false;
         } else {
-            if (num > availableNum) {
-                return -1;
+            if (productNum != 0) {
+                this.setProductNumOfCart(userId, productId, num);
             } else {
                 Cart cart = new Cart();
                 cart.setUserId(userId);
                 cart.setProductId(productId);
                 cart.setProductNum(num);
                 cartMapper.addToCart(cart);
-                return 0;
             }
+            return true;
         }
     }
 
     /**
-     * 修改购物车中的指定商品数量
+     * 设置购物车中单个商品的数量
      *
-     * @param userId       用户ID
-     * @param productId    商品ID
-     * @param num          修改的商品数量
-     * @param availableNum 商品可用库存数量
+     * @param userId     用户ID
+     * @param productId  商品ID
+     * @param productNum 选购的商品数量
      */
-    public int setProductNum(String userId, String productId, int num, int availableNum) {
-        if (num > availableNum) {
-            return -1;
-        } else {
-            num = availableNum - num;
-            cartMapper.setProductNum(num);
-            return 0;
-        }
+    public void setProductNumOfCart(String userId, String productId, int productNum) {
+        cartMapper.setProductNumOfCart(userId, productId, productNum);
     }
 
     /**
      * 从购物车中批量移除商品
      *
-     * @param userId   用户ID
-     * @param products 商品集
+     * @param userId     用户ID
+     * @param productIds 商品集
      */
-    public void deleteProducts(String userId, List<Product> products) {
-        cartMapper.deleteProducts(userId, products);
+    public void deleteProducts(String userId, List<String> productIds) {
+        cartMapper.deleteProducts(userId, productIds);
     }
 }

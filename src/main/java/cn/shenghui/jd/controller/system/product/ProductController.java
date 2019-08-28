@@ -39,7 +39,7 @@ public class ProductController {
      *
      * @return 商品列表页
      */
-    @RequestMapping("/listProduct")
+    @RequestMapping("/getProductList")
     public ModelAndView listProduct() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("system/product/product");
@@ -52,7 +52,9 @@ public class ProductController {
      * @param productName 输入的商品名称
      * @return 匹配的商品列表和状态码：1
      */
+    @ApiOperation(value = "模糊搜索商品", notes = "状态码1:搜索成功")
     @RequestMapping(value = "/fuzzySearch")
+    @ResponseBody
     public ProductResponse fuzzySearch(String productName) {
         ProductResponse response = new ProductResponse();
         response.setProducts(productService.fuzzySearch(productName));
@@ -111,6 +113,7 @@ public class ProductController {
      */
     @ApiOperation(value = "修改单个商品上下架信息", notes = "状态码1:修改成功")
     @RequestMapping(value = "/setProductStatus")
+    @ResponseBody
     public ProductBasicResponse setProductStatus(@RequestParam("productId") String productId,
                                                  @RequestParam("productStatus") char productStatus) {
         ProductBasicResponse response = new ProductBasicResponse();
