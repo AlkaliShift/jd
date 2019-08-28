@@ -19,9 +19,4 @@ public class Warehouse {
      * 仓库名称
      */
     String warehouseName;
-
-    /**
-     * 逻辑删除
-     */
-    char delFlag;
 }

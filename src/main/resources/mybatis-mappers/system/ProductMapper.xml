@@ -2,4 +2,56 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.shenghui.jd.dao.system.product.mapper.ProductMapper">
 
+    <resultMap id="productResult" type="cn.shenghui.jd.dao.system.product.model.Product">
+        <id column="product_id" jdbcType="VARCHAR" property="productId"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="category_id" jdbcType="VARCHAR" property="categoryId"/>
+        <result column="available_num" jdbcType="INTEGER" property="availableNum"/>
+        <result column="frozen_num" jdbcType="INTEGER" property="frozenNum"/>
+        <result column="unit_price" jdbcType="DECIMAL" property="unitPrice"/>
+        <result column="product_status" jdbcType="CHAR" property="productStatus"/>
+        <result column="start_time" jdbcType="VARCHAR" property="startTime"/>
+        <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+    </resultMap>
+
+    <select id="fuzzySearch" parameterType="java.lang.String" resultMap="productResult">
+        select * from product where del_flag = 0
+        and product_name like concat('%', #{productName,jdbcType=VARCHAR},'%')
+        order by product_name;
+    </select>
+
+    <select id="getProductsById" parameterType="java.util.List" resultMap="productResult">
+        select * from product where del_flag = 0 and product_id in
+        <foreach collection="products" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>
+    </select>
+
+    <insert id="addProduct" parameterType="cn.shenghui.jd.dao.system.product.model.Product">
+        insert into product values
+        (#{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR},
+         #{availableNum,jdbcType=INTEGER}, #{frozenNum,jdbcType=INTEGER}, #{unitPrice,jdbcType=DECIMAL},
+         #{productStatus,jdbcType=CHAR, #{startTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR},
+         #{description,jdbcType=VARCHAR});
+    </insert>
+
+    <update id="updateProduct" parameterType="cn.shenghui.jd.dao.system.product.model.Product">
+        update product
+        <set>
+            <if test="productName != null">product_name = #{productName,jdbcType=VARCHAR},</if>
+            <if test="categoryId != null">category_id = #{categoryId,jdbcType=VARCHAR},</if>
+            <if test="availableNum != null and availableNum >= 0">available_num = #{availableNum,jdbcType=INTEGER},</if>
+            <if test="frozenNum != null and frozenNum >= 0">frozen_num = #{frozenNum,jdbcType=INTEGER},</if>
+            <if test="unitPrice != null and unitPrice >= 0.0">unit_price = #{unitPrice,jdbcType=DECIMAL},</if>
+            <if test="productStatus != null">product_status = #{productStatus,jdbcType=CHAR},</if>
+            <if test="startTime != null">start_time = #{startTime,jdbcType=VARCHAR},</if>
+            <if test="endTime != null">end_time = #{endTime,jdbcType=VARCHAR},</if>
+            <if test="description != null">description = #{description,jdbcType=VARCHAR}</if>
+        </set>
+        where product_id = #{productId,jdbcType=VARCHAR};
+    </update>
+
+    <update id="setProductStatus">
+        update product set product_status = #{productStatus,jdbcType=CHAR}
+        where product_id = #{productId,jdbcType=VARCHAR};
+    </update>
 </mapper>

@@ -3,6 +3,7 @@ package cn.shenghui.jd.service.system.category;
 import cn.shenghui.jd.dao.system.category.mapper.CategoryMapper;
 import cn.shenghui.jd.dao.system.category.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * @version 1.0
  * @since 2019/8/22 13:29
  */
+@Service
 public class CategoryService {
     private CategoryMapper categoryMapper;
     private static int ID = 0;
@@ -26,23 +28,19 @@ public class CategoryService {
      * @param categoryId 商品种类ID
      * @return 商品种类列表
      */
-    public List<Category> selectCategoryList(String categoryId) {
-        return categoryMapper.selectCategoryList(categoryId);
+    public List<Category> getCategoryList(String categoryId) {
+        return categoryMapper.getCategoryList(categoryId);
     }
 
     /**
      * 增加一种商品种类
      *
-     * @param categoryName 商品种类名称
-     * @param warehouseId 仓库ID
+     * @param category 商品种类
      */
-    public void addCategory(String categoryName, String warehouseId) {
+    public void addCategory(Category category) {
         ID = ID + 1;
-        String categoryId = ID + "";
-        Category category = new Category();
+        String categoryId = category.getWarehouseId() + "-" + ID;
         category.setCategoryId(categoryId);
-        category.setCategoryName(categoryName);
-        category.setWarehouseId(warehouseId);
         categoryMapper.addCategory(category);
     }
 

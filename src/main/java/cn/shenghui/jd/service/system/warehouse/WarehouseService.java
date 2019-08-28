@@ -14,6 +14,7 @@ import java.util.List;
  */
 @Service
 public class WarehouseService {
+
     private WarehouseMapper warehouseMapper;
     private static int ID = 0;
 
@@ -23,12 +24,12 @@ public class WarehouseService {
     }
 
     /**
-     * 查询仓库信息
+     * 查询仓库信息，若仓库ID为空，则返回所有仓库信息列表
      *
      * @param warehouseId 仓库ID
      * @return 仓库列表
      */
-    public List<WarehouseMapper> getWarehouseList(String warehouseId) {
+    public List<Warehouse> getWarehouseList(String warehouseId) {
         return warehouseMapper.getWarehouseList(warehouseId);
     }
 
@@ -51,16 +52,20 @@ public class WarehouseService {
      *
      * @param warehouseId 仓库ID
      */
-    public void removeCategory(String warehouseId) {
+    public void removeWarehouse(String warehouseId) {
         warehouseMapper.removeWarehouse(warehouseId);
     }
 
     /**
      * 更新单个仓库信息
      *
-     * @param warehouse 仓库
+     * @param warehouseId 仓库ID
+     * @param warehouseName 仓库名称
      */
-    public void updateCategory(Warehouse warehouse) {
+    public void updateWarehouse(String warehouseId, String warehouseName) {
+        Warehouse warehouse = new Warehouse();
+        warehouse.setWarehouseId(warehouseId);
+        warehouse.setWarehouseName(warehouseName);
         warehouseMapper.updateWarehouse(warehouse);
     }
 }

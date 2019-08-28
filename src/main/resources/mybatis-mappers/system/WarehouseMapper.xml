@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.shenghui.jd.dao.system.warehouse.mapper.WarehouseMapper">
+
     <resultMap id="warehouseResult" type="cn.shenghui.jd.dao.system.warehouse.model.Warehouse">
         <id column="warehouse_id" jdbcType="VARCHAR" property="warehouseId"/>
         <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
-        <result column="del_flag" jdbcType="CHAR" property="delFlag"/>
     </resultMap>
 
     <select id="getWarehouseList" parameterType="java.lang.String" resultMap="warehouseResult">
         select * from warehouse
         <where>
             del_flag = 0
-            <if test="warehouseId != 0">and warehouse_id = #{warehouseId,jdbcType=VARCHAR}</if>;
+            <if test="warehouseId != null">and warehouse_id = #{warehouseId,jdbcType=VARCHAR}</if>;
         </where>
     </select>
 
@@ -25,6 +25,7 @@
     </update>
 
     <update id="updateWarehouse" parameterType="cn.shenghui.jd.dao.system.warehouse.model.Warehouse">
-
+        update warehouse set warehouse_name = #{warehouseName,jdbcType=VARCHAR}
+        where warehouse_id = #{warehouseId,jdbcType=VARCHAR};
     </update>
 </mapper>

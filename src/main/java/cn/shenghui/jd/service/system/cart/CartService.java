@@ -1,5 +1,6 @@
 package cn.shenghui.jd.service.system.cart;
 
+import cn.shenghui.jd.dao.system.cart.dto.CartProduct;
 import cn.shenghui.jd.dao.system.cart.mapper.CartMapper;
 import cn.shenghui.jd.dao.system.cart.model.Cart;
 import cn.shenghui.jd.dao.system.product.model.Product;
@@ -27,7 +28,7 @@ public class CartService {
      * @param userId 用户ID
      * @return 购物车列表
      */
-    public List<Cart> getCartList(String userId) {
+    public List<CartProduct> getCartList(String userId) {
         return cartMapper.getCartList(userId);
     }
 

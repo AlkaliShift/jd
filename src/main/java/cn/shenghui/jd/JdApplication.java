@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @MapperScan(basePackages = "cn.shenghui.jd.dao.system")
 public class JdApplication {
+
     public static void main(String[] args) {
         SpringApplication.run(JdApplication.class, args);
     }

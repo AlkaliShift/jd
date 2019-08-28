@@ -1,8 +1,8 @@
 package cn.shenghui.jd.dao.system.warehouse.mapper;
 
 import cn.shenghui.jd.dao.system.warehouse.model.Warehouse;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.mapstruct.Mapper;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface WarehouseMapper {
      * @param warehouseId 仓库ID
      * @return 仓库列表
      */
-    List<WarehouseMapper> getWarehouseList(@Param("warehouseId") String warehouseId);
+    List<Warehouse> getWarehouseList(@Param("warehouseId") String warehouseId);
 
     /**
      * 增加单个仓库
@@ -36,5 +36,9 @@ public interface WarehouseMapper {
      */
     void removeWarehouse(@Param("warehouseId") String warehouseId);
 
+    /**
+     * 更新单个仓库信息
+     * @param warehouse 仓库信息
+     */
     void updateWarehouse(Warehouse warehouse);
 }

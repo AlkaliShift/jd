@@ -20,7 +20,7 @@ public class AbstractResponse {
      */
     protected String msg;
 
-    public void setStatusCode(int statusCode, String msg) {
+    public void setStatusInfo(int statusCode, String msg) {
         this.statusCode = statusCode;
         this.msg = msg;
     }
