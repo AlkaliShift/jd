@@ -1,8 +1,7 @@
 package cn.shenghui.jd.utils;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.security.Principal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * @author shenghui
@@ -11,12 +10,12 @@ import java.security.Principal;
  */
 public class CurrentUserUtils {
 
-    private CurrentUserUtils() {
+    private CurrentUserUtils(){
 
     }
 
-    public static String getUserName() {
-        Principal principal = (Principal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return principal.getName();
+    public static String getUserName(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDetails.getUsername();
     }
 }

@@ -30,12 +30,12 @@ public class CartController {
     private ProductService productService;
 
     @Autowired
-    public void setCartService(CartService cartService){
+    public void setCartService(CartService cartService) {
         this.cartService = cartService;
     }
 
     @Autowired
-    public void setProductService(ProductService productService){
+    public void setProductService(ProductService productService) {
         this.productService = productService;
     }
 
@@ -48,7 +48,7 @@ public class CartController {
     @ApiOperation(value = "根据用户ID获得其购物车中所有商品信息", notes = "状态码1:查询成功")
     @RequestMapping(value = "/list")
     @ResponseBody
-    public CartResponse getCartList(@RequestParam("userId") String userId){
+    public CartResponse getCartList(@RequestParam("userId") String userId) {
         CartResponse response = new CartResponse();
         response.setCartProducts(cartService.getCartList(userId));
         response.setStatusCode(1);
@@ -65,16 +65,16 @@ public class CartController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public CartBasicResponse addCategory( Cart cart) {
+    public CartBasicResponse addCategory(Cart cart) {
         CartBasicResponse response = new CartBasicResponse();
         List<String> productIds = new ArrayList<>();
         productIds.add(cart.getProductId());
         int availableNum = productService.getProductsByIds(productIds).get(0).getAvailableNum();
         boolean check = cartService.addToCart(cart.getUserId(), cart.getProductId(),
-                                              cart.getProductNum(), availableNum);
-        if (!check){
+                cart.getProductNum(), availableNum);
+        if (!check) {
             response.setStatusInfo(0, "订购数量超过商品库存数量");
-        }else{
+        } else {
             response.setStatusCode(1);
         }
         return response;
@@ -89,11 +89,11 @@ public class CartController {
     @ApiOperation(value = "添加单个商品进购物车", notes = "状态码1:修改成功")
     @RequestMapping(value = "/setProductNumOfCart", method = RequestMethod.POST)
     @ResponseBody
-    public CartBasicResponse setProductNumOfCart(@RequestBody Cart cart){
+    public CartBasicResponse setProductNumOfCart(@RequestBody Cart cart) {
         CartBasicResponse response = new CartBasicResponse();
-        if (cart.getProductNum() == 0){
+        if (cart.getProductNum() == 0) {
             response.setStatusInfo(0, "商品数量不能为0");
-        }else{
+        } else {
             cartService.setProductNumOfCart(cart.getUserId(), cart.getProductId(), cart.getProductNum());
             response.setStatusCode(1);
         }
@@ -108,7 +108,7 @@ public class CartController {
     @ApiOperation(value = "批量删除购物车中的商品", notes = "状态码1:删除成功")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
-    public CartBasicResponse deleteProducts(@RequestBody DeleteCartRequest deleteCartRequest){
+    public CartBasicResponse deleteProducts(@RequestBody DeleteCartRequest deleteCartRequest) {
         CartBasicResponse response = new CartBasicResponse();
         cartService.deleteProducts(deleteCartRequest.getUserId(), deleteCartRequest.getProductIds());
         response.setStatusCode(1);

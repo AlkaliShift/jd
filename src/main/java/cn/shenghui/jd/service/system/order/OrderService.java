@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,16 +46,20 @@ public class OrderService {
      */
     public void addOrder(String userId, List<Product> products, BigDecimal totalPrice, String address) {
         Order order = new Order();
-        long orderTime = System.currentTimeMillis();
+        String orderTime = new Date() + "";
         ID = ID + 1;
         String orderId = orderTime + "-" + ID;
         order.setOrderId(orderId);
         order.setUserId(userId);
+        order.setOrderPid("");
         order.setTotalPrice(totalPrice);
-        order.setOrderTime(orderTime + "");
+        order.setOrderTime(orderTime);
         order.setAddress(address);
         order.setOrderStatus((char)0);
         orderMapper.addOrder(order);
+    }
+
+    public void separateOrder(List<Product> products, String orderId) {
         for (Product product : products) {
             OrderDetails orderDetails = new OrderDetails();
             orderDetails.setOrderId(orderId);
@@ -64,14 +69,6 @@ public class OrderService {
             orderDetails.setDescription(product.getDescription());
             orderMapper.addOrderDetails(orderDetails);
         }
-        //TODO id & details
-    }
-
-    public void mainOrder(){
-
-    }
-
-    public void separateOrder() {
     }
 
     /**
@@ -80,7 +77,7 @@ public class OrderService {
      * @param orderId     订单ID
      * @param orderStatus 订单状态
      */
-    public void setOrderStatus(String orderId, char orderStatus) {
-        orderMapper.setOrderStatus(orderId, orderStatus);
+    public void updateOrderStatus(String orderId, char orderStatus) {
+        orderMapper.updateOrderStatus(orderId, orderStatus);
     }
 }
