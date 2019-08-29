@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      lang = "zh"
 >
 <head>
     <meta charset="UTF-8">
@@ -53,58 +54,85 @@
         <ul id="nav">
             <li>
                 <a href="javascript:;">
-                    <i class="iconfont left-nav-li" lay-tips="消息管理">&#xe6b4;</i>
+                    <i class="iconfont left-nav-li" lay-tips="用户管理">&#xe6b4;</i>
                     <cite>用户管理</cite>
                     <i class="iconfont nav_right">&#xe697;</i></a>
                 <ul class="sub-menu">
                     <li>
-                        <a onclick="xadmin.add_tab('消息查询','/info/messages')">
+                        <a onclick="xadmin.add_tab('用户列表','/info/messages')">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>消息查询</cite></a>
+                            <cite>用户列表</cite></a>
                     </li>
                 </ul>
             </li>
             <li>
                 <a href="javascript:;">
-                    <i class="iconfont left-nav-li" lay-tips="业务管理">&#xe723;</i>
-                    <cite>业务管理</cite>
+                    <i class="iconfont left-nav-li" lay-tips="仓库管理">&#xe723;</i>
+                    <cite>仓库管理</cite>
                     <i class="iconfont nav_right">&#xe697;</i></a>
                 <ul class="sub-menu">
                     <li>
-                        <a onclick="xadmin.add_tab('消息来源','/biz/source/sources')">
+                        <a onclick="xadmin.add_tab('新增仓库','/warehouse/addWarehouse')">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>消息来源</cite></a>
+                            <cite>新增仓库</cite></a>
                     </li>
                     <li>
-                        <a onclick="xadmin.add_tab('消息业务','/biz/type/types')">
+                        <a onclick="xadmin.add_tab('仓库列表','/warehouse')">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>消息业务</cite></a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="javascript:;">
-                    <i class="iconfont left-nav-li" lay-tips="服务管理">&#xe723;</i>
-                    <cite>服务管理</cite>
-                    <i class="iconfont nav_right">&#xe697;</i></a>
-                <ul class="sub-menu">
-                    <li>
-                        <a onclick="xadmin.add_tab('邮件服务','/sender/email/servers')">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>邮件服务</cite></a>
+                            <cite>仓库列表</cite></a>
                     </li>
                 </ul>
             </li>
             <li>
                 <a href="javascript:;">
-                    <i class="iconfont left-nav-li" lay-tips="监控统计">&#xe6ce;</i>
-                    <cite>监控统计</cite>
+                    <i class="iconfont left-nav-li" lay-tips="分类管理">&#xe723;</i>
+                    <cite>分类管理</cite>
                     <i class="iconfont nav_right">&#xe697;</i></a>
                 <ul class="sub-menu">
                     <li>
-                        <a onclick="xadmin.add_tab('预处理','#')">
+                        <a onclick="xadmin.add_tab('新增分类','/category/addCategory')">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>预处理</cite></a>
+                            <cite>新增分类</cite></a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li>
+                        <a onclick="xadmin.add_tab('分类列表','/category')">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>分类列表</cite></a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont left-nav-li" lay-tips="商品管理">&#xe6ce;</i>
+                    <cite>商品管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i></a>
+                <ul class="sub-menu">
+                    <li>
+                        <a onclick="xadmin.add_tab('新增商品','/product/addProduct')">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>新增商品</cite></a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li>
+                        <a onclick="xadmin.add_tab('商品列表','/product')">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>商品列表</cite></a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont left-nav-li" lay-tips="订单管理">&#xe6ce;</i>
+                    <cite>订单管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i></a>
+                <ul class="sub-menu">
+                    <li>
+                        <a onclick="xadmin.add_tab('订单列表','/order')">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>订单列表</cite></a>
                     </li>
                 </ul>
             </li>

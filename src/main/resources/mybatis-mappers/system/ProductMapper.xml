@@ -30,8 +30,8 @@
         insert into product values
         (#{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR},
          #{availableNum,jdbcType=INTEGER}, #{frozenNum,jdbcType=INTEGER}, #{unitPrice,jdbcType=DECIMAL},
-         #{productStatus,jdbcType=CHAR, #{startTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR},
-         #{description,jdbcType=VARCHAR});
+         #{productStatus,jdbcType=CHAR}, #{startTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR},
+         #{description,jdbcType=VARCHAR}, 0);
     </insert>
 
     <update id="updateProduct" parameterType="cn.shenghui.jd.dao.system.product.model.Product">

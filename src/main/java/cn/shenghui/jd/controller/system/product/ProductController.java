@@ -35,6 +35,30 @@ public class ProductController {
     }
 
     /**
+     * 商品列表页
+     *
+     * @return 页面
+     */
+    @RequestMapping("")
+    public ModelAndView productPage() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("system/product/product");
+        return mv;
+    }
+
+    /**
+     * 增加商品页
+     *
+     * @return 页面
+     */
+    @RequestMapping("/addProduct")
+    public ModelAndView addProductPage() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("system/product/addProduct");
+        return mv;
+    }
+
+    /**
      * 返回商品列表
      *
      * @return 商品列表页
@@ -133,10 +157,6 @@ public class ProductController {
         int frozenNum = product.getFrozenNum();
         BigDecimal unitPrice = product.getUnitPrice();
         BigDecimal initial = new BigDecimal(0);
-        if (availableNum < 0 || frozenNum < 0 || unitPrice.compareTo(initial) == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return availableNum >= 0 && frozenNum >= 0 && unitPrice.compareTo(initial) != -1;
     }
 }

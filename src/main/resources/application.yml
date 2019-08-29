@@ -16,7 +16,7 @@ pagehelper:
   helper-dialect: mysql
 
 mybatis:
-  mapper-locations: classpath:mybatis-mappers/*.xml
+  mapper-locations: classpath:mybatis-mappers/system/*.xml
 
 swagger2:
   title: JD
@@ -24,6 +24,6 @@ swagger2:
   contact-name: Shenghui Wu
   contact-email: wushenghui_195481@baosight.com
 
-#logging:
-#  level:
-#    cn.shenghui.jd.dao.mapper: debug
+logging:
+  level:
+    cn.shenghui.jd.dao.mapper: debug

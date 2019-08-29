@@ -6,11 +6,11 @@ import cn.shenghui.jd.restHttp.system.order.response.OrderResponse;
 import cn.shenghui.jd.service.system.order.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author shenghui
@@ -27,6 +27,18 @@ public class OrderController {
     @Autowired
     public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
+    }
+
+    /**
+     * 订单列表页
+     *
+     * @return 页面
+     */
+    @RequestMapping("")
+    public ModelAndView orderPage() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("system/order/order");
+        return mv;
     }
 
     /**

@@ -32,13 +32,21 @@ public interface WarehouseMapper {
     /**
      * 移除单个仓库
      *
-     * @param warehouseId
+     * @param warehouseId 仓库ID
      */
     void removeWarehouse(@Param("warehouseId") String warehouseId);
 
     /**
      * 更新单个仓库信息
+     *
      * @param warehouse 仓库信息
      */
     void updateWarehouse(Warehouse warehouse);
+
+    /**
+     * 获得仓库表行数
+     *
+     * @return 行数
+     */
+    int countWarehouse();
 }

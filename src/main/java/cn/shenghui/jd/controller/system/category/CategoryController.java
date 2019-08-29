@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author shenghui
@@ -26,6 +27,30 @@ public class CategoryController {
     @Autowired
     public void setCategoryService(CategoryService categoryService) {
         this.categoryService = categoryService;
+    }
+
+    /**
+     * 商品种类列表页
+     *
+     * @return 页面
+     */
+    @RequestMapping("")
+    public ModelAndView categoryPage() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("system/category/category");
+        return mv;
+    }
+
+    /**
+     * 增加商品种类页
+     *
+     * @return 页面
+     */
+    @RequestMapping("/addCategory")
+    public ModelAndView addCategoryPage() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("system/category/category");
+        return mv;
     }
 
     /**

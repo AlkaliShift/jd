@@ -16,7 +16,6 @@ import java.util.List;
 public class WarehouseService {
 
     private WarehouseMapper warehouseMapper;
-    private static int ID = 0;
 
     @Autowired
     public void setWarehouseMapper(WarehouseMapper warehouseMapper) {
@@ -36,14 +35,11 @@ public class WarehouseService {
     /**
      * 增加单个仓库
      *
-     * @param warehouseName 仓库名称
+     * @param warehouse 仓库信息
      */
-    public void addWarehouse(String warehouseName) {
-        ID = ID + 1;
-        String warehouseId = ID + "";
-        Warehouse warehouse = new Warehouse();
+    public void addWarehouse(Warehouse warehouse) {
+        String warehouseId = warehouseMapper.countWarehouse() + 1 + "";
         warehouse.setWarehouseId(warehouseId);
-        warehouse.setWarehouseName(warehouseName);
         warehouseMapper.addWarehouse(warehouse);
     }
 
@@ -59,13 +55,9 @@ public class WarehouseService {
     /**
      * 更新单个仓库信息
      *
-     * @param warehouseId 仓库ID
-     * @param warehouseName 仓库名称
+     * @param warehouse 仓库ID
      */
-    public void updateWarehouse(String warehouseId, String warehouseName) {
-        Warehouse warehouse = new Warehouse();
-        warehouse.setWarehouseId(warehouseId);
-        warehouse.setWarehouseName(warehouseName);
+    public void updateWarehouse(Warehouse warehouse) {
         warehouseMapper.updateWarehouse(warehouse);
     }
 }
