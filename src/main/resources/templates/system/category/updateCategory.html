@@ -11,24 +11,27 @@
     <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
     <link th:href="@{/css/main.css}" rel="stylesheet">
     <script th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
-    <script th:src="@{/js/system/warehouse/updateWarehouse.js}" charset="utf-8"></script>
+    <script th:src="@{/js/system/category/updateCategory.js}" charset="utf-8"></script>
 </head>
 
 <body>
 <div id="type" class="layui-form">
     <div class="layui-form-item">
-        <label class="layui-form-label">仓库ID</label>
+        <label class="layui-form-label">商品种类ID</label>
         <div class="layui-input-inline">
-            <input type="text" id="warehouseId" th:value="${warehouse.warehouseId}" readonly="readonly" autocomplete="off" class="layui-input"/>
+            <input type="text" id="categoryId" th:value="${category.categoryId}" readonly="readonly" autocomplete="off" class="layui-input"/>
         </div>
     </div>
 
     <div class="layui-form-item">
-        <label class="layui-form-label">仓库名称</label>
+        <label class="layui-form-label">商品种类名称</label>
         <div class="layui-input-inline">
-            <input type="text" id="warehouseName" th:value="${warehouse.warehouseName}" required="required" autocomplete="off" class="layui-input"/>
+            <input type="text" id="categoryName" th:value="${category.categoryName}" required="required" autocomplete="off" class="layui-input"/>
         </div>
     </div>
+
+    <input type="text" id="warehouseId" th:value="${category.warehouseId}" hidden="true"/>
+    <select id="warehouse-id-update" lay-verify="" lay-search></select>
 
     <div class="layui-form-item">
         <div class="layui-input-block">

@@ -7,8 +7,8 @@ layui.use(['form', 'table', 'layer'], function () {
     form.render();
 
     table.render({
-        elem: '#warehouses'
-        , url: '/warehouse/list'
+        elem: '#categories'
+        , url: '/category/list'
         , where: {content: $("#content").val()}
         , response: {
             statusName: 'statusCode' //规定数据状态的字段名称，默认：code
@@ -18,23 +18,24 @@ layui.use(['form', 'table', 'layer'], function () {
         , parseData: function (res) { //res 即为原始返回的数据
             return {
                 "statusCode": res.statusCode,
-                "data": res.warehouses,
+                "data": res.categories,
                 "msg": res.msg
             }
         }
         , cols: [[
-            {field: 'warehouseId', title: '仓库ID'}
-            , {field: 'warehouseName', title: '仓库名称'}
+            {field: 'categoryId', title: '商品种类ID'}
+            , {field: 'categoryName', title: '商品种类名称'}
+            , {field: 'warehouseId', title: '仓库ID'}
             , {title: '操作', align: 'center', width: 250, toolbar: '#operation'}
         ]]
-        , id: 'warehouses'
+        , id: 'categories'
         , page: false
     });
 
 
     var active = {
         reload: function () {
-            table.reload('warehouses', {
+            table.reload('categories', {
                 page: {
                     curr: 1 //重新从第 1 页开始
                 }
@@ -57,30 +58,30 @@ layui.use(['form', 'table', 'layer'], function () {
     $('#add').on('click', function () {
         layer.open({
             type: 2,
-            content: '/warehouse/addWarehouse',
+            content: '/category/addCategory',
             area: ['600px', '390px'],
             closeBtn: 2,
             shadeClose: true,
-            title: '新增仓库'
+            title: '新增商品种类'
         });
     });
 
     table.on('tool(type)', function (obj) {
-        var warehouseId = obj.data.warehouseId;
+        var categoryId = obj.data.categoryId;
         var layEvent = obj.event;
         if (layEvent === 'edit') { //编辑
             layer.open({
                 type: 2,
-                content: '/warehouse/updateWarehouse?warehouseId=' + warehouseId,
+                content: '/category/updateCategory?categoryId=' + categoryId,
                 area: ['600px', '390px'],
                 closeBtn: 2,
                 shadeClose: true,
-                title: '更新仓库信息'
+                title: '更新商品种类信息'
             });
         } else if (layEvent === 'del') {//删除
             layer.confirm('删除该账户,确定删除?'
                 , {icon: 0, title: '删除'}, function (index) {
-                    var action = '/warehouse/remove?warehouseId=' + warehouseId;
+                    var action = '/category/remove?categoryId=' + categoryId;
                     $.ajax({
                         type: 'POST',
                         url: action,

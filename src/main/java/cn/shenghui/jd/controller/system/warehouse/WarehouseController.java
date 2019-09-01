@@ -62,22 +62,22 @@ public class WarehouseController {
     public ModelAndView updateWarehousePage(@RequestParam(name = "warehouseId") String warehouseId) {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("system/warehouse/updateWarehouse");
-        mv.addObject("warehouse", warehouseService.getWarehouseList(warehouseId).get(0));
+        mv.addObject("warehouse", warehouseService.getWarehouseById(warehouseId));
         return mv;
     }
 
     /**
-     * 获取单个仓库信息，若仓库ID为空则获取全部仓库列表
+     * 模糊查询仓库信息，若搜索内容为空，则返回所有仓库信息列表
      *
-     * @param warehouseId 仓库ID
+     * @param content 搜索内容
      * @return 仓库列表和状态码：1
      */
     @ApiOperation(value = "获取仓库列表", notes = "状态码1:查询成功")
     @RequestMapping(value = "/list")
     @ResponseBody
-    public WarehouseResponse getWarehouseList(@RequestParam(name = "warehouseId") String warehouseId) {
+    public WarehouseResponse getWarehouseList(@RequestParam(name = "content") String content) {
         WarehouseResponse response = new WarehouseResponse();
-        response.setWarehouses(warehouseService.getWarehouseList(warehouseId));
+        response.setWarehouses(warehouseService.getWarehouseList(content));
         response.setStatusCode(1);
         return response;
     }

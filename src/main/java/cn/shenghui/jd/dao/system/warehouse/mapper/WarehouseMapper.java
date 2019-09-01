@@ -15,12 +15,20 @@ import java.util.List;
 public interface WarehouseMapper {
 
     /**
-     * 获得仓库信息列表
+     * 根据仓库ID查找仓库信息
      *
      * @param warehouseId 仓库ID
-     * @return 仓库列表
+     * @return 仓库信息
      */
-    List<Warehouse> getWarehouseList(@Param("warehouseId") String warehouseId);
+    Warehouse getWarehouseById(@Param("warehouseId") String warehouseId);
+
+    /**
+     * 模糊查询仓库信息，若搜索内容为空，则返回所有仓库信息列表
+     *
+     * @param content 搜索内容
+     * @return 仓库信息列表
+     */
+    List<Warehouse> getWarehouseList(@Param("content") String content);
 
     /**
      * 增加单个仓库

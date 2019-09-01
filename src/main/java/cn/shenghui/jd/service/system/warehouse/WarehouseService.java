@@ -23,13 +23,23 @@ public class WarehouseService {
     }
 
     /**
-     * 查询仓库信息，若仓库ID为空，则返回所有仓库信息列表
+     * 根据仓库ID查找仓库信息
      *
      * @param warehouseId 仓库ID
+     * @return 仓库信息
+     */
+    public Warehouse getWarehouseById(String warehouseId) {
+        return warehouseMapper.getWarehouseById(warehouseId);
+    }
+
+    /**
+     * 模糊查询仓库信息，若搜索内容为空，则返回所有仓库信息列表
+     *
+     * @param content 搜索内容
      * @return 仓库列表
      */
-    public List<Warehouse> getWarehouseList(String warehouseId) {
-        return warehouseMapper.getWarehouseList(warehouseId);
+    public List<Warehouse> getWarehouseList(String content) {
+        return warehouseMapper.getWarehouseList(content);
     }
 
     /**

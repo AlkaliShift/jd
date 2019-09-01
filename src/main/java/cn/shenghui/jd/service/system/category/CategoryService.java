@@ -15,7 +15,6 @@ import java.util.List;
 @Service
 public class CategoryService {
     private CategoryMapper categoryMapper;
-    private static int ID = 0;
 
     @Autowired
     public void setCategoryMapper(CategoryMapper categoryMapper) {
@@ -23,13 +22,23 @@ public class CategoryService {
     }
 
     /**
-     * 查询特定商品种类或返回所有商品种类列表
+     * 根据商品种类ID查找商品种类
      *
      * @param categoryId 商品种类ID
+     * @return 商品种类
+     */
+    public Category getCategoryById(String categoryId) {
+        return categoryMapper.getCategoryById(categoryId);
+    }
+
+    /**
+     * 模糊查询商品种类信息，若搜索内容为空，则返回所有商品种类
+     *
+     * @param content 搜索内容
      * @return 商品种类列表
      */
-    public List<Category> getCategoryList(String categoryId) {
-        return categoryMapper.getCategoryList(categoryId);
+    public List<Category> getCategoryList(String content) {
+        return categoryMapper.getCategoryList(content);
     }
 
     /**
@@ -38,8 +47,7 @@ public class CategoryService {
      * @param category 商品种类
      */
     public void addCategory(Category category) {
-        ID = ID + 1;
-        String categoryId = category.getWarehouseId() + "-" + ID;
+        String categoryId = category.getWarehouseId() + "-" + (categoryMapper.countCategory() + 1);
         category.setCategoryId(categoryId);
         categoryMapper.addCategory(category);
     }

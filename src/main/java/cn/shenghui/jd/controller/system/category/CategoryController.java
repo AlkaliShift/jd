@@ -49,22 +49,36 @@ public class CategoryController {
     @RequestMapping("/addCategory")
     public ModelAndView addCategoryPage() {
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("system/category/category");
+        mv.setViewName("system/category/addCategory");
         return mv;
     }
 
     /**
-     * 获取单个商品种类信息，若种类ID为空则获取全部商品种类列表
+     * 更新商品种类页
      *
      * @param categoryId 商品种类ID
+     * @return 页面
+     */
+    @RequestMapping("/updateCategory")
+    public ModelAndView updateCategoryPage(@RequestParam(name = "categoryId") String categoryId) {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("system/category/updateCategory");
+        mv.addObject("category", categoryService.getCategoryById(categoryId));
+        return mv;
+    }
+
+    /**
+     * 模糊查询商品种类信息，若搜索内容为空，则返回所有商品种类
+     *
+     * @param content 搜索内容
      * @return 商品种类列表和状态码：1
      */
     @ApiOperation(value = "获取商品种类列表", notes = "状态码1:查询成功")
     @RequestMapping(value = "/list")
     @ResponseBody
-    public CategoryResponse getCategoryList(@RequestParam(name = "categoryId") String categoryId) {
+    public CategoryResponse getCategoryList(@RequestParam(name = "content") String content) {
         CategoryResponse response = new CategoryResponse();
-        response.setCategories(categoryService.getCategoryList(categoryId));
+        response.setCategories(categoryService.getCategoryList(content));
         response.setStatusCode(1);
         return response;
     }
