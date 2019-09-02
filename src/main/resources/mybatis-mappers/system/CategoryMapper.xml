@@ -9,7 +9,10 @@
     </resultMap>
 
     <select id="getCategoryById" parameterType="java.lang.String" resultMap="categoryResult">
-        select * from category where del_flag = 0 and category_id = #{categoryId,jdbcType=VARCHAR};
+        select *
+        from category
+        where del_flag = 0
+          and category_id = #{categoryId,jdbcType=VARCHAR};
     </select>
 
     <select id="getCategoryList" parameterType="java.lang.String" resultMap="categoryResult">

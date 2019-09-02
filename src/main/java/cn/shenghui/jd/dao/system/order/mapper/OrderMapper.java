@@ -36,7 +36,7 @@ public interface OrderMapper {
      * @param orderId     订单ID
      * @param orderStatus 订单状态
      */
-    void updateOrderStatus(@Param("orderId") String orderId, @Param("orderStatus") char orderStatus);
+    void updateOrderStatus(@Param("orderId") String orderId, @Param("orderStatus") String orderStatus);
 
     /**
      * 添加订单详细信息

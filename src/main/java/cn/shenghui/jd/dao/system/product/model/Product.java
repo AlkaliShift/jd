@@ -45,7 +45,7 @@ public class Product {
     /**
      * 商品状态
      */
-    char productStatus;
+    String productStatus;
 
     /**
      * 上架时间

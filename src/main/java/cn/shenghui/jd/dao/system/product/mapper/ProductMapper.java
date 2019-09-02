@@ -15,20 +15,20 @@ import java.util.List;
 public interface ProductMapper {
 
     /**
-     * 根据输入的商品名称模糊搜索商品
+     * 模糊查询商品信息，若搜索内容为空，则返回所有商品信息列表
      *
-     * @param productName 商品名称
+     * @param content 搜索内容
      * @return 商品列表
      */
-    List<Product> fuzzySearch(@Param("productName") String productName);
+    List<Product> getProductList(@Param("content") String content);
 
     /**
      * 根据商品ID批量查询商品信息
      *
-     * @param productIds 商品ID
+     * @param productIds 商品ID集
      * @return 商品列表
      */
-    List<Product> getProductsByIds(List<String> productIds);
+    List<Product> getProductsByIds(@Param("productIds") List<String> productIds);
 
     /**
      * 增加单件商品
@@ -45,12 +45,29 @@ public interface ProductMapper {
     void updateProduct(Product product);
 
     /**
-     * 更新商品上下架状态
+     * 商品上架
      *
-     * @param productId     商品ID
-     * @param productStatus 商品上下架状态
-     * @param orderTime     商品下架时间
+     * @param productIds    商品ID集
+     * @param productStatus 商品上架状态
+     * @param startTime     商品上架时间
      */
-    void setProductStatus(@Param("productId") String productId, @Param("productStatus") char productStatus,
-                          @Param("orderTime") String orderTime);
+    void productUp(@Param("productIds") List<String> productIds, @Param("productStatus") String productStatus,
+                   @Param("startTime") String startTime);
+
+    /**
+     * 商品下架
+     *
+     * @param productIds    商品ID集
+     * @param productStatus 商品下架状态
+     * @param endTime       商品下架时间
+     */
+    void productDown(@Param("productIds") List<String> productIds, @Param("productStatus") String productStatus,
+                     @Param("endTime") String endTime);
+
+    /**
+     * 获得商品表行数
+     *
+     * @return 行数
+     */
+    int countProduct();
 }

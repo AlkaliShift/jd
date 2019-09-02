@@ -2,11 +2,16 @@ package cn.shenghui.jd.service.system.product;
 
 import cn.shenghui.jd.dao.system.product.mapper.ProductMapper;
 import cn.shenghui.jd.dao.system.product.model.Product;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+
+import static cn.shenghui.jd.constants.system.product.ProductConstants.PRODUCT_DOWN;
+import static cn.shenghui.jd.constants.system.product.ProductConstants.PRODUCT_UP;
 
 /**
  * @author shenghui
@@ -17,7 +22,6 @@ import java.util.List;
 public class ProductService {
 
     private ProductMapper productMapper;
-    private static int ID = 0;
 
     @Autowired
     public void setProductMapper(ProductMapper productMapper) {
@@ -25,12 +29,14 @@ public class ProductService {
     }
 
     /**
-     * 根据输入的商品名称模糊搜索商品
+     * 模糊查询商品信息，若搜索内容为空，则返回所有商品信息列表
      *
+     * @param content 搜索内容
      * @return 商品列表
      */
-    public List<Product> fuzzySearch(String productName) {
-        return productMapper.fuzzySearch(productName);
+    public PageInfo<Product> getProductList(String content, int page, int limit) {
+        PageHelper.startPage(page, limit);
+        return new PageInfo<>(productMapper.getProductList(content));
     }
 
     /**
@@ -49,12 +55,8 @@ public class ProductService {
      * @param product 商品
      */
     public void addProduct(Product product) {
-        String categoryId = product.getCategoryId();
-        ID = ID + 1;
-        String productId = categoryId + "-" + ID;
+        String productId = productMapper.countProduct() + 1 + "";
         product.setProductId(productId);
-        String startTime = new Date() + "";
-        product.setStartTime(startTime);
         productMapper.addProduct(product);
     }
 
@@ -70,11 +72,15 @@ public class ProductService {
     /**
      * 上下架商品，上架为1，下架为0
      *
-     * @param productId     商品ID
+     * @param productIds    商品ID集
      * @param productStatus 商品上下架状态
      */
-    public void setProductStatus(String productId, char productStatus) {
-        String endTime = new Date() + "";
-        productMapper.setProductStatus(productId, productStatus, endTime);
+    public void setProductStatus(List<String> productIds, String productStatus) {
+        String time = new Date() + "";
+        if ((PRODUCT_UP).equals(productStatus)){
+            productMapper.productUp(productIds, productStatus, time);
+        } else if(PRODUCT_DOWN.equals(productStatus)){
+            productMapper.productDown(productIds, productStatus, time);
+        }
     }
 }

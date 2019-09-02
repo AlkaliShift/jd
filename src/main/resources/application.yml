@@ -6,7 +6,7 @@ spring:
     cache: false
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.142.128:3306/jd?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false
+    url: jdbc:mysql://192.168.206.128:3306/jd?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false
     username: root
     password: Qwer1234!
     hikari:

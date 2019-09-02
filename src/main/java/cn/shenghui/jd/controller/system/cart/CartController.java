@@ -1,6 +1,7 @@
 package cn.shenghui.jd.controller.system.cart;
 
 import cn.shenghui.jd.dao.system.cart.model.Cart;
+import cn.shenghui.jd.dao.system.product.model.Product;
 import cn.shenghui.jd.restHttp.system.cart.request.DeleteCartRequest;
 import cn.shenghui.jd.restHttp.system.cart.response.CartBasicResponse;
 import cn.shenghui.jd.restHttp.system.cart.response.CartResponse;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -69,13 +71,18 @@ public class CartController {
         CartBasicResponse response = new CartBasicResponse();
         List<String> productIds = new ArrayList<>();
         productIds.add(cart.getProductId());
-        int availableNum = productService.getProductsByIds(productIds).get(0).getAvailableNum();
-        boolean check = cartService.addToCart(cart.getUserId(), cart.getProductId(),
-                cart.getProductNum(), availableNum);
-        if (!check) {
-            response.setStatusInfo(0, "订购数量超过商品库存数量");
-        } else {
-            response.setStatusCode(1);
+        List<Product> products = productService.getProductsByIds(productIds);
+        if(!ObjectUtils.isEmpty(products)){
+            int availableNum = productService.getProductsByIds(productIds).get(0).getAvailableNum();
+            boolean check = cartService.addToCart(cart.getUserId(), cart.getProductId(),
+                    cart.getProductNum(), availableNum);
+            if (!check) {
+                response.setStatusInfo(0, "订购数量超过商品库存数量");
+            } else {
+                response.setStatusCode(1);
+            }
+        }else{
+            response.setStatusInfo(0, "找不到该商品");
         }
         return response;
     }

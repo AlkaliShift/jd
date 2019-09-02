@@ -55,7 +55,7 @@ public class OrderService {
         order.setTotalPrice(totalPrice);
         order.setOrderTime(orderTime);
         order.setAddress(address);
-        order.setOrderStatus((char)0);
+        order.setOrderStatus("0");
         orderMapper.addOrder(order);
     }
 
@@ -77,7 +77,7 @@ public class OrderService {
      * @param orderId     订单ID
      * @param orderStatus 订单状态
      */
-    public void updateOrderStatus(String orderId, char orderStatus) {
+    public void updateOrderStatus(String orderId, String orderStatus) {
         orderMapper.updateOrderStatus(orderId, orderStatus);
     }
 }

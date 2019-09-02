@@ -86,7 +86,7 @@ public class OrderController {
     @RequestMapping(value = "/updateOrderStatus", method = RequestMethod.POST)
     @ResponseBody
     public OrderBasicResponse updateOrderStatus(@RequestParam("orderId") String orderId,
-                                                @RequestParam("orderStatus") char orderStatus) {
+                                                @RequestParam("orderStatus") String orderStatus) {
         OrderBasicResponse response = new OrderBasicResponse();
         orderService.updateOrderStatus(orderId, orderStatus);
         response.setStatusCode(1);

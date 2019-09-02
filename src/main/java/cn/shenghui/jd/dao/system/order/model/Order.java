@@ -35,7 +35,7 @@ public class Order {
     /**
      * 订单状态
      */
-    char orderStatus;
+     String orderStatus;
 
     /**
      * 下单时间

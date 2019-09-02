@@ -47,7 +47,7 @@ public class CategoryService {
      * @param category 商品种类
      */
     public void addCategory(Category category) {
-        String categoryId = category.getWarehouseId() + "-" + (categoryMapper.countCategory() + 1);
+        String categoryId = categoryMapper.countCategory() + 1 + "";
         category.setCategoryId(categoryId);
         categoryMapper.addCategory(category);
     }

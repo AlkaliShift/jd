@@ -4,18 +4,19 @@ import cn.shenghui.jd.dao.system.product.model.Product;
 import cn.shenghui.jd.restHttp.system.product.response.ProductBasicResponse;
 import cn.shenghui.jd.restHttp.system.product.response.ProductResponse;
 import cn.shenghui.jd.service.system.product.ProductService;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author shenghui
@@ -64,24 +65,46 @@ public class ProductController {
      * @return 商品列表页
      */
     @RequestMapping("/getProductList")
-    public ModelAndView listProduct() {
+    public ModelAndView listProductPage() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("system/product/product");
         return mv;
     }
 
     /**
-     * 根据输入的商品名称模糊搜索商品
+     * 更新商品页面
      *
-     * @param productName 输入的商品名称
+     * @return 页面
+     */
+    @RequestMapping("/updateProduct")
+    public ModelAndView updateProductPage(@RequestParam(name = "productId") String productId){
+        ModelAndView mv = new ModelAndView();
+        List<String> productIds = new ArrayList<>();
+        productIds.add(productId);
+        List<Product> products = productService.getProductsByIds(productIds);
+        if (!ObjectUtils.isEmpty(products)){
+            mv.addObject("product", productService.getProductsByIds(productIds).get(0));
+        }
+        mv.setViewName("system/product/updateProduct");
+        return mv;
+    }
+
+    /**
+     * 模糊查询商品信息，若搜索内容为空，则返回所有商品信息列表
+     *
+     * @param content 搜索内容
      * @return 匹配的商品列表和状态码：1
      */
-    @ApiOperation(value = "模糊搜索商品", notes = "状态码1:搜索成功")
-    @RequestMapping(value = "/fuzzySearch")
+    @ApiOperation(value = "获取商品列表", notes = "状态码1:搜索成功")
+    @RequestMapping(value = "/list")
     @ResponseBody
-    public ProductResponse fuzzySearch(String productName) {
+    public ProductResponse getProductList(@RequestParam("content") String content,
+                                          @RequestParam(name = "page") int page,
+                                          @RequestParam(name = "limit") int limit) {
         ProductResponse response = new ProductResponse();
-        response.setProducts(productService.fuzzySearch(productName));
+        PageInfo<Product> pages = productService.getProductList(content, page, limit);
+        response.setProducts(pages.getList());
+        response.setTotal(pages.getTotal());
         response.setStatusCode(1);
         return response;
     }
@@ -96,7 +119,7 @@ public class ProductController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public ProductBasicResponse addProduct(Product product) {
+    public ProductBasicResponse addProduct(@RequestBody Product product) {
         ProductBasicResponse response = new ProductBasicResponse();
         if (!checkIfNegative(product)) {
             response.setStatusInfo(0, "输入的数值不能小于0");
@@ -131,17 +154,17 @@ public class ProductController {
     /**
      * 修改单个商品上下架信息
      *
-     * @param productId     商品ID
+     * @param productIds    商品ID集
      * @param productStatus 商品上下架状态
      * @return 状态码：1
      */
     @ApiOperation(value = "修改单个商品上下架信息", notes = "状态码1:修改成功")
     @RequestMapping(value = "/setProductStatus")
     @ResponseBody
-    public ProductBasicResponse setProductStatus(@RequestParam("productId") String productId,
-                                                 @RequestParam("productStatus") char productStatus) {
+    public ProductBasicResponse setProductStatus(@RequestBody List<String> productIds,
+                                                 @RequestParam("productStatus") String productStatus) {
         ProductBasicResponse response = new ProductBasicResponse();
-        productService.setProductStatus(productId, productStatus);
+        productService.setProductStatus(productIds, productStatus);
         response.setStatusCode(1);
         return response;
     }
@@ -157,6 +180,10 @@ public class ProductController {
         int frozenNum = product.getFrozenNum();
         BigDecimal unitPrice = product.getUnitPrice();
         BigDecimal initial = new BigDecimal(0);
+        if (unitPrice == null) {
+            unitPrice = initial;
+            product.setUnitPrice(initial);
+        }
         return availableNum >= 0 && frozenNum >= 0 && unitPrice.compareTo(initial) != -1;
     }
 }
