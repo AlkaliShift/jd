@@ -1,6 +1,6 @@
 package cn.shenghui.jd.restHttp.system.product.response;
 
-import cn.shenghui.jd.dao.system.product.model.Product;
+import cn.shenghui.jd.dao.system.product.dto.ProductDetails;
 import cn.shenghui.jd.restHttp.base.AbstractResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,7 +18,7 @@ import java.util.List;
 public class ProductResponse extends AbstractResponse {
 
     @ApiModelProperty(value = "产品列表", required = true)
-    protected List<Product> products;
+    protected List<ProductDetails> products;
 
     @ApiModelProperty(value = "总个数", required = true)
     long total;

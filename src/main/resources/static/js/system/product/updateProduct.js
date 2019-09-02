@@ -31,8 +31,8 @@ layui.use('form', function () {
             product.productId = $('#productId').val();
             product.productName = productName;
             product.categoryId = $('#product-category-id-update').val();
-            product.availableNum = $('#availableNum').val();
-            product.frozenNum = $('#frozenNum').val();
+            product.availableNum = parseInt($('#availableNum').val());
+            product.frozenNum = parseInt($('#frozenNum').val());
             product.unitPrice = $('#unitPrice').val();
             product.description = $('#description').val();
             $.ajax({

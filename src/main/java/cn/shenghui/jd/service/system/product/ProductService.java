@@ -1,5 +1,6 @@
 package cn.shenghui.jd.service.system.product;
 
+import cn.shenghui.jd.dao.system.product.dto.ProductDetails;
 import cn.shenghui.jd.dao.system.product.mapper.ProductMapper;
 import cn.shenghui.jd.dao.system.product.model.Product;
 import com.github.pagehelper.PageHelper;
@@ -34,7 +35,7 @@ public class ProductService {
      * @param content 搜索内容
      * @return 商品列表
      */
-    public PageInfo<Product> getProductList(String content, int page, int limit) {
+    public PageInfo<ProductDetails> getProductList(String content, int page, int limit) {
         PageHelper.startPage(page, limit);
         return new PageInfo<>(productMapper.getProductList(content));
     }
@@ -77,10 +78,19 @@ public class ProductService {
      */
     public void setProductStatus(List<String> productIds, String productStatus) {
         String time = new Date() + "";
-        if ((PRODUCT_UP).equals(productStatus)){
+        if ((PRODUCT_UP).equals(productStatus)) {
             productMapper.productUp(productIds, productStatus, time);
-        } else if(PRODUCT_DOWN.equals(productStatus)){
+        } else if (PRODUCT_DOWN.equals(productStatus)) {
             productMapper.productDown(productIds, productStatus, time);
         }
+    }
+
+    /**
+     * 根据商品ID删除商品
+     *
+     * @param productId 商品ID
+     */
+    public void removeProduct(String productId) {
+        productMapper.removeProduct(productId);
     }
 }

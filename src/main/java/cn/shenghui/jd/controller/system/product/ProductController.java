@@ -1,5 +1,6 @@
 package cn.shenghui.jd.controller.system.product;
 
+import cn.shenghui.jd.dao.system.product.dto.ProductDetails;
 import cn.shenghui.jd.dao.system.product.model.Product;
 import cn.shenghui.jd.restHttp.system.product.response.ProductBasicResponse;
 import cn.shenghui.jd.restHttp.system.product.response.ProductResponse;
@@ -77,12 +78,12 @@ public class ProductController {
      * @return 页面
      */
     @RequestMapping("/updateProduct")
-    public ModelAndView updateProductPage(@RequestParam(name = "productId") String productId){
+    public ModelAndView updateProductPage(@RequestParam(name = "productId") String productId) {
         ModelAndView mv = new ModelAndView();
         List<String> productIds = new ArrayList<>();
         productIds.add(productId);
         List<Product> products = productService.getProductsByIds(productIds);
-        if (!ObjectUtils.isEmpty(products)){
+        if (!ObjectUtils.isEmpty(products)) {
             mv.addObject("product", productService.getProductsByIds(productIds).get(0));
         }
         mv.setViewName("system/product/updateProduct");
@@ -102,7 +103,7 @@ public class ProductController {
                                           @RequestParam(name = "page") int page,
                                           @RequestParam(name = "limit") int limit) {
         ProductResponse response = new ProductResponse();
-        PageInfo<Product> pages = productService.getProductList(content, page, limit);
+        PageInfo<ProductDetails> pages = productService.getProductList(content, page, limit);
         response.setProducts(pages.getList());
         response.setTotal(pages.getTotal());
         response.setStatusCode(1);
@@ -121,7 +122,7 @@ public class ProductController {
     @Transactional(rollbackFor = Exception.class)
     public ProductBasicResponse addProduct(@RequestBody Product product) {
         ProductBasicResponse response = new ProductBasicResponse();
-        if (!checkIfNegative(product)) {
+        if (checkIfNegative(product)) {
             response.setStatusInfo(0, "输入的数值不能小于0");
         } else {
             productService.addProduct(product);
@@ -140,9 +141,9 @@ public class ProductController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public ProductBasicResponse updateProduct(Product product) {
+    public ProductBasicResponse updateProduct(@RequestBody Product product) {
         ProductBasicResponse response = new ProductBasicResponse();
-        if (!checkIfNegative(product)) {
+        if (checkIfNegative(product)) {
             response.setStatusInfo(0, "输入的数值不能小于0");
         } else {
             productService.updateProduct(product);
@@ -159,12 +160,28 @@ public class ProductController {
      * @return 状态码：1
      */
     @ApiOperation(value = "修改单个商品上下架信息", notes = "状态码1:修改成功")
-    @RequestMapping(value = "/setProductStatus")
+    @RequestMapping(value = "/setProductStatus", method = RequestMethod.POST)
     @ResponseBody
     public ProductBasicResponse setProductStatus(@RequestBody List<String> productIds,
                                                  @RequestParam("productStatus") String productStatus) {
         ProductBasicResponse response = new ProductBasicResponse();
         productService.setProductStatus(productIds, productStatus);
+        response.setStatusCode(1);
+        return response;
+    }
+
+    /**
+     * 根据商品ID删除商品
+     *
+     * @param productId 商品ID
+     * @return 状态码：1
+     */
+    @ApiOperation(value = "根据商品ID删除商品", notes = "状态码1:修改成功")
+    @RequestMapping(value = "/removeProduct", method = RequestMethod.POST)
+    @ResponseBody
+    public ProductBasicResponse removeProduct(@RequestParam(name = "productId") String productId) {
+        ProductBasicResponse response = new ProductBasicResponse();
+        productService.removeProduct(productId);
         response.setStatusCode(1);
         return response;
     }
@@ -184,6 +201,6 @@ public class ProductController {
             unitPrice = initial;
             product.setUnitPrice(initial);
         }
-        return availableNum >= 0 && frozenNum >= 0 && unitPrice.compareTo(initial) != -1;
+        return availableNum < 0 || frozenNum < 0 || initial.compareTo(unitPrice) >= 1;
     }
 }

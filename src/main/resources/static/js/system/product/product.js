@@ -28,7 +28,7 @@ layui.use(['form', 'table', 'layer'], function () {
             {type: 'checkbox', fixed: 'left'}
             , {field: 'productId', title: '商品ID'}
             , {field: 'productName', title: '商品名称'}
-            , {field: 'categoryId', title: '商品种类ID'}
+            , {field: 'categoryName', title: '商品种类名称'}
             , {field: 'availableNum', title: '可用数量'}
             , {field: 'frozenNum', title: '冻结数量'}
             , {field: 'unitPrice', title: '单位价格'}
@@ -77,53 +77,71 @@ layui.use(['form', 'table', 'layer'], function () {
         });
     });
 
-    table.on('toolbar(type)', function(obj){
+    table.on('toolbar(type)', function (obj) {
         var data = table.checkStatus(obj.config.id).data;
         var productIds = [];
-        for(i in data){
-            productIds.push(data[i].productId);
+        var productStatusUp = false;
+        var productStatusDown = false;
+        for (var i in data) {
+            if (data.hasOwnProperty(i)) {
+                productIds.push(data[i].productId);
+                if ("up" === data[i].productStatus) {
+                    productStatusUp = true;
+                } else if (null === data[i].productStatus || "down" === data[i].productStatus) {
+                    productStatusDown = true;
+                }
+            }
         }
-        if(obj.event === 'productUp'){
+        if (obj.event === 'productUp') {
             layer.confirm('上架选中商品,确定上架?'
                 , {icon: 0, title: '上架'}, function (index) {
-                    var action = '/product/setProductStatus?productStatus=up';
-                    $.ajax({
-                        type: 'POST',
-                        url: action,
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify(productIds),
-                        success: function (data) {
-                            if (data.statusCode === 1) {
-                                layer.msg("上架成功");
-                                layer.close(index);
-                                $('#search').click();
-                            } else {
-                                layer.msg("上架失败");
+                    if (productStatusUp) {
+                        layer.msg("部分选中的商品已上架，请重新勾选。");
+                    } else {
+                        var action = '/product/setProductStatus?productStatus=up';
+                        $.ajax({
+                            type: 'POST',
+                            url: action,
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(productIds),
+                            success: function (data) {
+                                if (data.statusCode === 1) {
+                                    layer.msg("上架成功");
+                                    layer.close(index);
+                                    $('#search').click();
+                                } else {
+                                    layer.msg("上架失败");
+                                }
                             }
-                        }
-                    });
-                    layer.close(index);
+                        });
+                        layer.close(index);
+                    }
                 });
-        }else if(obj.event === 'productDown'){
+        } else if (obj.event === 'productDown') {
             layer.confirm('下架选中商品,确定下架?'
                 , {icon: 0, title: '下架'}, function (index) {
-                    var action = '/product/setProductStatus?productStatus=down';
-                    $.ajax({
-                        type: 'POST',
-                        url: action,
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify(productIds),
-                        success: function (data) {
-                            if (data.statusCode === 1) {
-                                layer.msg("下架成功");
-                                layer.close(index);
-                                $('#search').click();
-                            } else {
-                                layer.msg("下架失败");
+                    if (productStatusDown) {
+                        layer.msg("部分选中的商品未上架或已下架，请重新勾选。");
+                    } else {
+                        var action = '/product/setProductStatus?productStatus=down';
+                        $.ajax({
+                            type: 'POST',
+                            url: action,
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(productIds),
+                            success: function (data) {
+                                if (data.statusCode === 1) {
+                                    layer.msg("下架成功");
+                                    layer.close(index);
+                                    $('#search').click();
+                                } else {
+                                    layer.msg("下架失败");
+                                }
                             }
-                        }
-                    });
-                    layer.close(index);
+                        });
+                        layer.close(index);
+                    }
+
                 });
         }
     });
@@ -135,7 +153,7 @@ layui.use(['form', 'table', 'layer'], function () {
             layer.open({
                 type: 2,
                 content: '/product/updateProduct?productId=' + productId,
-                area: ['600px', '390px'],
+                area: ['600px', '500px'],
                 closeBtn: 2,
                 shadeClose: true,
                 title: '更新商品信息'
@@ -143,7 +161,7 @@ layui.use(['form', 'table', 'layer'], function () {
         } else if (layEvent === 'del') {//删除
             layer.confirm('删除该账户,确定删除?'
                 , {icon: 0, title: '删除'}, function (index) {
-                    var action = '/product/remove?productId=' + productId;
+                    var action = '/product/removeProduct?productId=' + productId;
                     $.ajax({
                         type: 'POST',
                         url: action,

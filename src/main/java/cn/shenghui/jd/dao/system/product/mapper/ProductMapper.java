@@ -1,5 +1,6 @@
 package cn.shenghui.jd.dao.system.product.mapper;
 
+import cn.shenghui.jd.dao.system.product.dto.ProductDetails;
 import cn.shenghui.jd.dao.system.product.model.Product;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -20,7 +21,7 @@ public interface ProductMapper {
      * @param content 搜索内容
      * @return 商品列表
      */
-    List<Product> getProductList(@Param("content") String content);
+    List<ProductDetails> getProductList(@Param("content") String content);
 
     /**
      * 根据商品ID批量查询商品信息
@@ -63,6 +64,13 @@ public interface ProductMapper {
      */
     void productDown(@Param("productIds") List<String> productIds, @Param("productStatus") String productStatus,
                      @Param("endTime") String endTime);
+
+    /**
+     * 根据商品ID删除商品
+     *
+     * @param productId 商品ID
+     */
+    void removeProduct(@Param("productId") String productId);
 
     /**
      * 获得商品表行数

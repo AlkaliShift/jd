@@ -2,10 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.shenghui.jd.dao.system.product.mapper.ProductMapper">
 
-    <resultMap id="productResult" type="cn.shenghui.jd.dao.system.product.model.Product">
+    <resultMap id="productResult" type="cn.shenghui.jd.dao.system.product.dto.ProductDetails">
         <id column="product_id" jdbcType="VARCHAR" property="productId"/>
         <result column="product_name" jdbcType="VARCHAR" property="productName"/>
         <result column="category_id" jdbcType="VARCHAR" property="categoryId"/>
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
         <result column="available_num" jdbcType="INTEGER" property="availableNum"/>
         <result column="frozen_num" jdbcType="INTEGER" property="frozenNum"/>
         <result column="unit_price" jdbcType="DECIMAL" property="unitPrice"/>
@@ -16,18 +17,18 @@
     </resultMap>
 
     <select id="getProductList" parameterType="java.lang.String" resultMap="productResult">
-        select * from product where del_flag = 0
+        select * from product p join category c where p.del_flag = 0 and p.category_id = c.category_id
         <if test="content != null and content != ''">
-            and product_id like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or product_name like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or category_id like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or available_num like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or frozen_num like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or unit_price like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or product_status like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or start_time like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or end_time like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or description like concat('%', #{content,jdbcType=VARCHAR} '%')
+            and p.product_id like concat('%', #{content,jdbcType=VARCHAR} '%')
+            or p.product_name like concat('%', #{content,jdbcType=VARCHAR} '%')
+            or c.category_name like concat('%', #{content,jdbcType=VARCHAR} '%')
+            or p.available_num like concat('%', #{content,jdbcType=VARCHAR} '%')
+            or p.frozen_num like concat('%', #{content,jdbcType=VARCHAR} '%')
+            or p.unit_price like concat('%', #{content,jdbcType=VARCHAR} '%')
+            or p.product_status like concat('%', #{content,jdbcType=VARCHAR} '%')
+            or p.start_time like concat('%', #{content,jdbcType=VARCHAR} '%')
+            or p.end_time like concat('%', #{content,jdbcType=VARCHAR} '%')
+            or p.description like concat('%', #{content,jdbcType=VARCHAR} '%')
         </if>
         order by LENGTH(product_id) ASC
     </select>
@@ -60,21 +61,28 @@
             <if test="endTime != null and endTime != ''">end_time = #{endTime,jdbcType=VARCHAR},</if>
             <if test="description != null and description != ''">description = #{description,jdbcType=VARCHAR}</if>
         </set>
-        where product_id = #{productId,jdbcType=VARCHAR};
+        where del_flag = 0 and product_id = #{productId,jdbcType=VARCHAR};
     </update>
 
     <update id="productUp">
         update product
-        set product_status = #{productStatus,jdbcType=VARCHAR}, start_time = #{startTime,jdbcType=VARCHAR}
-        where product_id in
+        set product_status = #{productStatus,jdbcType=VARCHAR}, start_time = #{startTime,jdbcType=VARCHAR},
+        end_time = null
+        where del_flag = 0 and product_id in
         <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
     </update>
 
     <update id="productDown">
         update product
         set product_status = #{productStatus,jdbcType=VARCHAR}, end_time = #{endTime,jdbcType=VARCHAR}
-        where product_id in
+        where del_flag = 0 and product_id in
         <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
+    </update>
+
+    <update id="removeProduct" parameterType="java.lang.String">
+        update product
+        set del_flag = 1
+        where product_id = #{productId,jdbcType=VARCHAR};
     </update>
 
     <select id="countProduct" resultType="int">
