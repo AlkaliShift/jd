@@ -13,12 +13,12 @@
 
     <select id="getCartList" parameterType="java.lang.String" resultMap="cartResult">
         select user_id, c.product_id, product_num, product_name, unit_price, description
-        from cart c, product p where c.product_id = p.product_id;
+        from cart c inner join product p on c.product_id = p.product_id;
     </select>
 
-    <select id="getProductNumFromCart" resultType="int">
-        select product_num from cart
-        where user_id = #{userId,jdbcType=VARCHAR} and product_id = #{productId,jdbcType=VARCHAR};
+    <select id="getProductFromCart" resultMap="cartResult">
+        select * from cart c inner join product p on c.product_id = p.product_id
+        where c.user_id = #{userId,jdbcType=VARCHAR} and c.product_id = #{productId,jdbcType=VARCHAR};
     </select>
 
     <update id="setProductNumOfCart">
@@ -33,6 +33,6 @@
 
     <update id="deleteProducts" parameterType="java.util.List">
         delete from cart where user_id = #{userId,jdbcType=VARCHAR} and product_id in
-        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>
+        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
     </update>
 </mapper>

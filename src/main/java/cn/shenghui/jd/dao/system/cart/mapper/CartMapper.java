@@ -19,18 +19,18 @@ public interface CartMapper {
      * 根据用户ID获得其购物车中商品信息
      *
      * @param userId 用户ID
-     * @return
+     * @return 购物车中商品具体信息
      */
     List<CartProduct> getCartList(@Param("userId") String userId);
 
     /**
-     * 获得购物车中某种商品的数量
+     * 根据商品ID获得该用户选购的商品数量
      *
      * @param userId    用户ID
      * @param productId 商品ID
-     * @return 商品数量
+     * @return 商品信息
      */
-    int getProductNumFromCart(@Param("userId") String userId, @Param("productId") String productId);
+    CartProduct getProductFromCart(@Param("userId") String userId, @Param("productId") String productId);
 
     /**
      * 修改购物车中某种商品的数量

@@ -17,7 +17,7 @@
 <body>
 <div id="type" class="layui-form">
     <div class="layui-form-item">
-        <input type="text" id="productId" th:value="${product.productId}" hidden="true"/>
+        <input type="hidden" id="productId" th:value="${product.productId}"/>
         <label class="layui-form-label">商品名称</label>
         <div class="layui-input-inline">
             <input type="text" id="productName" th:value="${product.productName}" readonly="readonly"

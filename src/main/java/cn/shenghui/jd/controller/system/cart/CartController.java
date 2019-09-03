@@ -2,7 +2,6 @@ package cn.shenghui.jd.controller.system.cart;
 
 import cn.shenghui.jd.dao.system.cart.model.Cart;
 import cn.shenghui.jd.dao.system.product.model.Product;
-import cn.shenghui.jd.restHttp.system.cart.request.DeleteCartRequest;
 import cn.shenghui.jd.restHttp.system.cart.response.CartBasicResponse;
 import cn.shenghui.jd.restHttp.system.cart.response.CartResponse;
 import cn.shenghui.jd.service.system.cart.CartService;
@@ -56,17 +55,30 @@ public class CartController {
     }
 
     /**
+     * 根据商品ID更新购物车中商品数量页面
+     *
+     * @param productId 商品ID
+     * @return 页面
+     */
+    @RequestMapping("/updateCart")
+    public ModelAndView setProductNumPage(@RequestParam("productId") String productId) {
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("product", cartService.getProductFromCart(CurrentUserUtils.getUserName(), productId));
+        mv.setViewName("system/cart/updateCart");
+        return mv;
+    }
+
+    /**
      * 根据用户ID获得其购物车中所有商品信息
      *
-     * @param userId 用户ID
      * @return 商品信息列表和状态码：1
      */
     @ApiOperation(value = "根据用户ID获得其购物车中所有商品信息", notes = "状态码1:查询成功")
     @RequestMapping(value = "/list")
     @ResponseBody
-    public CartResponse getCartList(@RequestParam("userId") String userId) {
+    public CartResponse getCartList() {
         CartResponse response = new CartResponse();
-        response.setCartProducts(cartService.getCartList(userId));
+        response.setCartProducts(cartService.getCartList(CurrentUserUtils.getUserName()));
         response.setStatusCode(1);
         return response;
     }
@@ -81,43 +93,23 @@ public class CartController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public CartBasicResponse addCategory(@RequestBody Cart cart) {
+    public CartBasicResponse addCartProduct(@RequestBody Cart cart, @RequestParam("action") String action) {
         CartBasicResponse response = new CartBasicResponse();
         List<String> productIds = new ArrayList<>();
         productIds.add(cart.getProductId());
         List<Product> products = productService.getProductsByIds(productIds);
-        if(!ObjectUtils.isEmpty(products)){
+        if (!ObjectUtils.isEmpty(products)) {
             int availableNum = productService.getProductsByIds(productIds).get(0).getAvailableNum();
             cart.setUserId(CurrentUserUtils.getUserName());
             boolean check = cartService.addToCart(cart.getUserId(), cart.getProductId(),
-                    cart.getProductNum(), availableNum);
+                    cart.getProductNum(), availableNum, action);
             if (!check) {
                 response.setStatusInfo(0, "订购数量超过商品库存数量");
             } else {
                 response.setStatusCode(1);
             }
-        }else{
-            response.setStatusInfo(0, "找不到该商品");
-        }
-        return response;
-    }
-
-    /**
-     * 设置购物车中单个商品的数量
-     *
-     * @param cart 购物车商品
-     * @return 状态码：1/状态码：0及错误信息
-     */
-    @ApiOperation(value = "添加单个商品进购物车", notes = "状态码1:修改成功")
-    @RequestMapping(value = "/setProductNumOfCart", method = RequestMethod.POST)
-    @ResponseBody
-    public CartBasicResponse setProductNumOfCart(@RequestBody Cart cart) {
-        CartBasicResponse response = new CartBasicResponse();
-        if (cart.getProductNum() == 0) {
-            response.setStatusInfo(0, "商品数量不能为0");
         } else {
-            cartService.setProductNumOfCart(cart.getUserId(), cart.getProductId(), cart.getProductNum());
-            response.setStatusCode(1);
+            response.setStatusInfo(0, "找不到该商品");
         }
         return response;
     }
@@ -130,9 +122,9 @@ public class CartController {
     @ApiOperation(value = "批量删除购物车中的商品", notes = "状态码1:删除成功")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
-    public CartBasicResponse deleteProducts(@RequestBody DeleteCartRequest deleteCartRequest) {
+    public CartBasicResponse deleteProducts(@RequestBody List<String> productIds) {
         CartBasicResponse response = new CartBasicResponse();
-        cartService.deleteProducts(deleteCartRequest.getUserId(), deleteCartRequest.getProductIds());
+        cartService.deleteProducts(CurrentUserUtils.getUserName(), productIds);
         response.setStatusCode(1);
         return response;
     }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang = "zh"
+>
+
+<head>
+    <title>Update product num</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <script th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script th:src="@{/js/system/cart/updateCart.js}" charset="utf-8"></script>
+</head>
+
+<body>
+<div id="type" class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品名称</label>
+        <input type="hidden" id="productId" th:value="${product.productId}" readonly="readonly"/>
+        <div class="layui-input-inline">
+            <input type="text" id="productName" th:value="${product.productName}" required="required" readonly="readonly" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">单位价格</label>
+        <div class="layui-input-inline">
+            <input type="text" id="unitPrice" th:value="${product.unitPrice}" readonly="readonly" class="layui-input"/>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品描述</label>
+        <div class="layui-input-inline">
+            <input type="text" id="description" th:value="${product.description}" readonly="readonly" class="layui-input"/>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品数量</label>
+        <div class="layui-input-inline">
+            <input type="text" id="productNum" th:value="${product.productNum}" class="layui-input"/>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="save">保存</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

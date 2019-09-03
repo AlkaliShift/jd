@@ -3,7 +3,7 @@ layui.use('form', function () {
     var $ = layui.$;
     form.render();
 
-    $('#addToCart').on('click', function () {
+    $('#save').on('click', function () {
         var cart = {};
         var productNum = parseInt($('#productNum').val());
         if (isNaN(productNum)) {
@@ -15,7 +15,7 @@ layui.use('form', function () {
             cart.productNum = productNum;
             $.ajax({
                 type: 'POST',
-                url: '/cart/add?action=add',
+                url: '/cart/add?action=set',
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(cart),
                 success: function (data) {

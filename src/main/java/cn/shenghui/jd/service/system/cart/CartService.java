@@ -5,8 +5,11 @@ import cn.shenghui.jd.dao.system.cart.mapper.CartMapper;
 import cn.shenghui.jd.dao.system.cart.model.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+
+import static cn.shenghui.jd.constants.system.cart.CartConstants.CART_ADD;
 
 /**
  * @author shenghui
@@ -41,9 +44,14 @@ public class CartService {
      * @param num          用户选择的数量
      * @param availableNum 商品可用库存数量
      */
-    public boolean addToCart(String userId, String productId, int num, int availableNum) {
-        int productNum = cartMapper.getProductNumFromCart(userId, productId);
-        if (productNum != 0) {
+    public boolean addToCart(String userId, String productId, int num, int availableNum, String action) {
+        int productNum = 0;
+        CartProduct product = this.getProductFromCart(userId, productId);
+        if (!ObjectUtils.isEmpty(product)){
+            productNum = product.getProductNum();
+        }
+
+        if (CART_ADD.equals(action) && productNum != 0){
             num = productNum + num;
         }
 
@@ -64,13 +72,24 @@ public class CartService {
     }
 
     /**
+     * 根据商品ID获得该用户选购的商品数量
+     *
+     * @param userId    用户ID
+     * @param productId 商品ID
+     * @return 商品信息
+     */
+    public CartProduct getProductFromCart(String userId, String productId) {
+        return cartMapper.getProductFromCart(userId, productId);
+    }
+
+    /**
      * 设置购物车中单个商品的数量
      *
      * @param userId     用户ID
      * @param productId  商品ID
      * @param productNum 选购的商品数量
      */
-    public void setProductNumOfCart(String userId, String productId, int productNum) {
+    private void setProductNumOfCart(String userId, String productId, int productNum) {
         cartMapper.setProductNumOfCart(userId, productId, productNum);
     }
 
