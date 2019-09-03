@@ -7,6 +7,7 @@ import cn.shenghui.jd.restHttp.system.cart.response.CartBasicResponse;
 import cn.shenghui.jd.restHttp.system.cart.response.CartResponse;
 import cn.shenghui.jd.service.system.cart.CartService;
 import cn.shenghui.jd.service.system.product.ProductService;
+import cn.shenghui.jd.utils.CurrentUserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,18 @@ public class CartController {
     }
 
     /**
+     * 购物车页面
+     *
+     * @return 页面
+     */
+    @RequestMapping("")
+    public ModelAndView cartPage() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("system/cart/cart");
+        return mv;
+    }
+
+    /**
      * 根据用户ID获得其购物车中所有商品信息
      *
      * @param userId 用户ID
@@ -67,13 +81,14 @@ public class CartController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public CartBasicResponse addCategory(Cart cart) {
+    public CartBasicResponse addCategory(@RequestBody Cart cart) {
         CartBasicResponse response = new CartBasicResponse();
         List<String> productIds = new ArrayList<>();
         productIds.add(cart.getProductId());
         List<Product> products = productService.getProductsByIds(productIds);
         if(!ObjectUtils.isEmpty(products)){
             int availableNum = productService.getProductsByIds(productIds).get(0).getAvailableNum();
+            cart.setUserId(CurrentUserUtils.getUserName());
             boolean check = cartService.addToCart(cart.getUserId(), cart.getProductId(),
                     cart.getProductNum(), availableNum);
             if (!check) {

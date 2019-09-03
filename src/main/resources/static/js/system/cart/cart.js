@@ -1,0 +1,126 @@
+layui.use(['form', 'table', 'layer'], function () {
+    var form = layui.form
+        , layer = layui.layer
+        , $ = layui.$
+        , table = layui.table
+    ;
+    form.render();
+
+    table.render({
+        elem: '#cart'
+        , url: '/product/list'
+        , where: {userId: $("#userId").val()}
+        , response: {
+            statusName: 'statusCode' //规定数据状态的字段名称，默认：code
+            , statusCode: 1 //规定成功的状态码，默认：0
+            , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+        }
+        , parseData: function (res) { //res 即为原始返回的数据
+            return {
+                "statusCode": res.statusCode,
+                "count": res.total, //解析数据长度
+                "data": res.products,
+                "msg": res.msg
+            }
+        }
+        , toolbar: '#toolbar'
+        , cols: [[
+            {type: 'checkbox', fixed: 'left'}
+            , {field: 'productId', title: '商品ID'}
+            , {field: 'productName', title: '商品名称'}
+            , {field: 'categoryName', title: '商品种类'}
+            , {field: 'availableNum', title: '可用数量'}
+            , {field: 'frozenNum', title: '冻结数量'}
+            , {field: 'unitPrice', title: '单位价格'}
+            , {field: 'productStatus', title: '商品状态'}
+            , {field: 'startTime', title: '上架时间'}
+            , {field: 'endTime', title: '下架时间'}
+            , {field: 'description', title: '商品描述'}
+            , {title: '操作', align: 'center', width: 250, toolbar: '#operation'}
+        ]]
+        , id: 'cart'
+        , page: true
+        , limit: 10
+    });
+
+    $('#exit').on('click', function () {
+        window.close();
+    });
+
+    table.on('toolbar(type)', function (obj) {
+        var data = table.checkStatus(obj.config.id).data;
+        var productIds = [];
+        var productStatusUp = false;
+        var productStatusDown = false;
+        for (var i in data) {
+            if (data.hasOwnProperty(i)) {
+                productIds.push(data[i].productId);
+                if ("up" === data[i].productStatus) {
+                    productStatusUp = true;
+                } else if (null === data[i].productStatus || "down" === data[i].productStatus) {
+                    productStatusDown = true;
+                }
+            }
+        }
+        if (obj.event === 'productUp') {
+            layer.confirm('上架选中商品,确定上架?'
+                , {icon: 0, title: '上架'}, function (index) {
+                    if (productStatusUp) {
+                        layer.msg("部分选中的商品已上架，请重新勾选。");
+                    } else {
+                        var action = '/product/setProductStatus?productStatus=up';
+                        $.ajax({
+                            type: 'POST',
+                            url: action,
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(productIds),
+                            success: function (data) {
+                                if (data.statusCode === 1) {
+                                    layer.msg("上架成功");
+                                    layer.close(index);
+                                    $('#search').click();
+                                } else {
+                                    layer.msg("上架失败");
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    }
+                });
+        }
+    });
+
+    table.on('tool(type)', function (obj) {
+        var productId = obj.data.productId;
+        var layEvent = obj.event;
+        if (layEvent === 'edit') { //编辑
+            layer.open({
+                type: 2,
+                content: '/product/updateProduct?productId=' + productId,
+                area: ['600px', '500px'],
+                closeBtn: 2,
+                shadeClose: true,
+                title: '更新商品信息'
+            });
+        } else if (layEvent === 'del') {//删除
+            layer.confirm('确认将这个宝贝删除?'
+                , {icon: 0, title: '删除'}, function (index) {
+                    var action = '/product/removeProduct?productId=' + productId;
+                    $.ajax({
+                        type: 'POST',
+                        url: action,
+                        success: function (data) {
+                            if (data.statusCode === 1) {
+                                layer.msg("删除成功");
+                                layer.close(index);
+                                $('#search').click();
+                            } else {
+                                layer.msg("删除失败");
+                            }
+                        }
+                    });
+                    layer.close(index);
+                },{icon: 1, title: '我再想想'});
+        }
+    });
+});

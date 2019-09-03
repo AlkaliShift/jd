@@ -78,4 +78,20 @@ public interface ProductMapper {
      * @return 行数
      */
     int countProduct();
+
+    /**
+     * 模糊查询商品信息，若搜索内容为空，则返回所有商品信息列表（用户页）
+     *
+     * @param content 搜索内容
+     * @return 商品列表
+     */
+    List<ProductDetails> getProductListUser(@Param("content") String content);
+
+    /**
+     * 根据商品ID商品信息（用户页）
+     *
+     * @param productIds 商品ID集
+     * @return 商品列表
+     */
+    List<ProductDetails> getProductsByIdsUser(@Param("productIds") List<String> productIds);
 }

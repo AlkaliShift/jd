@@ -75,6 +75,7 @@ public class ProductController {
     /**
      * 更新商品页面
      *
+     * @param productId 商品ID
      * @return 页面
      */
     @RequestMapping("/updateProduct")
@@ -84,7 +85,7 @@ public class ProductController {
         productIds.add(productId);
         List<Product> products = productService.getProductsByIds(productIds);
         if (!ObjectUtils.isEmpty(products)) {
-            mv.addObject("product", productService.getProductsByIds(productIds).get(0));
+            mv.addObject("product", products.get(0));
         }
         mv.setViewName("system/product/updateProduct");
         return mv;
@@ -94,6 +95,8 @@ public class ProductController {
      * 模糊查询商品信息，若搜索内容为空，则返回所有商品信息列表
      *
      * @param content 搜索内容
+     * @param page    页数
+     * @param limit   每页条数
      * @return 匹配的商品列表和状态码：1
      */
     @ApiOperation(value = "获取商品列表", notes = "状态码1:搜索成功")
@@ -202,5 +205,47 @@ public class ProductController {
             product.setUnitPrice(initial);
         }
         return availableNum < 0 || frozenNum < 0 || initial.compareTo(unitPrice) >= 1;
+    }
+
+    /**
+     * 模糊查询商品信息，若搜索内容为空，则返回所有商品信息列表（用户页）
+     *
+     * @param content 搜索内容
+     * @param page    页数
+     * @param limit   每页条数
+     * @return 匹配的商品列表和状态码：1
+     */
+    @ApiOperation(value = "获取商品列表", notes = "状态码1:搜索成功")
+    @RequestMapping(value = "/listUser")
+    @ResponseBody
+    public ProductResponse getProductListUser(@RequestParam("content") String content,
+                                              @RequestParam(name = "page") int page,
+                                              @RequestParam(name = "limit") int limit) {
+        ProductResponse response = new ProductResponse();
+        PageInfo<ProductDetails> pages = productService.getProductListUser(content, page, limit);
+        response.setProducts(pages.getList());
+        response.setTotal(pages.getTotal());
+        response.setStatusCode(1);
+        return response;
+    }
+
+    /**
+     * 根据商品ID查找商品信息
+     *
+     * @param productId 商品ID
+     * @return 带商品信息的页面页面
+     */
+    @RequestMapping("/productCart")
+    public ModelAndView productCartPage(@RequestParam(name = "productId") String productId) {
+        ModelAndView mv = new ModelAndView();
+        List<String> productIds = new ArrayList<>();
+        productIds.add(productId);
+        List<ProductDetails> products = productService.getProductsByIdsUser(productIds);
+
+        if (!ObjectUtils.isEmpty(products)) {
+            mv.addObject("product", products.get(0));
+        }
+        mv.setViewName("system/product/addToCart");
+        return mv;
     }
 }

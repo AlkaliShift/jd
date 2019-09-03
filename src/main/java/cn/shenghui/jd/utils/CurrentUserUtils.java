@@ -18,4 +18,9 @@ public class CurrentUserUtils {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userDetails.getUsername();
     }
+
+    public static Object[] getUserRole(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDetails.getAuthorities().toArray();
+    }
 }

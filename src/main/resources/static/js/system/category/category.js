@@ -24,7 +24,7 @@ layui.use(['form', 'table', 'layer'], function () {
         }
         , cols: [[
             {field: 'categoryId', title: '商品种类ID'}
-            , {field: 'categoryName', title: '商品种类名称'}
+            , {field: 'categoryName', title: '商品种类'}
             , {field: 'warehouseId', title: '仓库ID'}
             , {title: '操作', align: 'center', width: 250, toolbar: '#operation'}
         ]]

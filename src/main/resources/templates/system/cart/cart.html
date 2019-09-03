@@ -1,10 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="zh"
+>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Cart</title>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <script th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script th:src="@{/js/system/cart/cart.js}" charset="utf-8"></script>
+    <script type="text/html" id="operation">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">修改数量</a>
+        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+    </script>
 </head>
+
 <body>
+<div class="layui-form">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <button id="exit" class="layui-btn layui-btn-warm">退出购物车</button>
+        </div>
+    </div>
+</div>
+
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>购物车</legend>
+</fieldset>
+
+<table class="layui-hide" id="cart" lay-filter="type"></table>
+
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="productDown">批量删除商品</button>
+    </div>
+</script>
 
 </body>
 </html>

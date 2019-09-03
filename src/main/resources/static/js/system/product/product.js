@@ -28,7 +28,7 @@ layui.use(['form', 'table', 'layer'], function () {
             {type: 'checkbox', fixed: 'left'}
             , {field: 'productId', title: '商品ID'}
             , {field: 'productName', title: '商品名称'}
-            , {field: 'categoryName', title: '商品种类名称'}
+            , {field: 'categoryName', title: '商品种类'}
             , {field: 'availableNum', title: '可用数量'}
             , {field: 'frozenNum', title: '冻结数量'}
             , {field: 'unitPrice', title: '单位价格'}

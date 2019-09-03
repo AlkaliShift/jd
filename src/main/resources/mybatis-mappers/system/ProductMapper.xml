@@ -17,18 +17,18 @@
     </resultMap>
 
     <select id="getProductList" parameterType="java.lang.String" resultMap="productResult">
-        select * from product p join category c where p.del_flag = 0 and p.category_id = c.category_id
+        select * from product p inner join category c on p.category_id = c.category_id where p.del_flag = 0
         <if test="content != null and content != ''">
-            and p.product_id like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or p.product_name like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or c.category_name like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or p.available_num like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or p.frozen_num like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or p.unit_price like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or p.product_status like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or p.start_time like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or p.end_time like concat('%', #{content,jdbcType=VARCHAR} '%')
-            or p.description like concat('%', #{content,jdbcType=VARCHAR} '%')
+            and (p.product_id like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or p.product_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or c.category_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or p.available_num like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or p.frozen_num like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or p.unit_price like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or p.product_status like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or p.start_time like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or p.end_time like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or p.description like concat('%', #{content,jdbcType=VARCHAR}, '%'))
         </if>
         order by LENGTH(product_id) ASC
     </select>
@@ -88,5 +88,24 @@
     <select id="countProduct" resultType="int">
         select count(*)
         from product;
+    </select>
+
+    <select id="getProductListUser" parameterType="java.lang.String" resultMap="productResult">
+        select * from product p inner join category c on p.category_id = c.category_id where p.del_flag = 0
+        <if test="content != null and content != ''">
+            and (p.product_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or c.category_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or p.available_num like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or p.unit_price like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            or p.description like concat('%', #{content,jdbcType=VARCHAR}, '%'))
+        </if>
+        order by LENGTH(product_id) ASC
+    </select>
+
+    <select id="getProductsByIdsUser" parameterType="java.util.List" resultMap="productResult">
+        select p.product_id, p.product_name, c.category_name, p.available_num, p.unit_price from product p inner join
+        category c on p.category_id = c.category_id where p.del_flag = 0
+        and product_id in
+        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
     </select>
 </mapper>

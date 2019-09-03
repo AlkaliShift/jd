@@ -43,7 +43,7 @@ public class ProductService {
     /**
      * 根据商品ID批量搜索商品
      *
-     * @param productIds 商品ID
+     * @param productIds 商品ID集
      * @return 特定多件商品
      */
     public List<Product> getProductsByIds(List<String> productIds) {
@@ -92,5 +92,26 @@ public class ProductService {
      */
     public void removeProduct(String productId) {
         productMapper.removeProduct(productId);
+    }
+
+    /**
+     * 模糊查询商品信息，若搜索内容为空，则返回所有商品信息列表（用户页）
+     *
+     * @param content 搜索内容
+     * @return 商品列表
+     */
+    public PageInfo<ProductDetails> getProductListUser(String content, int page, int limit) {
+        PageHelper.startPage(page, limit);
+        return new PageInfo<>(productMapper.getProductListUser(content));
+    }
+
+    /**
+     * 根据商品ID批量搜索商品（用户页）
+     *
+     * @param productIds 商品ID集
+     * @return 商品信息
+     */
+    public List<ProductDetails> getProductsByIdsUser(List<String> productIds) {
+        return productMapper.getProductsByIdsUser(productIds);
     }
 }
