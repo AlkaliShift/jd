@@ -1,5 +1,6 @@
 package cn.shenghui.jd.dao.system.product.mapper;
 
+import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.product.dto.ProductDetails;
 import cn.shenghui.jd.dao.system.product.model.Product;
 import org.apache.ibatis.annotations.Mapper;
@@ -94,4 +95,13 @@ public interface ProductMapper {
      * @return 商品列表
      */
     List<ProductDetails> getProductsByIdsUser(@Param("productIds") List<String> productIds);
+
+    /**
+     * 获取详细商品信息列表
+     *
+     * @param userId     用户ID
+     * @param productIds 商品ID集
+     * @return 商品信息列表
+     */
+    List<OrderProduct> getProductDetails(@Param("userId") String userId, @Param("productIds") List<String> productIds);
 }

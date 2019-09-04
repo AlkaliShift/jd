@@ -1,5 +1,6 @@
 package cn.shenghui.jd.service.system.product;
 
+import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.product.dto.ProductDetails;
 import cn.shenghui.jd.dao.system.product.mapper.ProductMapper;
 import cn.shenghui.jd.dao.system.product.model.Product;
@@ -113,5 +114,16 @@ public class ProductService {
      */
     public List<ProductDetails> getProductsByIdsUser(List<String> productIds) {
         return productMapper.getProductsByIdsUser(productIds);
+    }
+
+    /**
+     * 获取详细商品信息
+     *
+     * @param userId     用户ID
+     * @param productIds 商品ID集
+     * @return 详细商品信息列表
+     */
+    public List<OrderProduct> getProductDetails(String userId, List<String> productIds) {
+        return productMapper.getProductDetails(userId, productIds);
     }
 }

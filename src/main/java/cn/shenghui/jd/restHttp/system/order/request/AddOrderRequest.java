@@ -15,19 +15,9 @@ import java.util.List;
 public class AddOrderRequest {
 
     /**
-     * 用户ID
+     * 商品ID集
      */
-    String userId;
-
-    /**
-     * 商品集
-     */
-    List<Product> products;
-
-    /**
-     * 总价
-     */
-    BigDecimal totalPrice;
+    List<String> productIds;
 
     /**
      * 收货地址

@@ -1,9 +1,13 @@
 package cn.shenghui.jd.controller.system.order;
 
+import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.restHttp.system.order.request.AddOrderRequest;
 import cn.shenghui.jd.restHttp.system.order.response.OrderBasicResponse;
 import cn.shenghui.jd.restHttp.system.order.response.OrderResponse;
+import cn.shenghui.jd.service.system.cart.CartService;
 import cn.shenghui.jd.service.system.order.OrderService;
+import cn.shenghui.jd.service.system.product.ProductService;
+import cn.shenghui.jd.utils.CurrentUserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 /**
  * @author shenghui
@@ -23,21 +29,35 @@ import org.springframework.web.servlet.ModelAndView;
 public class OrderController {
 
     private OrderService orderService;
+    private ProductService productService;
+    private CartService cartService;
 
     @Autowired
     public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
     }
 
+    @Autowired
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+
+    @Autowired
+    public void setCartService(CartService cartService) {
+        this.cartService = cartService;
+    }
+
     /**
      * 订单列表页
      *
+     * @param productIds 商品ID集
      * @return 页面
      */
-    @RequestMapping("")
-    public ModelAndView orderPage() {
+    @RequestMapping(value = "")
+    public ModelAndView orderPage(@RequestParam("productIds") List<String> productIds) {
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("system/order/order");
+        mv.addObject("productIds", productIds);
+        mv.setViewName("system/order/orderCart");
         return mv;
     }
 
@@ -69,8 +89,8 @@ public class OrderController {
     @Transactional(rollbackFor = Exception.class)
     public OrderBasicResponse addOrder(@RequestBody AddOrderRequest addOrderRequest) {
         OrderBasicResponse response = new OrderBasicResponse();
-        orderService.addOrder(addOrderRequest.getUserId(), addOrderRequest.getProducts(),
-                addOrderRequest.getTotalPrice(), addOrderRequest.getAddress());
+        List<OrderProduct> orderProducts = productService.getProductDetails(CurrentUserUtils.getUserName(), addOrderRequest.getProductIds());
+        orderService.addOrder(CurrentUserUtils.getUserName(), orderProducts, addOrderRequest.getAddress());
         response.setStatusCode(1);
         return response;
     }

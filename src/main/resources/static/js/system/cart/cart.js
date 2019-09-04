@@ -32,8 +32,7 @@ layui.use(['form', 'table', 'layer'], function () {
             , {title: '操作', align: 'center', width: 250, toolbar: '#operation'}
         ]]
         , id: 'cart'
-        , page: true
-        , limit: 10
+        , page: false
     });
 
     var active = {
@@ -59,26 +58,43 @@ layui.use(['form', 'table', 'layer'], function () {
             }
         }
         if (obj.event === 'del') {
-            layer.confirm('删除选中商品,确定删除?'
-                , {icon: 0, title: '删除'}, function (index) {
-                    var action = '/cart/delete';
-                    $.ajax({
-                        type: 'POST',
-                        url: action,
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify(productIds),
-                        success: function (data) {
-                            if (data.statusCode === 1) {
-                                layer.msg("删除成功");
-                                layer.close(index);
-                                active['reload'].call(this);
-                            } else {
-                                layer.msg("删除失败");
+            if (productIds.length > 0) {
+                layer.confirm('删除选中商品,确定删除?'
+                    , {icon: 0, title: '删除'}, function (index) {
+                        var action = '/cart/delete';
+                        $.ajax({
+                            type: 'POST',
+                            url: action,
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(productIds),
+                            success: function (data) {
+                                if (data.statusCode === 1) {
+                                    layer.msg("删除成功");
+                                    layer.close(index);
+                                    active['reload'].call(this);
+                                } else {
+                                    layer.msg("删除失败");
+                                }
                             }
-                        }
+                        });
+                        layer.close(index);
                     });
-                    layer.close(index);
+            } else {
+                layer.msg("请选择需删除的商品。");
+            }
+        } else if (obj.event === 'order') {
+            if (productIds.length > 0) {
+                layer.open({
+                    type: 2,
+                    content: '/order?productIds=' + productIds,
+                    area: ['600px', '500px'],
+                    closeBtn: 2,
+                    shadeClose: true,
+                    title: '结算信息'
                 });
+            } else {
+                layer.msg("请选择需结算的商品。");
+            }
         }
     });
 

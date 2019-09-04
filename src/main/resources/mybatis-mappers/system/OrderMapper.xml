@@ -14,24 +14,32 @@
     </resultMap>
 
     <select id="getOrderList" parameterType="java.lang.String" resultMap="orderResult">
-        select * from order where user_id = #{userId,jdbcType=VARCHAR};
+        select *
+        from `order`
+        where user_id = #{userId,jdbcType=VARCHAR};
     </select>
 
     <insert id="addOrder" parameterType="cn.shenghui.jd.dao.system.order.model.Order">
-        insert into order values
-        (#{orderId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{orderPid,jdbcType=VARCHAR},
-         #{totalPrice,jdbcType=DECIMAL}, #{orderStatus,jdbcType=VARCHAR}, #{orderTime,jdbcType=VARCHAR},
-         #{arrivalTime,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 0);
+        insert into `order`
+        values (#{orderId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{orderPid,jdbcType=VARCHAR},
+                #{totalPrice,jdbcType=DECIMAL}, #{orderStatus,jdbcType=VARCHAR}, #{orderTime,jdbcType=VARCHAR},
+                #{arrivalTime,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 0);
     </insert>
 
     <insert id="addOrderDetails" parameterType="cn.shenghui.jd.dao.system.order.model.OrderDetails">
-        insert into orderDetails values
-        (#{orderId,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{productNum,jdbcType=INTEGER},
-         #{unitPrice,jdbcType=DECIMAL}, #{description,jdbcType=VARCHAR});
+        insert into order_details
+        values (#{orderId,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
+                #{productNum,jdbcType=INTEGER}, #{unitPrice,jdbcType=DECIMAL}, #{description,jdbcType=VARCHAR});
     </insert>
 
     <update id="updateOrderStatus">
-        update order set order_status = #{orderStatus,jdbcType=VARCHAR}
+        update `order`
+        set order_status = #{orderStatus,jdbcType=VARCHAR}
         where order_id = #{orderId,jdbcType=VARCHAR};
     </update>
+
+    <select id="countOrder" resultType="int">
+        select count(*)
+        from `order`;
+    </select>
 </mapper>

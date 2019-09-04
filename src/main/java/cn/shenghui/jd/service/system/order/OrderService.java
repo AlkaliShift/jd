@@ -1,5 +1,7 @@
 package cn.shenghui.jd.service.system.order;
 
+import cn.shenghui.jd.dao.system.cart.dto.CartProduct;
+import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.order.mapper.OrderMapper;
 import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.dao.system.order.model.OrderDetails;
@@ -19,7 +21,6 @@ import java.util.List;
 @Service
 public class OrderService {
     private OrderMapper orderMapper;
-    private static int ID = 0;
 
     @Autowired
     public void setOrderMapper(OrderMapper orderMapper) {
@@ -39,21 +40,19 @@ public class OrderService {
     /**
      * 增加一个订单
      *
-     * @param userId     用户ID
-     * @param products   商品集
-     * @param totalPrice 订单总价
-     * @param address    收货地址
+     * @param userId        用户ID
+     * @param orderProducts 详细商品信息集
+     * @param address       收货地址
      */
-    public void addOrder(String userId, List<Product> products, BigDecimal totalPrice, String address) {
+    public void addOrder(String userId, List<OrderProduct> orderProducts, String address) {
         Order order = new Order();
         String orderTime = new Date() + "";
-        ID = ID + 1;
-        String orderId = orderTime + "-" + ID;
+        String orderId = orderTime.replaceAll(" ", "-") + "-" + (orderMapper.countOrder() + 1);
         order.setOrderId(orderId);
         order.setUserId(userId);
         order.setOrderPid("");
-        order.setTotalPrice(totalPrice);
         order.setOrderTime(orderTime);
+        order.setArrivalTime("");
         order.setAddress(address);
         order.setOrderStatus("0");
         orderMapper.addOrder(order);

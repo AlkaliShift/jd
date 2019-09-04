@@ -1,5 +1,6 @@
 package cn.shenghui.jd.dao.system.order.mapper;
 
+import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.dao.system.order.model.OrderDetails;
 import org.apache.ibatis.annotations.Mapper;
@@ -44,4 +45,11 @@ public interface OrderMapper {
      * @param orderDetails 订单详细信息
      */
     void addOrderDetails(OrderDetails orderDetails);
+
+    /**
+     * 获得订单表行数
+     *
+     * @return 行数
+     */
+    int countOrder();
 }

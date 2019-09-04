@@ -42,8 +42,7 @@ layui.use(['form', 'table', 'layer'], function () {
         , page: true
         , limit: 10
     });
-
-
+    
     var active = {
         reload: function () {
             table.reload('products', {

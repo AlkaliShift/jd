@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static cn.shenghui.jd.constants.system.cart.CartConstants.CART_ADD;
@@ -46,12 +47,14 @@ public class CartService {
      */
     public boolean addToCart(String userId, String productId, int num, int availableNum, String action) {
         int productNum = 0;
-        CartProduct product = this.getProductFromCart(userId, productId);
-        if (!ObjectUtils.isEmpty(product)){
-            productNum = product.getProductNum();
+        List<String> productIds = new ArrayList<>();
+        productIds.add(productId);
+        List<CartProduct> products = this.getProductFromCart(userId, productIds);
+        if (!ObjectUtils.isEmpty(products)) {
+            productNum = products.get(0).getProductNum();
         }
 
-        if (CART_ADD.equals(action) && productNum != 0){
+        if (CART_ADD.equals(action) && productNum != 0) {
             num = productNum + num;
         }
 
@@ -74,12 +77,12 @@ public class CartService {
     /**
      * 根据商品ID获得该用户选购的商品数量
      *
-     * @param userId    用户ID
-     * @param productId 商品ID
+     * @param userId     用户ID
+     * @param productIds 商品ID集
      * @return 商品信息
      */
-    public CartProduct getProductFromCart(String userId, String productId) {
-        return cartMapper.getProductFromCart(userId, productId);
+    public List<CartProduct> getProductFromCart(String userId, List<String> productIds) {
+        return cartMapper.getProductFromCart(userId, productIds);
     }
 
     /**

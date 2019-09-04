@@ -26,11 +26,11 @@ public interface CartMapper {
     /**
      * 根据商品ID获得该用户选购的商品数量
      *
-     * @param userId    用户ID
-     * @param productId 商品ID
+     * @param userId     用户ID
+     * @param productIds 商品ID集
      * @return 商品信息
      */
-    CartProduct getProductFromCart(@Param("userId") String userId, @Param("productId") String productId);
+    List<CartProduct> getProductFromCart(@Param("userId") String userId, @Param("productIds") List<String> productIds);
 
     /**
      * 修改购物车中某种商品的数量

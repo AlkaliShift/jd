@@ -13,11 +13,6 @@ import java.math.BigDecimal;
 public class CartProduct {
 
     /**
-     * 用户ID
-     */
-    String userId;
-
-    /**
      * 产品ID
      */
     String productId;

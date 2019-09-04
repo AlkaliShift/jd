@@ -1,5 +1,6 @@
 package cn.shenghui.jd.controller.system.cart;
 
+import cn.shenghui.jd.dao.system.cart.dto.CartProduct;
 import cn.shenghui.jd.dao.system.cart.model.Cart;
 import cn.shenghui.jd.dao.system.product.model.Product;
 import cn.shenghui.jd.restHttp.system.cart.response.CartBasicResponse;
@@ -63,7 +64,13 @@ public class CartController {
     @RequestMapping("/updateCart")
     public ModelAndView setProductNumPage(@RequestParam("productId") String productId) {
         ModelAndView mv = new ModelAndView();
-        mv.addObject("product", cartService.getProductFromCart(CurrentUserUtils.getUserName(), productId));
+        List<String> productIds = new ArrayList<>();
+        productIds.add(productId);
+
+        List<CartProduct> products = cartService.getProductFromCart(CurrentUserUtils.getUserName(), productIds);
+        if (!ObjectUtils.isEmpty(products)){
+            mv.addObject("product", products.get(0));
+        }
         mv.setViewName("system/cart/updateCart");
         return mv;
     }
@@ -79,6 +86,21 @@ public class CartController {
     public CartResponse getCartList() {
         CartResponse response = new CartResponse();
         response.setCartProducts(cartService.getCartList(CurrentUserUtils.getUserName()));
+        response.setStatusCode(1);
+        return response;
+    }
+
+    /**
+     * 根据用户ID和商品ID获得商品信息
+     *
+     * @return 商品信息列表和状态码：1
+     */
+    @ApiOperation(value = "根据用户ID和商品ID获得商品信息", notes = "状态码1:查询成功")
+    @RequestMapping(value = "/listProduct")
+    @ResponseBody
+    public CartResponse getCartListProduct(@RequestParam("productIds") List<String> productIds) {
+        CartResponse response = new CartResponse();
+        response.setCartProducts(cartService.getProductFromCart(CurrentUserUtils.getUserName(), productIds));
         response.setStatusCode(1);
         return response;
     }
