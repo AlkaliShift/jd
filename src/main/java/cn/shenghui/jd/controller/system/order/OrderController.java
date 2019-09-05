@@ -1,7 +1,9 @@
 package cn.shenghui.jd.controller.system.order;
 
+import cn.shenghui.jd.dao.system.order.dto.IfSufficient;
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.restHttp.system.order.request.AddOrderRequest;
+import cn.shenghui.jd.restHttp.system.order.response.AddOrderResponse;
 import cn.shenghui.jd.restHttp.system.order.response.OrderBasicResponse;
 import cn.shenghui.jd.restHttp.system.order.response.OrderResponse;
 import cn.shenghui.jd.service.system.cart.CartService;
@@ -13,9 +15,11 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,13 +52,25 @@ public class OrderController {
     }
 
     /**
-     * 订单列表页
+     * 返回所有订单列表页
+     *
+     * @return 页面
+     */
+    @RequestMapping(value = "")
+    public ModelAndView orderPage() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("system/order/order");
+        return mv;
+    }
+
+    /**
+     * 购物车中订单列表页
      *
      * @param productIds 商品ID集
      * @return 页面
      */
-    @RequestMapping(value = "")
-    public ModelAndView orderPage(@RequestParam("productIds") List<String> productIds) {
+    @RequestMapping(value = "/orderCart")
+    public ModelAndView orderCartPage(@RequestParam("productIds") List<String> productIds) {
         ModelAndView mv = new ModelAndView();
         mv.addObject("productIds", productIds);
         mv.setViewName("system/order/orderCart");
@@ -87,11 +103,28 @@ public class OrderController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public OrderBasicResponse addOrder(@RequestBody AddOrderRequest addOrderRequest) {
-        OrderBasicResponse response = new OrderBasicResponse();
+    public AddOrderResponse addOrder(@RequestBody AddOrderRequest addOrderRequest) {
+        AddOrderResponse response = new AddOrderResponse();
         List<OrderProduct> orderProducts = productService.getProductDetails(CurrentUserUtils.getUserName(), addOrderRequest.getProductIds());
-        orderService.addOrder(CurrentUserUtils.getUserName(), orderProducts, addOrderRequest.getAddress());
-        response.setStatusCode(1);
+        if (ObjectUtils.isEmpty(orderProducts)) {
+            response.setStatusInfo(0, "查找不到该商品。");
+        } else {
+            IfSufficient ifSufficient = orderService.ifSufficient(orderProducts);
+            if (ifSufficient.getInsufficientProducts().size() > 0) {
+                response.setInsufficientProducts(ifSufficient.getInsufficientProducts());
+            }
+
+            if (ifSufficient.getSufficientProducts().size() > 0) {
+                productService.freezeNum(ifSufficient.getSufficientProducts());
+                orderService.addOrder(CurrentUserUtils.getUserName(), ifSufficient.getSufficientProducts(), addOrderRequest.getAddress());
+                List<String> productIds = new ArrayList<>();
+                for (OrderProduct product : ifSufficient.getSufficientProducts()) {
+                    productIds.add(product.getProductId());
+                }
+                cartService.deleteProducts(CurrentUserUtils.getUserName(), productIds);
+            }
+            response.setStatusCode(1);
+        }
         return response;
     }
 

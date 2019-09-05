@@ -26,7 +26,7 @@ layui.use(['form', 'table', 'layer'], function () {
         , cols: [[
             {field: 'productName', title: '商品名称'}
             , {field: 'categoryName', title: '商品种类'}
-            , {field: 'availableNum', title: '可用数量'}
+            , {field: 'availableNum', title: '库存数量'}
             , {field: 'unitPrice', title: '单位价格'}
             , {title: '操作', align: 'center', width: 250, toolbar: '#operation'}
         ]]

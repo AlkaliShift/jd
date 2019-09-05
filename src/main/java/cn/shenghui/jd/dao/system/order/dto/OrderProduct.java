@@ -15,4 +15,9 @@ public class OrderProduct extends Product {
      * 产品数量
      */
     int productNum;
+
+    /**
+     * 仓库ID
+     */
+    String warehouseId;
 }

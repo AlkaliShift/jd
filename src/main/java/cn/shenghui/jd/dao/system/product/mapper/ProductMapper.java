@@ -83,10 +83,11 @@ public interface ProductMapper {
     /**
      * 模糊查询商品信息，若搜索内容为空，则返回所有商品信息列表（用户页）
      *
-     * @param content 搜索内容
+     * @param content       搜索内容
+     * @param productStatus 商品上架状态
      * @return 商品列表
      */
-    List<ProductDetails> getProductListUser(@Param("content") String content);
+    List<ProductDetails> getProductListUser(@Param("content") String content, @Param("productStatus") String productStatus);
 
     /**
      * 根据商品ID商品信息（用户页）
@@ -104,4 +105,11 @@ public interface ProductMapper {
      * @return 商品信息列表
      */
     List<OrderProduct> getProductDetails(@Param("userId") String userId, @Param("productIds") List<String> productIds);
+
+    /**
+     * 冻结商品库存
+     *
+     * @param product 商品详细信息
+     */
+    void freezeNum(@Param("product") OrderProduct product);
 }

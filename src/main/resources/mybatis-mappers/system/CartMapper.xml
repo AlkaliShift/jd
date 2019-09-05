@@ -6,12 +6,13 @@
         <id column="product_id" jdbcType="VARCHAR" property="productId"/>
         <result column="product_num" jdbcType="VARCHAR" property="productNum"/>
         <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="available_num" jdbcType="VARCHAR" property="availableNum"/>
         <result column="unit_price" jdbcType="DECIMAL" property="unitPrice"/>
         <result column="description" jdbcType="VARCHAR" property="description"/>
     </resultMap>
 
     <select id="getCartList" parameterType="java.lang.String" resultMap="cartResult">
-        select c.product_id, c.product_num, p.product_name, p.unit_price, p.description
+        select c.product_id, c.product_num, p.product_name, p.available_num, p.unit_price, p.description
         from cart c inner join product p on c.product_id = p.product_id
         where user_id = #{userId,jdbcType=VARCHAR};
     </select>

@@ -52,4 +52,10 @@ public interface OrderMapper {
      * @return 行数
      */
     int countOrder();
+
+    /**
+     * 获得详细订单表行数
+     * @return 行数
+     */
+    int countOrderDetails();
 }

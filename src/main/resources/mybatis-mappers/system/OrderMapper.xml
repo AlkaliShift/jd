@@ -42,4 +42,9 @@
         select count(*)
         from `order`;
     </select>
+
+    <select id="countOrderDetails" resultType="int">
+        select count(*)
+        from order_details;
+    </select>
 </mapper>

@@ -28,6 +28,7 @@ layui.use(['form', 'table'], function () {
             , {field: 'unitPrice', title: '单位价格'}
             , {field: 'description', title: '商品描述'}
             , {field: 'productNum', title: '已选数量'}
+            , {field: 'availableNum', title: '库存数量'}
             , {title: '操作', align: 'center', width: 250, toolbar: '#operation'}
         ]]
         , id: 'orderProduct'
@@ -54,7 +55,7 @@ layui.use(['form', 'table'], function () {
     $('#save').on('click', function () {
         var order = {};
         var productIds = $("#productIds").val().toString();
-        order.productIds = (productIds.substring(1, productIds.length-1)).split(",");
+        order.productIds = (productIds.substring(1, productIds.length-1)).split(", ");
         order.address = $('#address').val();
         $.ajax({
             type: 'POST',
@@ -63,7 +64,14 @@ layui.use(['form', 'table'], function () {
             data: JSON.stringify(order),
             success: function (data) {
                 if (data.statusCode === 1) {
-                    layer.msg("下单成功");
+                    var insufficientProducts = data.insufficientProducts;
+                    var productNameList = [];
+                    for (var i in insufficientProducts){
+                        if (insufficientProducts.hasOwnProperty(i)) {
+                            productNameList.push(insufficientProducts[i].productName);
+                        }
+                    }
+                    layer.msg("以下商品库存不足： " + productNameList);
                     setTimeout(function () {
                         parent.location.reload()
                     }, 1000);

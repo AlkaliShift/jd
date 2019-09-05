@@ -18,9 +18,14 @@ public class CartProduct {
     String productId;
 
     /**
-     * 产品数量
+     * 用户选择数量
      */
     int productNum;
+
+    /**
+     * 可用数量
+     */
+    int availableNum;
 
     /**
      * 商品名称

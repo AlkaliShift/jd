@@ -8,6 +8,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -103,7 +104,7 @@ public class ProductService {
      */
     public PageInfo<ProductDetails> getProductListUser(String content, int page, int limit) {
         PageHelper.startPage(page, limit);
-        return new PageInfo<>(productMapper.getProductListUser(content));
+        return new PageInfo<>(productMapper.getProductListUser(content, PRODUCT_UP));
     }
 
     /**
@@ -125,5 +126,30 @@ public class ProductService {
      */
     public List<OrderProduct> getProductDetails(String userId, List<String> productIds) {
         return productMapper.getProductDetails(userId, productIds);
+    }
+
+    /**
+     * 冻结商品库存
+     * @param products 商品详细信息
+     */
+    public void freezeNum(List<OrderProduct> products){
+        int availableNum;
+        int frozenNum;
+        for (OrderProduct product : products) {
+            frozenNum = product.getFrozenNum() + product.getProductNum();
+            availableNum = product.getAvailableNum() - product.getProductNum();
+            product.setAvailableNum(availableNum);
+            product.setFrozenNum(frozenNum);
+            this.freeze(product);
+        }
+    }
+
+    /**
+     * 冻结库存的事务管理
+     * @param orderProduct 商品详细信息
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void freeze(OrderProduct orderProduct){
+        productMapper.freezeNum(orderProduct);
     }
 }

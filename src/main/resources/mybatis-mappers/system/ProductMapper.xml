@@ -19,7 +19,6 @@
     <resultMap id="orderProductResult" type="cn.shenghui.jd.dao.system.order.dto.OrderProduct">
         <id column="product_id" jdbcType="VARCHAR" property="productId"/>
         <result column="product_name" jdbcType="VARCHAR" property="productName"/>
-        <result column="category_id" jdbcType="VARCHAR" property="categoryId"/>
         <result column="product_num" jdbcType="INTEGER" property="productNum"/>
         <result column="available_num" jdbcType="INTEGER" property="availableNum"/>
         <result column="frozen_num" jdbcType="INTEGER" property="frozenNum"/>
@@ -28,6 +27,7 @@
         <result column="start_time" jdbcType="VARCHAR" property="startTime"/>
         <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
         <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="warehouse_id" jdbcType="VARCHAR" property="warehouseId"/>
     </resultMap>
 
     <select id="getProductList" parameterType="java.lang.String" resultMap="productResult">
@@ -105,7 +105,8 @@
     </select>
 
     <select id="getProductListUser" parameterType="java.lang.String" resultMap="productResult">
-        select * from product p inner join category c on p.category_id = c.category_id where p.del_flag = 0
+        select * from product p inner join category c on p.category_id = c.category_id
+        where p.del_flag = 0 and p.product_status = #{productStatus,jdbcType=VARCHAR}
         <if test="content != null and content != ''">
             and (p.product_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
             or c.category_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
@@ -124,9 +125,16 @@
     </select>
 
     <select id="getProductDetails" resultMap="orderProductResult">
-        select c.product_num, p.product_id, p.product_name, p.category_id, p.available_num, p.frozen_num, p.unit_price,
-        p.product_status, p.start_time, p.end_time, p.description from cart c inner join product p on c.product_id = p.product_id
+        select c.product_num, p.product_id, p.product_name, p.available_num, p.frozen_num, p.unit_price,
+        p.product_status, p.start_time, p.end_time, p.description, cg.warehouse_id from (cart c inner join product p on
+        c.product_id = p.product_id) inner join category cg on p.category_id = cg.category_id
         where c.user_id = #{userId,jdbcType=VARCHAR} and c.product_id in
         <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
     </select>
+
+    <update id="freezeNum" parameterType="cn.shenghui.jd.dao.system.order.dto.OrderProduct">
+        update product
+        set available_num = #{product.availableNum,jdbcType=INTEGER}, frozen_num = #{product.frozenNum,jdbcType=INTEGER}
+        where del_flag = 0 and product_id = #{product.productId,jdbcType=VARCHAR}
+    </update>
 </mapper>

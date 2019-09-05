@@ -29,6 +29,7 @@ layui.use(['form', 'table', 'layer'], function () {
             , {field: 'unitPrice', title: '单位价格'}
             , {field: 'description', title: '商品描述'}
             , {field: 'productNum', title: '已选数量'}
+            , {field: 'availableNum', title: '库存数量'}
             , {title: '操作', align: 'center', width: 250, toolbar: '#operation'}
         ]]
         , id: 'cart'
@@ -86,8 +87,8 @@ layui.use(['form', 'table', 'layer'], function () {
             if (productIds.length > 0) {
                 layer.open({
                     type: 2,
-                    content: '/order?productIds=' + productIds,
-                    area: ['600px', '500px'],
+                    content: '/order/orderCart?productIds=' + productIds,
+                    area: ['800px', '500px'],
                     closeBtn: 2,
                     shadeClose: true,
                     title: '结算信息'

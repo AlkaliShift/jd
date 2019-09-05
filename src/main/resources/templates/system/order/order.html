@@ -1,10 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="zh"
+>
 
+<head>
+    <title>Order</title>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <script th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script th:src="@{/js/system/order/order.js}" charset="utf-8"></script>
+    <script type="text/html" id="operation">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+    </script>
+</head>
+
+<body>
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>订单查询</legend>
+</fieldset>
+
+<div class="layui-form">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">搜索</label>
+            <div class="layui-input-inline">
+                <input type="text" id="content" name="content" autocomplete="off"
+                       placeholder="请输入要搜索的内容" class="layui-input"/>
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <button id="search" data-type="reload" class="layui-btn">查询</button>
+            <button id="reset" class="layui-btn layui-btn-normal">重置</button>
+        </div>
+    </div>
+</div>
+
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>查询结果</legend>
+</fieldset>
+
+<table class="layui-hide" id="orders" lay-filter="type"></table>
 </body>
 </html>
