@@ -65,13 +65,19 @@ layui.use(['form', 'table'], function () {
             success: function (data) {
                 if (data.statusCode === 1) {
                     var insufficientProducts = data.insufficientProducts;
+                    var flag = false;
                     var productNameList = [];
                     for (var i in insufficientProducts){
                         if (insufficientProducts.hasOwnProperty(i)) {
                             productNameList.push(insufficientProducts[i].productName);
+                            flag = true;
                         }
                     }
-                    layer.msg("以下商品库存不足： " + productNameList);
+                    if (flag){
+                        layer.msg("以下商品库存不足： " + productNameList);
+                    }else{
+                        layer.msg("下单成功");
+                    }
                     setTimeout(function () {
                         parent.location.reload()
                     }, 1000);

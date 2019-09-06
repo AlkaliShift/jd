@@ -14,7 +14,7 @@ layui.use('form', function () {
                         " selected = \"selected\"" + ">" + item.warehouseName + "</option>");
                 } else {
                     //往下拉菜单里添加元素
-                    $('#warehouse-id-update').append(new Option(item.warehouseName, item.warehouseId));
+                    $('#category-warehouse-id-update').append(new Option(item.warehouseName, item.warehouseId));
                 }
             });
             //菜单渲染 把内容加载进去
