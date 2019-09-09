@@ -5,6 +5,7 @@ import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.dao.system.order.model.OrderDetails;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
@@ -17,12 +18,21 @@ import java.util.List;
 public interface OrderMapper {
 
     /**
-     * 根据用户ID查找订单列表
+     * 模糊查询订单信息，若搜索内容为空，用户为空，则返回所有用户订单
      *
-     * @param userId 用户ID
+     * @param content 搜索内容
+     * @param userId  用户ID
      * @return 订单列表
      */
-    List<Order> getOrderList(@Param("userId") String userId);
+    List<Order> getOrderList(@Param("content") String content, @Param("userId") String userId);
+
+    /**
+     * 根据订单ID查找订单
+     *
+     * @param orderId 订单ID
+     * @return 订单信息
+     */
+    Order getOrder(@Param("orderId") String orderId);
 
     /**
      * 增加单个订单
@@ -55,7 +65,25 @@ public interface OrderMapper {
 
     /**
      * 获得详细订单表行数
+     *
      * @return 行数
      */
     int countOrderDetails();
+
+    /**
+     * 判断该订单是否有子订单
+     *
+     * @param orderId 订单ID
+     * @return 子订单数
+     */
+    int ifParent(@Param("orderId") String orderId);
+
+    /**
+     * 判断该订单的子订单是否全部处于给定状态
+     *
+     * @param orderPid    主订单ID
+     * @param orderStatus 订单状态
+     * @return 未完成子订单数
+     */
+    int ifAllThisStatus(@Param("orderPid") String orderPid, @Param("orderStatus") String orderStatus);
 }

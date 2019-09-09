@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang = "zh"
+>
+
+<head>
+    <title>Update order status</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <script th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script th:src="@{/js/system/order/updateOrderStatus.js}" charset="utf-8"></script>
+</head>
+
+<body>
+<div id="type" class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">订单ID</label>
+        <div class="layui-input-inline">
+            <input type="text" id="orderId" th:value="${orderId}" readonly="readonly" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">订单状态</label>
+        <div class="layui-input-inline">
+            <select id="orderStatus" lay-verify="" lay-search>
+                <option value="ordered">已下单</option>
+                <option value="delivered">已发货</option>
+                <option value="completed">订单完成</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="save">保存</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

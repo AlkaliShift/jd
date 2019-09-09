@@ -2,6 +2,7 @@ package cn.shenghui.jd.controller.system.order;
 
 import cn.shenghui.jd.dao.system.order.dto.IfSufficient;
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
+import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.restHttp.system.order.request.AddOrderRequest;
 import cn.shenghui.jd.restHttp.system.order.response.AddOrderResponse;
 import cn.shenghui.jd.restHttp.system.order.response.OrderBasicResponse;
@@ -21,6 +22,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static cn.shenghui.jd.constants.system.order.OrderConstants.*;
 
 /**
  * @author shenghui
@@ -78,17 +81,59 @@ public class OrderController {
     }
 
     /**
-     * 根据用户ID查找订单列表
+     * 修改订单状态页
      *
-     * @param userId 用户ID
-     * @return 状态码：1
+     * @param orderId 订单ID
+     * @return 页面
      */
-    @ApiOperation(value = "根据用户ID查找订单列表", notes = "状态码1:查询成功")
+    @RequestMapping(value = "/updateOrderStatus")
+    public ModelAndView updateOrderStatusPage(@RequestParam("orderId") String orderId) {
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("orderId", orderId);
+        mv.setViewName("system/order/updateOrderStatus");
+        return mv;
+    }
+
+    /**
+     * 订单页面（用户）
+     *
+     * @return 页面
+     */
+    @RequestMapping(value = "/orderUser")
+    public ModelAndView orderUserPage() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("system/order/orderUser");
+        return mv;
+    }
+
+    /**
+     * 模糊查询订单信息，若搜索内容为空，则返回所有用户订单
+     *
+     * @param content 搜索内容
+     * @return 订单列表和状态码：1
+     */
+    @ApiOperation(value = "获取订单信息", notes = "状态码1:查询成功")
     @RequestMapping(value = "/list")
     @ResponseBody
-    public OrderResponse getOrderList(@RequestParam("userId") String userId) {
+    public OrderResponse getOrderList(@RequestParam("content") String content) {
         OrderResponse response = new OrderResponse();
-        response.setOrders(orderService.getOrderList(userId));
+        response.setOrders(orderService.getOrderList(content, ""));
+        response.setStatusCode(1);
+        return response;
+    }
+
+    /**
+     * 模糊查询订单信息，若搜索内容为空，则返回当前用户所有订单
+     *
+     * @param content 搜索内容
+     * @return 订单列表和状态码：1
+     */
+    @ApiOperation(value = "获取订单信息", notes = "状态码1:查询成功")
+    @RequestMapping(value = "/listUser")
+    @ResponseBody
+    public OrderResponse getOrderListUser(@RequestParam("content") String content) {
+        OrderResponse response = new OrderResponse();
+        response.setOrders(orderService.getOrderList(content, CurrentUserUtils.getUserName()));
         response.setStatusCode(1);
         return response;
     }
@@ -131,18 +176,61 @@ public class OrderController {
     /**
      * 修改订单状态
      *
-     * @param orderId     订单ID
-     * @param orderStatus 订单状态
+     * @param order 订单
      * @return 状态码：1
      */
     @ApiOperation(value = "修改订单状态", notes = "状态码1:修改成功")
-    @RequestMapping(value = "/updateOrderStatus", method = RequestMethod.POST)
+    @RequestMapping(value = "/setOrderStatus", method = RequestMethod.POST)
     @ResponseBody
-    public OrderBasicResponse updateOrderStatus(@RequestParam("orderId") String orderId,
-                                                @RequestParam("orderStatus") String orderStatus) {
+    public OrderBasicResponse setOrderStatus(@RequestBody Order order) {
         OrderBasicResponse response = new OrderBasicResponse();
-        orderService.updateOrderStatus(orderId, orderStatus);
-        response.setStatusCode(1);
+        String orderId = order.getOrderId();
+        String orderStatus = order.getOrderStatus();
+        Order previousOrder = orderService.getOrder(orderId);
+        if (ObjectUtils.isEmpty(previousOrder)) {
+            response.setStatusInfo(0, "找不到该订单。");
+        } else {
+            if(orderService.ifParent(orderId)){
+                response.setStatusInfo(0, "无法修改主订单状态。");
+            }else{
+                if (ORDER_STATUS_ORDERED.equals(orderStatus) || ORDER_STATUS_DELIVERED.equals(orderStatus) ||
+                        ORDER_STATUS_COMPLETED.equals(orderStatus) || ORDER_STATUS_CANCELLED.equals(orderStatus)) {
+                    String previousOrderStatus = previousOrder.getOrderStatus();
+                    if (ORDER_STATUS_COMPLETED.equals(orderStatus) && ORDER_STATUS_ORDERED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单尚未发货，请先发货。");
+                    } else if (ORDER_STATUS_COMPLETED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单已完成，无法重复确认。");
+                    } else if (ORDER_STATUS_COMPLETED.equals(orderStatus) && ORDER_STATUS_CANCELLED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单已取消，无法确认收货。");
+                    } else if (ORDER_STATUS_ORDERED.equals(orderStatus) && ORDER_STATUS_ORDERED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单已下单，无法重复下单。");
+                    } else if (ORDER_STATUS_ORDERED.equals(orderStatus) && ORDER_STATUS_DELIVERED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单已发货，无法重新下单。");
+                    } else if (ORDER_STATUS_ORDERED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单已确认收货，无法重新下单。");
+                    } else if (ORDER_STATUS_DELIVERED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单已确认收货，无法重新发货。");
+                    } else if (ORDER_STATUS_CANCELLED.equals(orderStatus) && ORDER_STATUS_DELIVERED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单已发货，无法取消订单。");
+                    } else if (ORDER_STATUS_CANCELLED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单已确认收货，无法取消订单。");
+                    } else if (ORDER_STATUS_CANCELLED.equals(orderStatus) && ORDER_STATUS_CANCELLED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单已取消，无法重复取消订单。");
+                    } else {
+                        orderService.updateOrderStatus(orderId, orderStatus);
+                        if (ORDER_STATUS_COMPLETED.equals(orderStatus)){
+                            String orderPid = previousOrder.getOrderPid();
+                            if(orderService.ifAllThisStatus(orderPid, ORDER_STATUS_COMPLETED)){
+                                orderService.updateOrderStatus(orderPid, orderStatus);
+                            }
+                        }
+                        response.setStatusCode(1);
+                    }
+                } else {
+                    response.setStatusInfo(0, "前端发送的订单状态与后端不匹配。");
+                }
+            }
+        }
         return response;
     }
 }

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static cn.shenghui.jd.constants.system.order.OrderConstants.ORDER_STATUS_ORDERED;
+
 /**
  * @author shenghui
  * @version 1.0
@@ -28,13 +30,24 @@ public class OrderService {
     }
 
     /**
-     * 根据用户ID获取所有订单
+     * 模糊查询订单信息，若搜索内容为空，用户为空，则返回所有用户订单
      *
-     * @param userId 用户ID
+     * @param content 搜索内容
+     * @param userId  用户ID
      * @return 订单列表
      */
-    public List<Order> getOrderList(String userId) {
-        return orderMapper.getOrderList(userId);
+    public List<Order> getOrderList(String content, String userId) {
+        return orderMapper.getOrderList(content, userId);
+    }
+
+    /**
+     * 根据订单ID查找订单
+     *
+     * @param orderId 订单ID
+     * @return 订单信息
+     */
+    public Order getOrder(String orderId) {
+        return orderMapper.getOrder(orderId);
     }
 
     /**
@@ -89,7 +102,7 @@ public class OrderService {
         order.setOrderTime(orderTime);
         order.setArrivalTime("");
         order.setAddress(address);
-        order.setOrderStatus("0");
+        order.setOrderStatus(ORDER_STATUS_ORDERED);
         orderMapper.addOrder(order);
         separateOrder(orderProducts, order);
     }
@@ -98,7 +111,7 @@ public class OrderService {
      * 分单
      *
      * @param orderProducts 商品详细信息
-     * @param order       主订单
+     * @param order         主订单
      */
     private void separateOrder(List<OrderProduct> orderProducts, Order order) {
         String warehouseId = orderProducts.get(0).getWarehouseId();
@@ -152,5 +165,29 @@ public class OrderService {
      */
     public void updateOrderStatus(String orderId, String orderStatus) {
         orderMapper.updateOrderStatus(orderId, orderStatus);
+    }
+
+    /**
+     * 判断该订单是否有子订单
+     *
+     * @param orderId 订单ID
+     * @return 有子订单：true/无子订单：false
+     */
+    public boolean ifParent(String orderId) {
+        int childNum = orderMapper.ifParent(orderId);
+        return childNum != 0;
+    }
+
+
+    /**
+     * 判断该订单的子订单是否全部处于给定状态
+     *
+     * @param orderPid    主订单ID
+     * @param orderStatus 订单状态
+     * @return 子订单全部为给定状态：true/反之：false
+     */
+    public boolean ifAllThisStatus(String orderPid, String orderStatus) {
+        int completed = orderMapper.ifAllThisStatus(orderPid, orderStatus);
+        return completed == 0;
     }
 }

@@ -61,6 +61,10 @@ layui.use(['form', 'table', 'layer'], function () {
         window.open('/cart');
     });
 
+    $('#order').on('click', function () {
+        window.open('/order/orderUser');
+    });
+
     table.on('tool(type)', function (obj) {
         var productId = obj.data.productId;
         var layEvent = obj.event;

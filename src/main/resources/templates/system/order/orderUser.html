@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="zh"
+>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Order user</title>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <script th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script th:src="@{/js/system/order/orderUser.js}" charset="utf-8"></script>
+    <script type="text/html" id="operation">
+        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="completed">确认收货</a>
+        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="cancel">取消订单</a>
+    </script>
 </head>
-<body>
 
+<body>
+<div class="layui-form">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">搜索</label>
+            <div class="layui-input-inline">
+                <input type="text" id="content" name="content" autocomplete="off"
+                       placeholder="请输入要搜索的内容" class="layui-input"/>
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <button id="search" data-type="reload" class="layui-btn">查询</button>
+            <button id="reset" data-type="reload" class="layui-btn layui-btn-normal">重置</button>
+            <button id="ordered" data-type="reload" class="layui-btn layui-btn-warm">待发货</button>
+            <button id="delivered" data-type="reload" class="layui-btn layui-btn-danger">待收货</button>
+            <button id="cancelled" data-type="reload" class="layui-btn layui-btn">已取消</button>
+        </div>
+    </div>
+</div>
+
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>我的订单</legend>
+</fieldset>
+
+<table class="layui-hide" id="orders" lay-filter="type"></table>
 </body>
 </html>
