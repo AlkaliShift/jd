@@ -1,5 +1,6 @@
 package cn.shenghui.jd.service.system.category;
 
+import cn.shenghui.jd.dao.system.category.dto.CategoryDetails;
 import cn.shenghui.jd.dao.system.category.mapper.CategoryMapper;
 import cn.shenghui.jd.dao.system.category.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 @Service
 public class CategoryService {
+
     private CategoryMapper categoryMapper;
 
     @Autowired
@@ -37,7 +39,7 @@ public class CategoryService {
      * @param content 搜索内容
      * @return 商品种类列表
      */
-    public List<Category> getCategoryList(String content) {
+    public List<CategoryDetails> getCategoryList(String content) {
         return categoryMapper.getCategoryList(content);
     }
 
@@ -68,5 +70,15 @@ public class CategoryService {
      */
     public void updateCategory(Category category) {
         categoryMapper.updateCategory(category);
+    }
+
+    /**
+     * 判断指定仓库下是否存在商品种类
+     *
+     * @param warehouseId 仓库ID
+     * @return 存在返回true/不存在返回false
+     */
+    public boolean ifExistCategory(String warehouseId) {
+        return categoryMapper.ifExistCategory(warehouseId) != 0;
     }
 }

@@ -1,4 +1,4 @@
-package cn.shenghui.jd.restHttp.base;
+package cn.shenghui.jd.resthttp.base;
 
 import lombok.Data;
 

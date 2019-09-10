@@ -1,8 +1,9 @@
 package cn.shenghui.jd.controller.system.warehouse;
 
 import cn.shenghui.jd.dao.system.warehouse.model.Warehouse;
-import cn.shenghui.jd.restHttp.system.warehouse.response.WarehouseBasicResponse;
-import cn.shenghui.jd.restHttp.system.warehouse.response.WarehouseResponse;
+import cn.shenghui.jd.resthttp.system.warehouse.response.WarehouseBasicResponse;
+import cn.shenghui.jd.resthttp.system.warehouse.response.WarehouseResponse;
+import cn.shenghui.jd.service.system.category.CategoryService;
 import cn.shenghui.jd.service.system.warehouse.WarehouseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,10 +24,16 @@ import org.springframework.web.servlet.ModelAndView;
 public class WarehouseController {
 
     private WarehouseService warehouseService;
+    private CategoryService categoryService;
 
     @Autowired
     public void setWarehouseService(WarehouseService warehouseService) {
         this.warehouseService = warehouseService;
+    }
+
+    @Autowired
+    public void setCategoryService(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     /**
@@ -110,8 +117,12 @@ public class WarehouseController {
     @ResponseBody
     public WarehouseBasicResponse removeWarehouse(@RequestParam(name = "warehouseId") String warehouseId) {
         WarehouseBasicResponse response = new WarehouseBasicResponse();
-        warehouseService.removeWarehouse(warehouseId);
-        response.setStatusCode(1);
+        if (categoryService.ifExistCategory(warehouseId)) {
+            response.setStatusInfo(0, "请先删除改仓库下所有分类。");
+        } else {
+            warehouseService.removeWarehouse(warehouseId);
+            response.setStatusCode(1);
+        }
         return response;
     }
 

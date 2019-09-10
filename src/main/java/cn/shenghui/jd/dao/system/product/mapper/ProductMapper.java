@@ -111,5 +111,21 @@ public interface ProductMapper {
      *
      * @param product 商品详细信息
      */
-    void freezeNum(@Param("product") OrderProduct product);
+    void setFrozenNum(@Param("product") OrderProduct product);
+
+    /**
+     * 返回指定商品种类下的商品数量
+     *
+     * @param categoryId 商品种类ID
+     * @return 指定商品种类下的商品数量
+     */
+    int ifExistProduct(@Param("categoryId") String categoryId);
+
+    /**
+     * 上传图片：更新图片路径
+     *
+     * @param productId 商品ID
+     * @param path      图片路径
+     */
+    void updateImagePath(@Param("productId") String productId, @Param("path") String path);
 }

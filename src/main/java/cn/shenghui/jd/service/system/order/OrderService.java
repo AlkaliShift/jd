@@ -5,6 +5,7 @@ import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.order.mapper.OrderMapper;
 import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.dao.system.order.model.OrderDetails;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import static cn.shenghui.jd.constants.system.order.OrderConstants.ORDER_STATUS_
  */
 @Service
 public class OrderService {
+
     private OrderMapper orderMapper;
 
     @Autowired
@@ -38,6 +40,16 @@ public class OrderService {
      */
     public List<Order> getOrderList(String content, String userId) {
         return orderMapper.getOrderList(content, userId);
+    }
+
+    /**
+     * 根据订单ID查找对应的商品ID
+     *
+     * @param orderId 订单ID
+     * @return 商品ID和数量
+     */
+    public List<OrderProduct> getProductsByOrderId(String orderId) {
+        return orderMapper.getProductsByOrderId(orderId);
     }
 
     /**
@@ -114,39 +126,77 @@ public class OrderService {
      * @param order         主订单
      */
     private void separateOrder(List<OrderProduct> orderProducts, Order order) {
+        String mainOrderId = order.getOrderId();
         String warehouseId = orderProducts.get(0).getWarehouseId();
+        String currentWarehouseId;
         boolean ifNeedSeparate = false;
         for (OrderProduct product : orderProducts) {
-            String currentWarehouseId = product.getWarehouseId();
+            currentWarehouseId = product.getWarehouseId();
             if (!warehouseId.equals(currentWarehouseId)) {
                 ifNeedSeparate = true;
             }
         }
 
         if (ifNeedSeparate) {
-            String mainOrderId = order.getOrderId();
+            // 分单
+            List<Order> tempOrders = new ArrayList<>();
+            String childOrderId;
+            int productNum;
+            BigDecimal unitPrice;
+            BigDecimal totalPrice;
+
             for (OrderProduct product : orderProducts) {
-                order.setOrderPid(mainOrderId);
-                String orderId = mainOrderId + "-" + (orderMapper.countOrderDetails() + 1);
-                order.setOrderId(orderId);
-                int productNum = product.getProductNum();
-                BigDecimal unitPrice = product.getUnitPrice();
-                BigDecimal totalPrice = unitPrice.multiply(new BigDecimal(productNum));
-                order.setTotalPrice(totalPrice);
-                orderMapper.addOrder(order);
+                // 创建子订单
+                Order childOrder = new Order();
+                BeanUtils.copyProperties(order, childOrder);
+                childOrder.setOrderPid(mainOrderId);
+                childOrderId = mainOrderId + "-" + product.getWarehouseId();
+                childOrder.setOrderId(childOrderId);
+                productNum = product.getProductNum();
+                unitPrice = product.getUnitPrice();
+                totalPrice = unitPrice.multiply(new BigDecimal(productNum));
+                childOrder.setTotalPrice(totalPrice);
+
+                // 插入子订单至订单详情表
                 OrderDetails orderDetails = new OrderDetails();
-                orderDetails.setOrderId(orderId);
+                orderDetails.setOrderId(childOrderId);
                 orderDetails.setProductId(product.getProductId());
                 orderDetails.setProductName(product.getProductName());
-                orderDetails.setProductNum(productNum);
                 orderDetails.setUnitPrice(unitPrice);
+                orderDetails.setProductNum(productNum);
                 orderDetails.setDescription(product.getDescription());
                 orderMapper.addOrderDetails(orderDetails);
+
+                // 查找同一仓库的子订单，若为同一仓库，将商品总价相加后记录在tempOrders中
+                int len = tempOrders.size();
+                boolean flag = true;
+                if (len > 0) {
+                    for (Order tempOrder : tempOrders) {
+                        String tempOrderId = tempOrder.getOrderId();
+                        BigDecimal tempTotalPrice = tempOrder.getTotalPrice();
+                        if (childOrderId.equals(tempOrderId)) {
+                            tempTotalPrice = tempTotalPrice.add(totalPrice);
+                            tempOrder.setTotalPrice(tempTotalPrice);
+                            flag = false;
+                        }
+                    }
+                    if (flag) {
+                        tempOrders.add(childOrder);
+                    }
+                } else {
+                    tempOrders.add(childOrder);
+                }
+            }
+
+            // 插入子订单至订单列表中
+            for (Order tempOrder : tempOrders) {
+                orderMapper.addOrder(tempOrder);
             }
         } else {
+            //不分单
             for (OrderProduct product : orderProducts) {
                 OrderDetails orderDetails = new OrderDetails();
-                orderDetails.setOrderId(order.getOrderId());
+                orderDetails.setOrderId(mainOrderId);
                 orderDetails.setProductId(product.getProductId());
                 orderDetails.setProductName(product.getProductName());
                 orderDetails.setProductNum(product.getProductNum());

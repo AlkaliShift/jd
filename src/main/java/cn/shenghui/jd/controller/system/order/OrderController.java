@@ -3,10 +3,11 @@ package cn.shenghui.jd.controller.system.order;
 import cn.shenghui.jd.dao.system.order.dto.IfSufficient;
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.order.model.Order;
-import cn.shenghui.jd.restHttp.system.order.request.AddOrderRequest;
-import cn.shenghui.jd.restHttp.system.order.response.AddOrderResponse;
-import cn.shenghui.jd.restHttp.system.order.response.OrderBasicResponse;
-import cn.shenghui.jd.restHttp.system.order.response.OrderResponse;
+import cn.shenghui.jd.dao.system.order.model.OrderDetails;
+import cn.shenghui.jd.resthttp.system.order.request.AddOrderRequest;
+import cn.shenghui.jd.resthttp.system.order.response.AddOrderResponse;
+import cn.shenghui.jd.resthttp.system.order.response.OrderBasicResponse;
+import cn.shenghui.jd.resthttp.system.order.response.OrderResponse;
 import cn.shenghui.jd.service.system.cart.CartService;
 import cn.shenghui.jd.service.system.order.OrderService;
 import cn.shenghui.jd.service.system.product.ProductService;
@@ -190,9 +191,9 @@ public class OrderController {
         if (ObjectUtils.isEmpty(previousOrder)) {
             response.setStatusInfo(0, "找不到该订单。");
         } else {
-            if(orderService.ifParent(orderId)){
+            if (orderService.ifParent(orderId)) {
                 response.setStatusInfo(0, "无法修改主订单状态。");
-            }else{
+            } else {
                 if (ORDER_STATUS_ORDERED.equals(orderStatus) || ORDER_STATUS_DELIVERED.equals(orderStatus) ||
                         ORDER_STATUS_COMPLETED.equals(orderStatus) || ORDER_STATUS_CANCELLED.equals(orderStatus)) {
                     String previousOrderStatus = previousOrder.getOrderStatus();
@@ -218,9 +219,14 @@ public class OrderController {
                         response.setStatusInfo(0, "订单已取消，无法重复取消订单。");
                     } else {
                         orderService.updateOrderStatus(orderId, orderStatus);
-                        if (ORDER_STATUS_COMPLETED.equals(orderStatus)){
-                            String orderPid = previousOrder.getOrderPid();
-                            if(orderService.ifAllThisStatus(orderPid, ORDER_STATUS_COMPLETED)){
+                        String orderPid = previousOrder.getOrderPid();
+                        if (ORDER_STATUS_CANCELLED.equals(orderStatus)){
+                            this.unFreezeNum(orderId);
+                            if (orderService.ifAllThisStatus(orderPid, ORDER_STATUS_CANCELLED)) {
+                                orderService.updateOrderStatus(orderPid, orderStatus);
+                            }
+                        } else if (ORDER_STATUS_COMPLETED.equals(orderStatus)) {
+                            if (orderService.ifAllThisStatus(orderPid, ORDER_STATUS_COMPLETED)) {
                                 orderService.updateOrderStatus(orderPid, orderStatus);
                             }
                         }
@@ -232,5 +238,14 @@ public class OrderController {
             }
         }
         return response;
+    }
+
+    /**
+     * 解冻商品库存
+     *
+     * @param orderId 订单ID
+     */
+    private void unFreezeNum(String orderId) {
+        productService.unFreezeNum(orderService.getProductsByOrderId(orderId));
     }
 }

@@ -1,9 +1,11 @@
 package cn.shenghui.jd.controller.system.category;
 
 import cn.shenghui.jd.dao.system.category.model.Category;
-import cn.shenghui.jd.restHttp.system.category.response.CategoryBasicResponse;
-import cn.shenghui.jd.restHttp.system.category.response.CategoryResponse;
+import cn.shenghui.jd.dao.system.product.model.Product;
+import cn.shenghui.jd.resthttp.system.category.response.CategoryBasicResponse;
+import cn.shenghui.jd.resthttp.system.category.response.CategoryResponse;
 import cn.shenghui.jd.service.system.category.CategoryService;
+import cn.shenghui.jd.service.system.product.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,16 @@ import org.springframework.web.servlet.ModelAndView;
 public class CategoryController {
 
     private CategoryService categoryService;
+    private ProductService productService;
 
     @Autowired
     public void setCategoryService(CategoryService categoryService) {
         this.categoryService = categoryService;
+    }
+
+    @Autowired
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
     }
 
     /**
@@ -111,8 +119,12 @@ public class CategoryController {
     @ResponseBody
     public CategoryBasicResponse removeCategory(@RequestParam(name = "categoryId") String categoryId) {
         CategoryBasicResponse response = new CategoryBasicResponse();
-        categoryService.removeCategory(categoryId);
-        response.setStatusCode(1);
+        if (productService.ifExistProduct(categoryId)) {
+            response.setStatusInfo(0, "请先删除该商品种类下的所有商品。");
+        } else {
+            categoryService.removeCategory(categoryId);
+            response.setStatusCode(1);
+        }
         return response;
     }
 

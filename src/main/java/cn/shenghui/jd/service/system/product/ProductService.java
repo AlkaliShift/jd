@@ -130,9 +130,10 @@ public class ProductService {
 
     /**
      * 冻结商品库存
+     *
      * @param products 商品详细信息
      */
-    public void freezeNum(List<OrderProduct> products){
+    public void freezeNum(List<OrderProduct> products) {
         int availableNum;
         int frozenNum;
         for (OrderProduct product : products) {
@@ -140,16 +141,48 @@ public class ProductService {
             availableNum = product.getAvailableNum() - product.getProductNum();
             product.setAvailableNum(availableNum);
             product.setFrozenNum(frozenNum);
-            this.freeze(product);
+            this.setFrozenNum(product);
         }
     }
 
     /**
-     * 冻结库存的事务管理
+     * 解冻商品库存
+     *
+     * @param products 商品ID和数量
+     */
+    public void unFreezeNum(List<OrderProduct> products) {
+        int availableNum;
+        int frozenNum;
+        for (OrderProduct product : products) {
+            frozenNum = product.getFrozenNum() - product.getProductNum();
+            availableNum = product.getAvailableNum() + product.getProductNum();
+            product.setAvailableNum(availableNum);
+            product.setFrozenNum(frozenNum);
+            this.setFrozenNum(product);
+        }
+    }
+
+    /**
+     * 冻结/解冻库存的事务管理
+     *
      * @param orderProduct 商品详细信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public void freeze(OrderProduct orderProduct){
-        productMapper.freezeNum(orderProduct);
+    public void setFrozenNum(OrderProduct orderProduct) {
+        productMapper.setFrozenNum(orderProduct);
+    }
+
+    public boolean ifExistProduct(String categoryId){
+        return productMapper.ifExistProduct(categoryId) != 0;
+    }
+
+    /**
+     * 上传图片：更新图片路径
+     *
+     * @param productId 商品ID
+     * @param path      图片路径
+     */
+    public void updateImagePath(String productId, String path) {
+        productMapper.updateImagePath(productId, path);
     }
 }

@@ -78,7 +78,7 @@ layui.use(['form', 'table', 'layer'], function () {
                 title: '更新仓库信息'
             });
         } else if (layEvent === 'del') {//删除
-            layer.confirm('删除该账户,确定删除?'
+            layer.confirm('删除此仓库,确定删除?'
                 , {icon: 0, title: '删除'}, function (index) {
                     var action = '/warehouse/remove?warehouseId=' + warehouseId;
                     $.ajax({
@@ -90,7 +90,7 @@ layui.use(['form', 'table', 'layer'], function () {
                                 layer.close(index);
                                 $('#search').click();
                             } else {
-                                layer.msg("删除失败");
+                                layer.msg(data.msg);
                             }
                         }
                     });

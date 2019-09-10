@@ -1,6 +1,6 @@
-package cn.shenghui.jd.restHttp.system.warehouse.response;
+package cn.shenghui.jd.resthttp.system.warehouse.response;
 
-import cn.shenghui.jd.restHttp.base.AbstractResponse;
+import cn.shenghui.jd.resthttp.base.AbstractResponse;
 
 /**
  * @author shenghui

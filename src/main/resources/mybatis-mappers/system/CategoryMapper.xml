@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.shenghui.jd.dao.system.category.mapper.CategoryMapper">
 
-    <resultMap id="categoryResult" type="cn.shenghui.jd.dao.system.category.model.Category">
+    <resultMap id="categoryResult" type="cn.shenghui.jd.dao.system.category.dto.CategoryDetails">
         <id column="category_id" jdbcType="VARCHAR" property="categoryId"/>
         <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
-        <result column="warehouse_id" jdbcType="VARCHAR" property="warehouseId"/>
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
     </resultMap>
 
     <select id="getCategoryById" parameterType="java.lang.String" resultMap="categoryResult">
@@ -16,13 +16,13 @@
     </select>
 
     <select id="getCategoryList" parameterType="java.lang.String" resultMap="categoryResult">
-        select * from category
+        select * from category c inner join warehouse w on c.warehouse_id = w.warehouse_id
         <where>
-            del_flag = 0
+            c.del_flag = 0
             <if test="content != null and content != ''">
-                and category_id like concat('%', #{content,jdbcType=VARCHAR} '%')
-                or category_name like concat('%', #{content,jdbcType=VARCHAR} '%')
-                or warehouse_id like concat('%', #{content,jdbcType=VARCHAR} '%')
+                and c.category_id like concat('%', #{content,jdbcType=VARCHAR} '%')
+                or c.category_name like concat('%', #{content,jdbcType=VARCHAR} '%')
+                or w.warehouse_name like concat('%', #{content,jdbcType=VARCHAR} '%')
             </if>;
         </where>
     </select>
@@ -52,5 +52,12 @@
     <select id="countCategory" resultType="int">
         select count(*)
         from category;
+    </select>
+
+    <select id="ifExistCategory" parameterType="java.lang.String" resultType="int">
+        select count(*)
+        from category
+        where del_flag = 0
+          and warehouse_id = #{warehouseId,jdbcType=VARCHAR};
     </select>
 </mapper>

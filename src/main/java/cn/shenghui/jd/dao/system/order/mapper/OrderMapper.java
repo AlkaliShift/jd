@@ -5,7 +5,6 @@ import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.dao.system.order.model.OrderDetails;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
@@ -25,6 +24,14 @@ public interface OrderMapper {
      * @return 订单列表
      */
     List<Order> getOrderList(@Param("content") String content, @Param("userId") String userId);
+
+    /**
+     * 根据订单ID查找对应的商品信息
+     *
+     * @param orderId 订单ID
+     * @return 商品ID和数量
+     */
+    List<OrderProduct> getProductsByOrderId(@Param("orderId") String orderId);
 
     /**
      * 根据订单ID查找订单

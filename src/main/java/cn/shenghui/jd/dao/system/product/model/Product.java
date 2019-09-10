@@ -61,4 +61,9 @@ public class Product {
      * 商品描述
      */
     String description;
+
+    /**
+     * path
+     */
+    String path;
 }

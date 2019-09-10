@@ -1,6 +1,6 @@
-package cn.shenghui.jd.restHttp.system.category.response;
+package cn.shenghui.jd.resthttp.system.category.response;
 
-import cn.shenghui.jd.restHttp.base.AbstractResponse;
+import cn.shenghui.jd.resthttp.base.AbstractResponse;
 
 /**
  * @author shenghui

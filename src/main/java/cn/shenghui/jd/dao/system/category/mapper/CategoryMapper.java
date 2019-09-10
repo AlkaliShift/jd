@@ -1,5 +1,6 @@
 package cn.shenghui.jd.dao.system.category.mapper;
 
+import cn.shenghui.jd.dao.system.category.dto.CategoryDetails;
 import cn.shenghui.jd.dao.system.category.model.Category;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -28,7 +29,7 @@ public interface CategoryMapper {
      * @param content 商品种类ID
      * @return 商品种类列表
      */
-    List<Category> getCategoryList(@Param("content") String content);
+    List<CategoryDetails> getCategoryList(@Param("content") String content);
 
     /**
      * 增加商品种类
@@ -57,4 +58,12 @@ public interface CategoryMapper {
      * @return 行数
      */
     int countCategory();
+
+    /**
+     * 返回指定仓库下的商品种类数量
+     *
+     * @param warehouseId 仓库ID
+     * @return 商品种类个数
+     */
+    int ifExistCategory(@Param("warehouseId") String warehouseId);
 }

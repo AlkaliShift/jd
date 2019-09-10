@@ -2,8 +2,8 @@ package cn.shenghui.jd.controller.system.product;
 
 import cn.shenghui.jd.dao.system.product.dto.ProductDetails;
 import cn.shenghui.jd.dao.system.product.model.Product;
-import cn.shenghui.jd.restHttp.system.product.response.ProductBasicResponse;
-import cn.shenghui.jd.restHttp.system.product.response.ProductResponse;
+import cn.shenghui.jd.resthttp.system.product.response.ProductBasicResponse;
+import cn.shenghui.jd.resthttp.system.product.response.ProductResponse;
 import cn.shenghui.jd.service.system.product.ProductService;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -13,11 +13,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import static cn.shenghui.jd.constants.system.product.ProductConstants.IMAGE_ROOT_PATH;
 
 /**
  * @author shenghui
@@ -88,6 +93,20 @@ public class ProductController {
             mv.addObject("product", products.get(0));
         }
         mv.setViewName("system/product/updateProduct");
+        return mv;
+    }
+
+    /**
+     * 上传图片页
+     *
+     * @param productId 商品ID
+     * @return 页面
+     */
+    @RequestMapping("/uploadImage")
+    public ModelAndView uploadPage(@RequestParam(name = "productId") String productId) {
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("productId", productId);
+        mv.setViewName("system/product/uploadImage");
         return mv;
     }
 
@@ -247,5 +266,119 @@ public class ProductController {
         }
         mv.setViewName("system/product/addToCart");
         return mv;
+    }
+
+    /**
+     * 上传图片
+     *
+     * @param file      图片文件
+     * @param productId 商品ID
+     * @return 状态码：1
+     */
+    @ApiOperation(value = "上传图片", notes = "状态码1:上传成功")
+    @RequestMapping(value = "/uploadPath", method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public ProductBasicResponse uploadImage(@RequestParam(name = "file") MultipartFile file,
+                                            @RequestParam(name = "id") String productId) {
+        ProductBasicResponse response = new ProductBasicResponse();
+        if (file.isEmpty()) {
+            response.setStatusInfo(0, "请选择一张图片");
+            return response;
+        } else {
+            String filename = productId + "_" + file.getOriginalFilename();
+            String path = IMAGE_ROOT_PATH + "/" + filename;
+            File dest = new File(path);
+            InputStream in = null;
+            FileOutputStream out = null;
+
+            //保存文件
+            try {
+                if (!dest.getParentFile().exists()) {
+                    dest.getParentFile().mkdirs();
+                }
+                if (!dest.exists()) {
+                    dest.createNewFile();
+                }
+                in = file.getInputStream();
+                out = new FileOutputStream(dest);
+                byte[] b = new byte[1024];
+                int length;
+                while ((length = in.read(b)) > 0) {
+                    out.write(b, 0, length);
+                }
+                productService.updateImagePath(productId, path);
+                response.setStatusInfo(1, "上传成功");
+                out.flush();
+                return response;
+            } catch (Exception e) {
+                response.setStatusInfo(0, "上传失败：" + e.getMessage());
+                return response;
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 下载图片
+     *
+     * @param productId           商品ID
+     * @param httpServletResponse http返回值
+     */
+    @ApiOperation(value = "下载图片", notes = "状态码1:上传成功")
+    @RequestMapping(value = "/downloadImage")
+    public void downloadImage(@RequestParam(name = "productId") String productId,
+                              HttpServletResponse httpServletResponse) {
+        List<String> productIds = new ArrayList<>();
+        productIds.add(productId);
+        List<Product> list = productService.getProductsByIds(productIds);
+        String path = list.get(0).getPath();
+        File file = new File(path);
+        InputStream in = null;
+        OutputStream out = null;
+        if (file.exists()) {
+            try {
+                in = new FileInputStream(file);
+                out = httpServletResponse.getOutputStream();
+                int length;
+                byte[] b = new byte[1024];
+                while ((length = in.read(b)) > 0) {
+                    out.write(b, 0, length);
+                }
+                httpServletResponse.setContentType("image/jpg");
+                out.flush();
+            } catch (Exception e) {
+                e.getMessage();
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException ioe) {
+                        ioe.getMessage();
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException ioe) {
+                        ioe.getMessage();
+                    }
+                }
+            }
+        }
     }
 }

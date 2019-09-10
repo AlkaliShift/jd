@@ -14,6 +14,7 @@
         <result column="start_time" jdbcType="VARCHAR" property="startTime"/>
         <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
         <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="path" jdbcType="VARCHAR" property="path"/>
     </resultMap>
 
     <resultMap id="orderProductResult" type="cn.shenghui.jd.dao.system.order.dto.OrderProduct">
@@ -27,6 +28,7 @@
         <result column="start_time" jdbcType="VARCHAR" property="startTime"/>
         <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
         <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="path" jdbcType="VARCHAR" property="path"/>
         <result column="warehouse_id" jdbcType="VARCHAR" property="warehouseId"/>
     </resultMap>
 
@@ -132,9 +134,24 @@
         <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
     </select>
 
-    <update id="freezeNum" parameterType="cn.shenghui.jd.dao.system.order.dto.OrderProduct">
+    <update id="setFrozenNum" parameterType="cn.shenghui.jd.dao.system.order.dto.OrderProduct">
         update product
-        set available_num = #{product.availableNum,jdbcType=INTEGER}, frozen_num = #{product.frozenNum,jdbcType=INTEGER}
-        where del_flag = 0 and product_id = #{product.productId,jdbcType=VARCHAR}
+        set available_num = #{product.availableNum,jdbcType=INTEGER},
+            frozen_num    = #{product.frozenNum,jdbcType=INTEGER}
+        where del_flag = 0
+          and product_id = #{product.productId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="ifExistProduct" parameterType="java.lang.String" resultType="int">
+        select count(*)
+        from product
+        where del_flag = 0
+          and category_id = #{categoryId,jdbcType=VARCHAR};
+    </select>
+
+    <update id="updateImagePath">
+        update product
+        set path = #{path,jdbcType=VARCHAR}
+        where product_id = #{productId,jdbcType=VARCHAR};
     </update>
 </mapper>

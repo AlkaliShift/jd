@@ -1,7 +1,7 @@
-package cn.shenghui.jd.restHttp.system.warehouse.response;
+package cn.shenghui.jd.resthttp.system.warehouse.response;
 
 import cn.shenghui.jd.dao.system.warehouse.model.Warehouse;
-import cn.shenghui.jd.restHttp.base.AbstractResponse;
+import cn.shenghui.jd.resthttp.base.AbstractResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

@@ -1,8 +1,9 @@
-package cn.shenghui.jd.restHttp.system.cart.response;
+package cn.shenghui.jd.resthttp.system.cart.response;
 
 import cn.shenghui.jd.dao.system.cart.dto.CartProduct;
-import cn.shenghui.jd.restHttp.base.AbstractResponse;
+import cn.shenghui.jd.resthttp.base.AbstractResponse;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -15,5 +16,7 @@ import java.util.List;
 @Data
 @ApiModel(value = "购物车列表")
 public class CartResponse extends AbstractResponse {
+
+    @ApiModelProperty(value = "购物车中商品列表", required = true)
     protected List<CartProduct> cartProducts;
 }

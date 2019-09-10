@@ -16,4 +16,9 @@ public class ProductConstants {
      * 商品下架
      */
     public static String PRODUCT_DOWN = "down";
+
+    /**
+     * 图片根目录
+     */
+    public static String IMAGE_ROOT_PATH = "D:/image";
 }

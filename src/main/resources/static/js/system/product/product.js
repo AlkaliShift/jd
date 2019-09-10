@@ -35,6 +35,8 @@ layui.use(['form', 'table', 'layer'], function () {
             , {field: 'productStatus', title: '商品状态'}
             , {field: 'startTime', title: '上架时间'}
             , {field: 'endTime', title: '下架时间'}
+            , {field: 'path', title: '商品图片', image:function(data){
+                return "<alt=\"\" img src=\"/product/downloadImage?productId=" + data.productId + "\" />"}}
             , {field: 'description', title: '商品描述'}
             , {title: '操作', align: 'center', width: 250, toolbar: '#operation'}
         ]]
@@ -42,7 +44,7 @@ layui.use(['form', 'table', 'layer'], function () {
         , page: true
         , limit: 10
     });
-    
+
     var active = {
         reload: function () {
             table.reload('products', {
@@ -176,6 +178,18 @@ layui.use(['form', 'table', 'layer'], function () {
                     });
                     layer.close(index);
                 });
+        } else if (layEvent === 'up') {
+            layer.open({
+                type: 2,
+                content: '/product/uploadImage?productId=' + productId,
+                area: ['400px', '260px'],
+                closeBtn: 2,
+                shadeClose: true,
+                title: '上传图片'
+            });
+        } else if (layEvent === 'down') {
+            var action = '/product/downloadImage?productId=' + productId;
+            window.open(action);
         }
     });
 });

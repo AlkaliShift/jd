@@ -25,7 +25,7 @@ layui.use(['form', 'table', 'layer'], function () {
         , cols: [[
             {field: 'categoryId', title: '商品种类ID'}
             , {field: 'categoryName', title: '商品种类'}
-            , {field: 'warehouseId', title: '仓库ID'}
+            , {field: 'warehouseName', title: '仓库名称'}
             , {title: '操作', align: 'center', width: 250, toolbar: '#operation'}
         ]]
         , id: 'categories'
@@ -79,7 +79,7 @@ layui.use(['form', 'table', 'layer'], function () {
                 title: '更新商品种类信息'
             });
         } else if (layEvent === 'del') {//删除
-            layer.confirm('删除该账户,确定删除?'
+            layer.confirm('删除该商品分类,确定删除?'
                 , {icon: 0, title: '删除'}, function (index) {
                     var action = '/category/remove?categoryId=' + categoryId;
                     $.ajax({
@@ -91,7 +91,7 @@ layui.use(['form', 'table', 'layer'], function () {
                                 layer.close(index);
                                 $('#search').click();
                             } else {
-                                layer.msg("删除失败");
+                                layer.msg(data.msg);
                             }
                         }
                     });
