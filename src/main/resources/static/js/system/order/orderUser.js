@@ -23,15 +23,35 @@ layui.use(['form', 'table', 'layer'], function () {
             }
         }
         , cols: [[
-            {field: 'orderId', title: '订单ID'}
-            , {field: 'userId', title: '用户ID'}
-            , {field: 'orderPid', title: '父订单'}
-            , {field: 'totalPrice', title: '订单总价'}
-            , {field: 'orderStatus', title: '订单状态'}
-            , {field: 'orderTime', title: '下单时间'}
-            , {field: 'arrivalTime', title: '到货时间'}
-            , {field: 'address', title: '用户地址'}
-            , {title: '操作', align: 'center', width: 250, toolbar: '#operation'}
+            {field: 'orderId', width: 300, title: '订单ID'}
+            , {field: 'userId', width: 100, title: '用户ID'}
+            , {field: 'orderPid', width: 300, title: '父订单'}
+            , {
+                field: 'totalPrice', width: 100, title: '订单总价', templet: function (data) {
+                    return parseFloat(data.totalPrice).toFixed(2);
+                }
+            }
+            , {
+                field: 'orderStatus', width: 100, title: '订单状态', templet: function (data) {
+                    var orderPid = data.orderPid;
+                    var orderStatus = data.orderStatus;
+                    if (orderPid === "" || orderStatus === "cancelled" || orderStatus === "completed") {
+                        $('#operation').html("");
+                    } else if (orderStatus === "delivered") {
+                        $('#operation').html("<a class=\"layui-btn layui-btn-xs layui-btn-danger\" " +
+                            "lay-event=\"completed\">确认收货</a>");
+                    } else {
+                        $('#operation').html("<a class=\"layui-btn layui-btn-xs layui-btn-danger\" " +
+                            "lay-event=\"completed\">确认收货</a>\n" +
+                            "<a class=\"layui-btn layui-btn-xs layui-btn-danger\" lay-event=\"cancel\">取消订单</a>");
+                    }
+                    return orderStatus;
+                }
+            }
+            , {field: 'orderTime', width: 300, title: '下单时间'}
+            , {field: 'arrivalTime', width: 300, title: '到货时间'}
+            , {field: 'address', width: 100, title: '用户地址'}
+            , {title: '操作', align: 'center', width: 200, toolbar: '#operation'}
         ]]
         , id: 'orders'
         , page: false

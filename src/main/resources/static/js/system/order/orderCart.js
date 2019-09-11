@@ -6,7 +6,9 @@ layui.use(['form', 'table'], function () {
     form.render();
 
     var productIds = $("#productIds").val().toString();
-    productIds = productIds.substring(1, productIds.length-1);
+    productIds = productIds.substring(1, productIds.length - 1);
+    var totalPrice = 0;
+
     table.render({
         elem: '#orderProduct'
         , url: '/cart/listProduct'
@@ -25,7 +27,16 @@ layui.use(['form', 'table'], function () {
         }
         , cols: [[
             {field: 'productName', title: '商品名称'}
-            , {field: 'unitPrice', title: '单位价格'}
+            , {
+                field: 'unitPrice', title: '单位价格', templet: function (data) {
+                    var unitPrice = data.unitPrice;
+                    var productNum = data.productNum;
+                    var price = unitPrice * productNum;
+                    totalPrice = totalPrice + price;
+                    $('#totalPrice').val(totalPrice.toFixed(2));
+                    return parseFloat(unitPrice).toFixed(2);
+                }
+            }
             , {field: 'description', title: '商品描述'}
             , {field: 'productNum', title: '已选数量'}
             , {field: 'availableNum', title: '库存数量'}
@@ -55,7 +66,7 @@ layui.use(['form', 'table'], function () {
     $('#save').on('click', function () {
         var order = {};
         var productIds = $("#productIds").val().toString();
-        order.productIds = (productIds.substring(1, productIds.length-1)).split(", ");
+        order.productIds = (productIds.substring(1, productIds.length - 1)).split(", ");
         order.address = $('#address').val();
         $.ajax({
             type: 'POST',
@@ -67,15 +78,15 @@ layui.use(['form', 'table'], function () {
                     var insufficientProducts = data.insufficientProducts;
                     var flag = false;
                     var productNameList = [];
-                    for (var i in insufficientProducts){
+                    for (var i in insufficientProducts) {
                         if (insufficientProducts.hasOwnProperty(i)) {
                             productNameList.push(insufficientProducts[i].productName);
                             flag = true;
                         }
                     }
-                    if (flag){
+                    if (flag) {
                         layer.msg("以下商品库存不足： " + productNameList);
-                    }else{
+                    } else {
                         layer.msg("下单成功");
                     }
                     setTimeout(function () {

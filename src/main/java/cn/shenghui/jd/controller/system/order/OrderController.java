@@ -198,25 +198,19 @@ public class OrderController {
                         ORDER_STATUS_COMPLETED.equals(orderStatus) || ORDER_STATUS_CANCELLED.equals(orderStatus)) {
                     String previousOrderStatus = previousOrder.getOrderStatus();
                     if (ORDER_STATUS_COMPLETED.equals(orderStatus) && ORDER_STATUS_ORDERED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单尚未发货，请先发货。");
-                    } else if (ORDER_STATUS_COMPLETED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已完成，无法重复确认。");
-                    } else if (ORDER_STATUS_COMPLETED.equals(orderStatus) && ORDER_STATUS_CANCELLED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已取消，无法确认收货。");
+                        response.setStatusInfo(0, "订单尚未发货，请先安排发货。");
                     } else if (ORDER_STATUS_ORDERED.equals(orderStatus) && ORDER_STATUS_ORDERED.equals(previousOrderStatus)) {
                         response.setStatusInfo(0, "订单已下单，无法重复下单。");
+                    } else if (ORDER_STATUS_DELIVERED.equals(orderStatus) && ORDER_STATUS_DELIVERED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单已发货，无法重复发货。");
+                    } else if (ORDER_STATUS_COMPLETED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
+                        response.setStatusInfo(0, "订单已完成，无法重复确认。");
                     } else if (ORDER_STATUS_ORDERED.equals(orderStatus) && ORDER_STATUS_DELIVERED.equals(previousOrderStatus)) {
                         response.setStatusInfo(0, "订单已发货，无法重新下单。");
                     } else if (ORDER_STATUS_ORDERED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已确认收货，无法重新下单。");
+                        response.setStatusInfo(0, "订单已完成，无法重新下单。");
                     } else if (ORDER_STATUS_DELIVERED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已确认收货，无法重新发货。");
-                    } else if (ORDER_STATUS_CANCELLED.equals(orderStatus) && ORDER_STATUS_DELIVERED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已发货，无法取消订单。");
-                    } else if (ORDER_STATUS_CANCELLED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已确认收货，无法取消订单。");
-                    } else if (ORDER_STATUS_CANCELLED.equals(orderStatus) && ORDER_STATUS_CANCELLED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已取消，无法重复取消订单。");
+                        response.setStatusInfo(0, "订单已完成，无法重新发货。");
                     } else {
                         orderService.updateOrderStatus(orderId, orderStatus);
                         String orderPid = previousOrder.getOrderPid();

@@ -9,6 +9,7 @@ layui.use(['form', 'table', 'layer'], function () {
     table.render({
         elem: '#categories'
         , url: '/category/list'
+        , width: 1000
         , where: {content: $("#content").val()}
         , response: {
             statusName: 'statusCode' //规定数据状态的字段名称，默认：code

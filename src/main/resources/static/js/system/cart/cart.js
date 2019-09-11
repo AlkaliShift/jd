@@ -26,7 +26,11 @@ layui.use(['form', 'table', 'layer'], function () {
         , cols: [[
             {type: 'checkbox', fixed: 'left'}
             , {field: 'productName', title: '商品名称'}
-            , {field: 'unitPrice', title: '单位价格'}
+            , {
+                field: 'unitPrice', title: '单位价格', templet: function (data) {
+                    return parseFloat(data.unitPrice).toFixed(2);
+                }
+            }
             , {field: 'description', title: '商品描述'}
             , {field: 'productNum', title: '已选数量'}
             , {field: 'availableNum', title: '库存数量'}

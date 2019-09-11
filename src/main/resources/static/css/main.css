@@ -6,6 +6,10 @@
     margin-top: 10px; margin-right: 10px
 }
 
+.layui-table image{
+    max-width: 100px;
+}
+
 #exit{
     margin:20px 0 0 1200px;
 }

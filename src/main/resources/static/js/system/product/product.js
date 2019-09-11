@@ -25,20 +25,27 @@ layui.use(['form', 'table', 'layer'], function () {
         }
         , toolbar: '#toolbar'
         , cols: [[
-            {type: 'checkbox', fixed: 'left'}
-            , {field: 'productId', title: '商品ID'}
-            , {field: 'productName', title: '商品名称'}
-            , {field: 'categoryName', title: '商品种类'}
-            , {field: 'availableNum', title: '可用数量'}
-            , {field: 'frozenNum', title: '冻结数量'}
-            , {field: 'unitPrice', title: '单位价格'}
-            , {field: 'productStatus', title: '商品状态'}
-            , {field: 'startTime', title: '上架时间'}
-            , {field: 'endTime', title: '下架时间'}
-            , {field: 'path', title: '商品图片', image:function(data){
-                return "<alt=\"\" img src=\"/product/downloadImage?productId=" + data.productId + "\" />"}}
-            , {field: 'description', title: '商品描述'}
-            , {title: '操作', align: 'center', width: 250, toolbar: '#operation'}
+            {type: 'checkbox', style: 'height:60px;', fixed: 'left'}
+            , {field: 'productId', width: 100, title: '商品ID'}
+            , {field: 'productName', width: 100, title: '商品名称'}
+            , {field: 'categoryName', width: 100, title: '商品种类'}
+            , {field: 'availableNum', width: 100, title: '可用数量'}
+            , {field: 'frozenNum', width: 100, title: '冻结数量'}
+            , {
+                field: 'unitPrice', width: 100, title: '单位价格', templet: function (data) {
+                    return parseFloat(data.unitPrice).toFixed(2);
+                }
+            }
+            , {field: 'productStatus', width: 100, title: '商品状态'}
+            , {field: 'startTime', width: 250, title: '上架时间'}
+            , {field: 'endTime', width: 250, title: '下架时间'}
+            , {
+                field: 'path', title: '商品图片', width: 100, style: 'height:60px;', templet: function (data) {
+                    return "<img src=\"/product/downloadImage?productId=" + data.productId + "\" alt=\"\"/>";
+                }
+            }
+            , {field: 'description', width: 100, title: '商品描述'}
+            , {title: '操作', align: 'center', width: 200, toolbar: '#operation'}
         ]]
         , id: 'products'
         , page: true
@@ -187,9 +194,6 @@ layui.use(['form', 'table', 'layer'], function () {
                 shadeClose: true,
                 title: '上传图片'
             });
-        } else if (layEvent === 'down') {
-            var action = '/product/downloadImage?productId=' + productId;
-            window.open(action);
         }
     });
 });
