@@ -26,6 +26,14 @@ public interface OrderMapper {
     List<Order> getOrderList(@Param("content") String content, @Param("userId") String userId);
 
     /**
+     * 根据订单ID获取订单详情列表
+     *
+     * @param orderId 订单ID
+     * @return 订单详情列表
+     */
+    List<OrderDetails> getOrderDetailsList(@Param("orderId") String orderId);
+
+    /**
      * 根据订单ID查找对应的商品信息
      *
      * @param orderId 订单ID

@@ -43,6 +43,16 @@ public class OrderService {
     }
 
     /**
+     * 根据订单ID获取订单详情列表
+     *
+     * @param orderId 订单ID
+     * @return 订单详情列表
+     */
+    public List<OrderDetails> getOrderDetailsList(String orderId) {
+        return orderMapper.getOrderDetailsList(orderId);
+    }
+
+    /**
      * 根据订单ID查找对应的商品ID
      *
      * @param orderId 订单ID

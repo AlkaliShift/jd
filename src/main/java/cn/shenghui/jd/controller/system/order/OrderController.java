@@ -3,10 +3,10 @@ package cn.shenghui.jd.controller.system.order;
 import cn.shenghui.jd.dao.system.order.dto.IfSufficient;
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.order.model.Order;
-import cn.shenghui.jd.dao.system.order.model.OrderDetails;
 import cn.shenghui.jd.resthttp.system.order.request.AddOrderRequest;
 import cn.shenghui.jd.resthttp.system.order.response.AddOrderResponse;
 import cn.shenghui.jd.resthttp.system.order.response.OrderBasicResponse;
+import cn.shenghui.jd.resthttp.system.order.response.OrderDetailsResponse;
 import cn.shenghui.jd.resthttp.system.order.response.OrderResponse;
 import cn.shenghui.jd.service.system.cart.CartService;
 import cn.shenghui.jd.service.system.order.OrderService;
@@ -68,6 +68,19 @@ public class OrderController {
     }
 
     /**
+     * 返回订单详情页
+     *
+     * @return 页面
+     */
+    @RequestMapping(value = "/orderDetails")
+    public ModelAndView orderDetailsPage(@RequestParam("orderId") String orderId) {
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("orderId", orderId);
+        mv.setViewName("system/order/orderDetails");
+        return mv;
+    }
+
+    /**
      * 购物车中订单列表页
      *
      * @param productIds 商品ID集
@@ -119,6 +132,22 @@ public class OrderController {
     public OrderResponse getOrderList(@RequestParam("content") String content) {
         OrderResponse response = new OrderResponse();
         response.setOrders(orderService.getOrderList(content, ""));
+        response.setStatusCode(1);
+        return response;
+    }
+
+    /**
+     * 根据订单ID获取订单详情列表
+     *
+     * @param orderId 订单ID
+     * @return 订单详细信息和状态码：1
+     */
+    @ApiOperation(value = "获取订单详细信息", notes = "状态码1:查询成功")
+    @RequestMapping(value = "/listOrderDetails")
+    @ResponseBody
+    public OrderDetailsResponse getOrderDetailsList(@RequestParam("orderId") String orderId) {
+        OrderDetailsResponse response = new OrderDetailsResponse();
+        response.setOrderDetails(orderService.getOrderDetailsList(orderId));
         response.setStatusCode(1);
         return response;
     }
