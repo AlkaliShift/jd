@@ -25,7 +25,7 @@ layui.use(['form', 'table', 'layer'], function () {
         }
         , toolbar: '#toolbar'
         , cols: [[
-            {type: 'checkbox', style: 'height:60px;', fixed: 'left'}
+            {type: 'checkbox'}
             , {field: 'productId', width: 100, title: '商品ID'}
             , {field: 'productName', width: 100, title: '商品名称'}
             , {field: 'categoryName', width: 100, title: '商品种类'}
@@ -40,7 +40,7 @@ layui.use(['form', 'table', 'layer'], function () {
             , {field: 'startTime', width: 250, title: '上架时间'}
             , {field: 'endTime', width: 250, title: '下架时间'}
             , {
-                field: 'path', title: '商品图片', width: 100, style: 'height:60px;', templet: function (data) {
+                field: 'path', title: '商品图片', width: 150, style: 'height:60px;', templet: function (data) {
                     return "<img src=\"/product/downloadImage?productId=" + data.productId + "\" alt=\"\"/>";
                 }
             }

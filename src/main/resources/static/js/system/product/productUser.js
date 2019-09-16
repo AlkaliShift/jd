@@ -24,14 +24,19 @@ layui.use(['form', 'table', 'layer'], function () {
             }
         }
         , cols: [[
-            {field: 'productName', title: '商品名称'}
+            {
+                field: 'path', title: '商品展示', width: 150, style: 'height:60px;', templet: function (data) {
+                    return "<img src=\"/product/downloadImage?productId=" + data.productId + "\" alt=\"\"/>";
+                }
+            }
+            , {field: 'productName', title: '商品名称'}
             , {field: 'categoryName', title: '商品种类'}
             , {
                 field: 'availableNum', title: '库存数量', templet: function (data) {
                     var availableNum = data.availableNum;
                     if (availableNum === 0) {
                         $('#operation').html("");
-                    }else{
+                    } else {
                         $('#operation').html("<a class=\"layui-btn layui-btn-xs\" " +
                             "lay-event=\"productCart\">加入购物车</a>");
                     }

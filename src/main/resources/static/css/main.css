@@ -3,7 +3,14 @@
 }
 
 .layui-form{
-    margin-top: 10px; margin-right: 10px
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.layui-table-cell{
+    text-align: center;
+    height: auto !important;
+    white-space: normal;
 }
 
 .layui-table image{
