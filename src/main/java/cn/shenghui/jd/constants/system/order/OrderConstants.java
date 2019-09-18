@@ -7,6 +7,10 @@ package cn.shenghui.jd.constants.system.order;
  */
 public class OrderConstants {
 
+    private OrderConstants(){
+
+    }
+
     /**
      * 订单状态：已下单
      */

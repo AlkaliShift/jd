@@ -7,6 +7,10 @@ package cn.shenghui.jd.constants.system.cart;
  */
 public class CartConstants {
 
+    private CartConstants(){
+
+    }
+
     /**
      * 购物车，新增商品数量
      */

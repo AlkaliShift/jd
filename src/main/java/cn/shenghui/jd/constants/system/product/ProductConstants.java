@@ -7,6 +7,10 @@ package cn.shenghui.jd.constants.system.product;
  */
 public class ProductConstants {
 
+    private ProductConstants(){
+
+    }
+
     /**
      * 商品上架
      */

@@ -7,6 +7,10 @@ package cn.shenghui.jd.constants.system.user;
  */
 public class UserConstants {
 
+    private UserConstants(){
+
+    }
+
     /**
      * 管理员
      */
