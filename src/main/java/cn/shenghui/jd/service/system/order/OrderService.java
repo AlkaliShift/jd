@@ -1,10 +1,13 @@
 package cn.shenghui.jd.service.system.order;
 
+import cn.shenghui.jd.constants.UniversalConstants;
+import cn.shenghui.jd.constants.system.order.OrderConstants;
 import cn.shenghui.jd.dao.system.order.dto.IfSufficient;
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.order.mapper.OrderMapper;
 import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.dao.system.order.model.OrderDetails;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,8 +16,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static cn.shenghui.jd.constants.system.order.OrderConstants.ORDER_STATUS_ORDERED;
 
 /**
  * @author shenghui
@@ -76,7 +77,7 @@ public class OrderService {
      * 判断商品库存是否充足
      *
      * @param orderProducts 商品详细信息列表
-     * @return 充足：true/不足:false
+     * @return 充足：库存充足的商品集/不足:库存不足的商品集
      */
     public IfSufficient ifSufficient(List<OrderProduct> orderProducts) {
         IfSufficient ifSufficient = new IfSufficient();
@@ -115,7 +116,7 @@ public class OrderService {
             totalPrice = totalPrice.add(unitPrice.multiply(new BigDecimal(productNum)));
         }
         Order order = new Order();
-        String orderTime = new Date() + "";
+        String orderTime = DateFormatUtils.format(new Date(), UniversalConstants.PATTERN_TIME_FOR_ID);
         String orderId = orderTime.replaceAll(" ", "-") + "-" + (orderMapper.countOrder() + 1);
         order.setOrderId(orderId);
         order.setUserId(userId);
@@ -124,7 +125,7 @@ public class OrderService {
         order.setOrderTime(orderTime);
         order.setArrivalTime("");
         order.setAddress(address);
-        order.setOrderStatus(ORDER_STATUS_ORDERED);
+        order.setOrderStatus(OrderConstants.ORDER_STATUS_ORDERED);
         orderMapper.addOrder(order);
         separateOrder(orderProducts, order);
     }
@@ -206,12 +207,8 @@ public class OrderService {
             //不分单
             for (OrderProduct product : orderProducts) {
                 OrderDetails orderDetails = new OrderDetails();
+                BeanUtils.copyProperties(product, orderDetails);
                 orderDetails.setOrderId(mainOrderId);
-                orderDetails.setProductId(product.getProductId());
-                orderDetails.setProductName(product.getProductName());
-                orderDetails.setProductNum(product.getProductNum());
-                orderDetails.setUnitPrice(product.getUnitPrice());
-                orderDetails.setDescription(product.getDescription());
                 orderMapper.addOrderDetails(orderDetails);
             }
         }

@@ -8,7 +8,7 @@
     </resultMap>
 
     <select id="getWarehouseById" parameterType="java.lang.String" resultMap="warehouseResult">
-        select * from warehouse where warehouse_id = #{warehouseId,jdbcType=VARCHAR};
+        select * from warehouse where warehouse_id = #{warehouseId,jdbcType=VARCHAR}
     </select>
 
     <select id="getWarehouseList" parameterType="java.lang.String" resultMap="warehouseResult">
@@ -20,28 +20,32 @@
                 or warehouse_name like concat('%', #{content,jdbcType=VARCHAR} '%')
             </if>
         </where>
-        order by LENGTH(warehouse_id) ASC;
+        order by LENGTH(warehouse_id) ASC
     </select>
 
     <update id="addWarehouse" parameterType="cn.shenghui.jd.dao.system.warehouse.model.Warehouse">
-        insert into warehouse(warehouse_id, warehouse_name, del_flag)
-        values (#{warehouseId,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, 0);
+        insert into warehouse(warehouse_id,
+                              warehouse_name,
+                              del_flag)
+        values (#{warehouseId,jdbcType=VARCHAR},
+                #{warehouseName,jdbcType=VARCHAR},
+                0)
     </update>
 
     <update id="removeWarehouse" parameterType="java.lang.String">
         update warehouse
         set del_flag = 1
-        where warehouse_id = #{warehouseId,jdbcType=VARCHAR};
+        where warehouse_id = #{warehouseId,jdbcType=VARCHAR}
     </update>
 
     <update id="updateWarehouse" parameterType="cn.shenghui.jd.dao.system.warehouse.model.Warehouse">
         update warehouse
         set warehouse_name = #{warehouseName,jdbcType=VARCHAR}
-        where warehouse_id = #{warehouseId,jdbcType=VARCHAR};
+        where warehouse_id = #{warehouseId,jdbcType=VARCHAR}
     </update>
 
     <select id="countWarehouse" resultType="int">
         select count(*)
-        from warehouse;
+        from warehouse
     </select>
 </mapper>

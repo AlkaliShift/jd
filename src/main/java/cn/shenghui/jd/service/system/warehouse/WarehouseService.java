@@ -48,7 +48,7 @@ public class WarehouseService {
      * @param warehouse 仓库信息
      */
     public void addWarehouse(Warehouse warehouse) {
-        String warehouseId = warehouseMapper.countWarehouse() + 1 + "";
+        String warehouseId = String.valueOf(warehouseMapper.countWarehouse() + 1);
         warehouse.setWarehouseId(warehouseId);
         warehouseMapper.addWarehouse(warehouse);
     }

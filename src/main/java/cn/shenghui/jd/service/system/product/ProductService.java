@@ -1,20 +1,19 @@
 package cn.shenghui.jd.service.system.product;
 
+import cn.shenghui.jd.constants.UniversalConstants;
+import cn.shenghui.jd.constants.system.product.ProductConstants;
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.product.dto.ProductDetails;
 import cn.shenghui.jd.dao.system.product.mapper.ProductMapper;
 import cn.shenghui.jd.dao.system.product.model.Product;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-
-import static cn.shenghui.jd.constants.system.product.ProductConstants.PRODUCT_DOWN;
-import static cn.shenghui.jd.constants.system.product.ProductConstants.PRODUCT_UP;
 
 /**
  * @author shenghui
@@ -58,7 +57,7 @@ public class ProductService {
      * @param product 商品
      */
     public void addProduct(Product product) {
-        String productId = productMapper.countProduct() + 1 + "";
+        String productId = String.valueOf(productMapper.countProduct() + 1);
         product.setProductId(productId);
         productMapper.addProduct(product);
     }
@@ -79,10 +78,10 @@ public class ProductService {
      * @param productStatus 商品上下架状态
      */
     public void setProductStatus(List<String> productIds, String productStatus) {
-        String time = new Date() + "";
-        if ((PRODUCT_UP).equals(productStatus)) {
+        String time = DateFormatUtils.format(new Date(), UniversalConstants.PATTERN_TIME_FOR_ID);
+        if ((ProductConstants.PRODUCT_UP).equals(productStatus)) {
             productMapper.productUp(productIds, productStatus, time);
-        } else if (PRODUCT_DOWN.equals(productStatus)) {
+        } else if (ProductConstants.PRODUCT_DOWN.equals(productStatus)) {
             productMapper.productDown(productIds, productStatus, time);
         }
     }
@@ -104,7 +103,7 @@ public class ProductService {
      */
     public PageInfo<ProductDetails> getProductListUser(String content, int page, int limit) {
         PageHelper.startPage(page, limit);
-        return new PageInfo<>(productMapper.getProductListUser(content, PRODUCT_UP));
+        return new PageInfo<>(productMapper.getProductListUser(content, ProductConstants.PRODUCT_UP));
     }
 
     /**
@@ -167,12 +166,17 @@ public class ProductService {
      *
      * @param orderProduct 商品详细信息
      */
-    @Transactional(rollbackFor = Exception.class)
-    public void setFrozenNum(OrderProduct orderProduct) {
+    private void setFrozenNum(OrderProduct orderProduct) {
         productMapper.setFrozenNum(orderProduct);
     }
 
-    public boolean ifExistProduct(String categoryId){
+    /**
+     * 查询该商品分类下是否有商品
+     *
+     * @param categoryId 商品种类ID
+     * @return 存在：true/不存在：false
+     */
+    public boolean ifExistProduct(String categoryId) {
         return productMapper.ifExistProduct(categoryId) != 0;
     }
 

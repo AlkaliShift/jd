@@ -1,5 +1,6 @@
 package cn.shenghui.jd.service.system.cart;
 
+import cn.shenghui.jd.constants.system.cart.CartConstants;
 import cn.shenghui.jd.dao.system.cart.dto.CartProduct;
 import cn.shenghui.jd.dao.system.cart.mapper.CartMapper;
 import cn.shenghui.jd.dao.system.cart.model.Cart;
@@ -9,8 +10,6 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static cn.shenghui.jd.constants.system.cart.CartConstants.CART_ADD;
 
 /**
  * @author shenghui
@@ -54,7 +53,7 @@ public class CartService {
             productNum = products.get(0).getProductNum();
         }
 
-        if (CART_ADD.equals(action) && productNum != 0) {
+        if (CartConstants.CART_ADD.equals(action) && productNum != 0) {
             num = productNum + num;
         }
 

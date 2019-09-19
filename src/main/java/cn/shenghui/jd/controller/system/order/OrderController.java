@@ -1,5 +1,6 @@
 package cn.shenghui.jd.controller.system.order;
 
+import cn.shenghui.jd.constants.system.order.OrderConstants;
 import cn.shenghui.jd.dao.system.order.dto.IfSufficient;
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.order.model.Order;
@@ -23,8 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static cn.shenghui.jd.constants.system.order.OrderConstants.*;
 
 /**
  * @author shenghui
@@ -223,33 +222,33 @@ public class OrderController {
             if (orderService.ifParent(orderId)) {
                 response.setStatusInfo(0, "无法修改主订单状态。");
             } else {
-                if (ORDER_STATUS_ORDERED.equals(orderStatus) || ORDER_STATUS_DELIVERED.equals(orderStatus) ||
-                        ORDER_STATUS_COMPLETED.equals(orderStatus) || ORDER_STATUS_CANCELLED.equals(orderStatus)) {
+                if (OrderConstants.ORDER_STATUS_ORDERED.equals(orderStatus) || OrderConstants.ORDER_STATUS_DELIVERED.equals(orderStatus) ||
+                        OrderConstants.ORDER_STATUS_COMPLETED.equals(orderStatus) || OrderConstants.ORDER_STATUS_CANCELLED.equals(orderStatus)) {
                     String previousOrderStatus = previousOrder.getOrderStatus();
-                    if (ORDER_STATUS_COMPLETED.equals(orderStatus) && ORDER_STATUS_ORDERED.equals(previousOrderStatus)) {
+                    if (OrderConstants.ORDER_STATUS_COMPLETED.equals(orderStatus) && OrderConstants.ORDER_STATUS_ORDERED.equals(previousOrderStatus)) {
                         response.setStatusInfo(0, "订单尚未发货，请先安排发货。");
-                    } else if (ORDER_STATUS_ORDERED.equals(orderStatus) && ORDER_STATUS_ORDERED.equals(previousOrderStatus)) {
+                    } else if (OrderConstants.ORDER_STATUS_ORDERED.equals(orderStatus) && OrderConstants.ORDER_STATUS_ORDERED.equals(previousOrderStatus)) {
                         response.setStatusInfo(0, "订单已下单，无法重复下单。");
-                    } else if (ORDER_STATUS_DELIVERED.equals(orderStatus) && ORDER_STATUS_DELIVERED.equals(previousOrderStatus)) {
+                    } else if (OrderConstants.ORDER_STATUS_DELIVERED.equals(orderStatus) && OrderConstants.ORDER_STATUS_DELIVERED.equals(previousOrderStatus)) {
                         response.setStatusInfo(0, "订单已发货，无法重复发货。");
-                    } else if (ORDER_STATUS_COMPLETED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
+                    } else if (OrderConstants.ORDER_STATUS_COMPLETED.equals(orderStatus) && OrderConstants.ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
                         response.setStatusInfo(0, "订单已完成，无法重复确认。");
-                    } else if (ORDER_STATUS_ORDERED.equals(orderStatus) && ORDER_STATUS_DELIVERED.equals(previousOrderStatus)) {
+                    } else if (OrderConstants.ORDER_STATUS_ORDERED.equals(orderStatus) && OrderConstants.ORDER_STATUS_DELIVERED.equals(previousOrderStatus)) {
                         response.setStatusInfo(0, "订单已发货，无法重新下单。");
-                    } else if (ORDER_STATUS_ORDERED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
+                    } else if (OrderConstants.ORDER_STATUS_ORDERED.equals(orderStatus) && OrderConstants.ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
                         response.setStatusInfo(0, "订单已完成，无法重新下单。");
-                    } else if (ORDER_STATUS_DELIVERED.equals(orderStatus) && ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
+                    } else if (OrderConstants.ORDER_STATUS_DELIVERED.equals(orderStatus) && OrderConstants.ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
                         response.setStatusInfo(0, "订单已完成，无法重新发货。");
                     } else {
                         orderService.updateOrderStatus(orderId, orderStatus);
                         String orderPid = previousOrder.getOrderPid();
-                        if (ORDER_STATUS_CANCELLED.equals(orderStatus)){
+                        if (OrderConstants.ORDER_STATUS_CANCELLED.equals(orderStatus)){
                             this.unFreezeNum(orderId);
-                            if (orderService.ifAllThisStatus(orderPid, ORDER_STATUS_CANCELLED)) {
+                            if (orderService.ifAllThisStatus(orderPid, OrderConstants.ORDER_STATUS_CANCELLED)) {
                                 orderService.updateOrderStatus(orderPid, orderStatus);
                             }
-                        } else if (ORDER_STATUS_COMPLETED.equals(orderStatus)) {
-                            if (orderService.ifAllThisStatus(orderPid, ORDER_STATUS_COMPLETED)) {
+                        } else if (OrderConstants.ORDER_STATUS_COMPLETED.equals(orderStatus)) {
+                            if (orderService.ifAllThisStatus(orderPid, OrderConstants.ORDER_STATUS_COMPLETED)) {
                                 orderService.updateOrderStatus(orderPid, orderStatus);
                             }
                         }

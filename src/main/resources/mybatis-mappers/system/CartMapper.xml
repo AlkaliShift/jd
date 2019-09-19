@@ -12,31 +12,41 @@
     </resultMap>
 
     <select id="getCartList" parameterType="java.lang.String" resultMap="cartResult">
-        select c.product_id, c.product_num, p.product_name, p.available_num, p.unit_price, p.description
-        from cart c inner join product p on c.product_id = p.product_id
-        where user_id = #{userId,jdbcType=VARCHAR};
+        select c.product_id,
+               c.product_num,
+               p.product_name,
+               p.available_num,
+               p.unit_price,
+               p.description
+        from cart c
+                 inner join product p on c.product_id = p.product_id
+        where user_id = #{userId,jdbcType=VARCHAR}
     </select>
 
     <select id="getProductFromCart" resultMap="cartResult">
-        select * from cart c inner join product p on c.product_id = p.product_id
-        where c.user_id = #{userId,jdbcType=VARCHAR} and c.product_id in
-        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
+        select *
+        from cart c inner join product p on c.product_id = p.product_id
+        where c.user_id = #{userId,jdbcType=VARCHAR}
+        and c.product_id in
+        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>
     </select>
 
     <update id="setProductNumOfCart">
         update cart
         set product_num = #{productNum,jdbcType=INTEGER}
         where user_id = #{userId,jdbcType=VARCHAR}
-          and product_id = #{productId,jdbcType=VARCHAR};
+          and product_id = #{productId,jdbcType=VARCHAR}
     </update>
 
     <insert id="addToCart" parameterType="cn.shenghui.jd.dao.system.cart.model.Cart">
         insert into cart
-        values (#{userId,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{productNum,jdbcType=INTEGER});
+        values (#{userId,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{productNum,jdbcType=INTEGER})
     </insert>
 
     <update id="deleteProducts" parameterType="java.util.List">
-        delete from cart where user_id = #{userId,jdbcType=VARCHAR} and product_id in
-        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
+        delete from cart
+        where user_id = #{userId,jdbcType=VARCHAR}
+        and product_id in
+        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>
     </update>
 </mapper>

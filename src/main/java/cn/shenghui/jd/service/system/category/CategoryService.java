@@ -49,7 +49,7 @@ public class CategoryService {
      * @param category 商品种类
      */
     public void addCategory(Category category) {
-        String categoryId = categoryMapper.countCategory() + 1 + "";
+        String categoryId = String.valueOf(categoryMapper.countCategory() + 1);
         category.setCategoryId(categoryId);
         categoryMapper.addCategory(category);
     }
@@ -76,7 +76,7 @@ public class CategoryService {
      * 判断指定仓库下是否存在商品种类
      *
      * @param warehouseId 仓库ID
-     * @return 存在返回true/不存在返回false
+     * @return 存在：true/不存在：false
      */
     public boolean ifExistCategory(String warehouseId) {
         return categoryMapper.ifExistCategory(warehouseId) != 0;

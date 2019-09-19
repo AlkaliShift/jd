@@ -12,7 +12,7 @@
         select *
         from category
         where del_flag = 0
-          and category_id = #{categoryId,jdbcType=VARCHAR};
+          and category_id = #{categoryId,jdbcType=VARCHAR}
     </select>
 
     <select id="getCategoryList" parameterType="java.lang.String" resultMap="categoryResult">
@@ -23,19 +23,19 @@
                 and c.category_id like concat('%', #{content,jdbcType=VARCHAR} '%')
                 or c.category_name like concat('%', #{content,jdbcType=VARCHAR} '%')
                 or w.warehouse_name like concat('%', #{content,jdbcType=VARCHAR} '%')
-            </if>;
+            </if>
         </where>
     </select>
 
     <insert id="addCategory" parameterType="cn.shenghui.jd.dao.system.category.model.Category">
         insert into category
-        values (#{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, #{warehouseId,jdbcType=VARCHAR}, 0);
+        values (#{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, #{warehouseId,jdbcType=VARCHAR}, 0)
     </insert>
 
     <update id="removeCategory" parameterType="java.lang.String">
         update category
         set del_flag = 1
-        where category_id = #{categoryId,jdbcType=VARCHAR};
+        where category_id = #{categoryId,jdbcType=VARCHAR}
     </update>
 
     <update id="updateCategory" parameterType="cn.shenghui.jd.dao.system.category.model.Category">
@@ -46,18 +46,18 @@
             <if test="warehouseId != null and warehouseId != ''">warehouse_id = #{warehouseId,jdbcType=VARCHAR},</if>
             del_flag = 0
         </set>
-        where category_id = #{categoryId,jdbcType=VARCHAR};
+        where category_id = #{categoryId,jdbcType=VARCHAR}
     </update>
 
     <select id="countCategory" resultType="int">
         select count(*)
-        from category;
+        from category
     </select>
 
     <select id="ifExistCategory" parameterType="java.lang.String" resultType="int">
         select count(*)
         from category
         where del_flag = 0
-          and warehouse_id = #{warehouseId,jdbcType=VARCHAR};
+          and warehouse_id = #{warehouseId,jdbcType=VARCHAR}
     </select>
 </mapper>

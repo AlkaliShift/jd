@@ -1,5 +1,6 @@
 package cn.shenghui.jd.controller.system.product;
 
+import cn.shenghui.jd.constants.system.product.ProductConstants;
 import cn.shenghui.jd.dao.system.product.dto.ProductDetails;
 import cn.shenghui.jd.dao.system.product.model.Product;
 import cn.shenghui.jd.resthttp.system.product.response.ProductBasicResponse;
@@ -21,8 +22,6 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import static cn.shenghui.jd.constants.system.product.ProductConstants.IMAGE_ROOT_PATH;
 
 /**
  * @author shenghui
@@ -287,7 +286,7 @@ public class ProductController {
             return response;
         } else {
             String filename = productId + "_" + file.getOriginalFilename();
-            String path = IMAGE_ROOT_PATH + "/" + filename;
+            String path = ProductConstants.IMAGE_ROOT_PATH + "/" + filename;
             File dest = new File(path);
             InputStream in = null;
             FileOutputStream out = null;

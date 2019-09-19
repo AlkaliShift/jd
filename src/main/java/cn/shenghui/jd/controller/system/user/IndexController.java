@@ -1,12 +1,10 @@
 package cn.shenghui.jd.controller.system.user;
 
+import cn.shenghui.jd.constants.system.user.UserConstants;
 import cn.shenghui.jd.utils.CurrentUserUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import static cn.shenghui.jd.constants.system.user.UserConstants.ROLE_ADMIN;
 
 /**
  * @author shenghui
@@ -29,7 +27,7 @@ public class IndexController {
         Boolean admin = false;
         for (Object role : CurrentUserUtils.getUserRole()){
             temp = role.toString();
-            if (ROLE_ADMIN.equals(temp)){
+            if (UserConstants.ROLE_ADMIN.equals(temp)){
                 admin = true;
             }
         }

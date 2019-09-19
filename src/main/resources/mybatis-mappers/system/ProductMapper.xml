@@ -33,35 +33,55 @@
     </resultMap>
 
     <select id="getProductList" parameterType="java.lang.String" resultMap="productResult">
-        select * from product p inner join category c on p.category_id = c.category_id where p.del_flag = 0
-        <if test="content != null and content != ''">
-            and (p.product_id like concat('%', #{content,jdbcType=VARCHAR}, '%')
-            or p.product_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
-            or c.category_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
-            or p.available_num like concat('%', #{content,jdbcType=VARCHAR}, '%')
-            or p.frozen_num like concat('%', #{content,jdbcType=VARCHAR}, '%')
-            or p.unit_price like concat('%', #{content,jdbcType=VARCHAR}, '%')
-            or p.product_status like concat('%', #{content,jdbcType=VARCHAR}, '%')
-            or p.start_time like concat('%', #{content,jdbcType=VARCHAR}, '%')
-            or p.end_time like concat('%', #{content,jdbcType=VARCHAR}, '%')
-            or p.description like concat('%', #{content,jdbcType=VARCHAR}, '%'))
-        </if>
+        select * from product p inner join category c on p.category_id = c.category_id
+        <where>
+            p.del_flag = 0
+            <if test="content != null and content != ''">
+                and (p.product_id like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or p.product_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or c.category_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or p.available_num like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or p.frozen_num like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or p.unit_price like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or p.product_status like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or p.start_time like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or p.end_time like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or p.description like concat('%', #{content,jdbcType=VARCHAR}, '%'))
+            </if>
+        </where>
         order by LENGTH(product_id) ASC
     </select>
 
     <select id="getProductsByIds" parameterType="java.util.List" resultMap="productResult">
-        select * from product where del_flag = 0 and product_id in
-        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
+        select * from product
+        where del_flag = 0
+          and product_id in
+        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>
     </select>
 
     <insert id="addProduct" parameterType="cn.shenghui.jd.dao.system.product.model.Product">
-        insert into product(product_id, product_name, category_id, available_num, frozen_num,
-        unit_price, product_status, start_time, end_time
-        <if test="description != null and description != ''">, description</if>, del_flag)
-        values (#{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR},
-        #{availableNum,jdbcType=INTEGER}, #{frozenNum,jdbcType=INTEGER}, #{unitPrice,jdbcType=DECIMAL},
-        #{productStatus,jdbcType=VARCHAR}, #{startTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR},
-        <if test="description != null and description != ''">#{description,jdbcType=VARCHAR},</if>0);
+        insert into product(product_id,
+                            product_name,
+                            category_id,
+                            available_num,
+                            frozen_num,
+                            unit_price,
+                            product_status,
+                            start_time,
+                            end_time,
+                            <if test="description != null and description != ''">description, </if>
+                            del_flag)
+        values (#{productId,jdbcType=VARCHAR},
+                #{productName,jdbcType=VARCHAR},
+                #{categoryId,jdbcType=VARCHAR},
+                #{availableNum,jdbcType=INTEGER},
+                #{frozenNum,jdbcType=INTEGER},
+                #{unitPrice,jdbcType=DECIMAL},
+                #{productStatus,jdbcType=VARCHAR},
+                #{startTime,jdbcType=VARCHAR},
+                #{endTime,jdbcType=VARCHAR},
+                <if test="description != null and description != ''">#{description,jdbcType=VARCHAR},</if>
+                0)
     </insert>
 
     <update id="updateProduct" parameterType="cn.shenghui.jd.dao.system.product.model.Product">
@@ -77,38 +97,44 @@
             <if test="endTime != null and endTime != ''">end_time = #{endTime,jdbcType=VARCHAR},</if>
             <if test="description != null and description != ''">description = #{description,jdbcType=VARCHAR}</if>
         </set>
-        where del_flag = 0 and product_id = #{productId,jdbcType=VARCHAR};
+        where del_flag = 0
+          and product_id = #{productId,jdbcType=VARCHAR}
     </update>
 
     <update id="productUp">
         update product
-        set product_status = #{productStatus,jdbcType=VARCHAR}, start_time = #{startTime,jdbcType=VARCHAR},
-        end_time = null
-        where del_flag = 0 and product_id in
-        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
+        set product_status = #{productStatus,jdbcType=VARCHAR},
+            start_time = #{startTime,jdbcType=VARCHAR},
+            end_time = null
+        where del_flag = 0
+          and product_id in
+        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>
     </update>
 
     <update id="productDown">
         update product
-        set product_status = #{productStatus,jdbcType=VARCHAR}, end_time = #{endTime,jdbcType=VARCHAR}
-        where del_flag = 0 and product_id in
-        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
+        set product_status = #{productStatus,jdbcType=VARCHAR},
+            end_time = #{endTime,jdbcType=VARCHAR}
+        where del_flag = 0
+          and product_id in
+        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>
     </update>
 
     <update id="removeProduct" parameterType="java.lang.String">
         update product
         set del_flag = 1
-        where product_id = #{productId,jdbcType=VARCHAR};
+        where product_id = #{productId,jdbcType=VARCHAR}
     </update>
 
     <select id="countProduct" resultType="int">
         select count(*)
-        from product;
+        from product
     </select>
 
     <select id="getProductListUser" parameterType="java.lang.String" resultMap="productResult">
         select * from product p inner join category c on p.category_id = c.category_id
-        where p.del_flag = 0 and p.product_status = #{productStatus,jdbcType=VARCHAR}
+        where p.del_flag = 0
+          and p.product_status = #{productStatus,jdbcType=VARCHAR}
         <if test="content != null and content != ''">
             and (p.product_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
             or c.category_name like concat('%', #{content,jdbcType=VARCHAR}, '%')
@@ -120,24 +146,40 @@
     </select>
 
     <select id="getProductsByIdsUser" parameterType="java.util.List" resultMap="productResult">
-        select p.product_id, p.product_name, c.category_name, p.available_num, p.unit_price from product p inner join
-        category c on p.category_id = c.category_id where p.del_flag = 0
-        and product_id in
+        select p.product_id,
+               p.product_name,
+               c.category_name,
+               p.available_num,
+               p.unit_price
+        from product p inner join category c on p.category_id = c.category_id
+        where p.del_flag = 0
+          and product_id in
         <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
     </select>
 
     <select id="getProductDetails" resultMap="orderProductResult">
-        select c.product_num, p.product_id, p.product_name, p.available_num, p.frozen_num, p.unit_price,
-        p.product_status, p.start_time, p.end_time, p.description, cg.warehouse_id from (cart c inner join product p on
-        c.product_id = p.product_id) inner join category cg on p.category_id = cg.category_id
-        where c.user_id = #{userId,jdbcType=VARCHAR} and c.product_id in
-        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>;
+        select c.product_num,
+               p.product_id,
+               p.product_name,
+               p.available_num,
+               p.frozen_num,
+               p.unit_price,
+               p.product_status,
+               p.start_time,
+               p.end_time,
+               p.description,
+               cg.warehouse_id
+        from (cart c inner join product p on c.product_id = p.product_id)
+          inner join category cg on p.category_id = cg.category_id
+        where c.user_id = #{userId,jdbcType=VARCHAR}
+          and c.product_id in
+        <foreach collection="productIds" item="item" index="index" separator="," open="(" close=")">#{item}</foreach>
     </select>
 
     <update id="setFrozenNum" parameterType="cn.shenghui.jd.dao.system.order.dto.OrderProduct">
         update product
         set available_num = #{product.availableNum,jdbcType=INTEGER},
-            frozen_num    = #{product.frozenNum,jdbcType=INTEGER}
+            frozen_num = #{product.frozenNum,jdbcType=INTEGER}
         where del_flag = 0
           and product_id = #{product.productId,jdbcType=VARCHAR}
     </update>
@@ -146,12 +188,12 @@
         select count(*)
         from product
         where del_flag = 0
-          and category_id = #{categoryId,jdbcType=VARCHAR};
+          and category_id = #{categoryId,jdbcType=VARCHAR}
     </select>
 
     <update id="updateImagePath">
         update product
         set path = #{path,jdbcType=VARCHAR}
-        where product_id = #{productId,jdbcType=VARCHAR};
+        where product_id = #{productId,jdbcType=VARCHAR}
     </update>
 </mapper>
