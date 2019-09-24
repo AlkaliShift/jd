@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author shenghui
@@ -107,108 +107,59 @@ public class OrderService {
      * @param address       收货地址
      */
     public void addOrder(String userId, List<OrderProduct> orderProducts, String address) {
-        int productNum;
-        BigDecimal unitPrice;
-        BigDecimal totalPrice = new BigDecimal(0);
-        for (OrderProduct product : orderProducts) {
-            productNum = product.getProductNum();
-            unitPrice = product.getUnitPrice();
-            totalPrice = totalPrice.add(unitPrice.multiply(new BigDecimal(productNum)));
-        }
+        //主订单
         Order order = new Order();
         String orderTime = DateFormatUtils.format(new Date(), UniversalConstants.PATTERN_TIME_FOR_ID);
-        String orderId = orderTime.replaceAll(" ", "-") + "-" + (orderMapper.countOrder() + 1);
+        String orderId = orderTime + "-" + (orderMapper.countOrder() + 1);
         order.setOrderId(orderId);
         order.setUserId(userId);
         order.setOrderPid("");
-        order.setTotalPrice(totalPrice);
         order.setOrderTime(orderTime);
         order.setArrivalTime("");
         order.setAddress(address);
+        BigDecimal totalPrice = orderProducts.stream()
+                .map(orderProduct -> orderProduct.getUnitPrice().multiply(new BigDecimal(orderProduct.getProductNum())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        order.setTotalPrice(totalPrice);
         order.setOrderStatus(OrderConstants.ORDER_STATUS_ORDERED);
         orderMapper.addOrder(order);
-        separateOrder(orderProducts, order);
-    }
 
-    /**
-     * 分单
-     *
-     * @param orderProducts 商品详细信息
-     * @param order         主订单
-     */
-    private void separateOrder(List<OrderProduct> orderProducts, Order order) {
-        String mainOrderId = order.getOrderId();
-        String warehouseId = orderProducts.get(0).getWarehouseId();
-        String currentWarehouseId;
-        boolean ifNeedSeparate = false;
-        for (OrderProduct product : orderProducts) {
-            currentWarehouseId = product.getWarehouseId();
-            if (!warehouseId.equals(currentWarehouseId)) {
-                ifNeedSeparate = true;
-            }
-        }
+        //分组
+        Map<String, List<OrderProduct>> listMap = orderProducts.stream().collect(groupingBy(OrderProduct::getWarehouseId));
 
-        if (ifNeedSeparate) {
-            // 分单
-            List<Order> tempOrders = new ArrayList<>();
-            String childOrderId;
-            int productNum;
-            BigDecimal unitPrice;
-            BigDecimal totalPrice;
-
-            for (OrderProduct product : orderProducts) {
-                // 创建子订单
+        //判断分单
+        int listMapSize = listMap.size();
+        if (listMapSize > 1) {
+            //分单
+            //增加子订单
+            for (Map.Entry<String, List<OrderProduct>> entry : listMap.entrySet()) {
+                String warehouseId = entry.getKey();
+                List<OrderProduct> tempList = entry.getValue();
                 Order childOrder = new Order();
                 BeanUtils.copyProperties(order, childOrder);
-                childOrder.setOrderPid(mainOrderId);
-                childOrderId = mainOrderId + "-" + product.getWarehouseId();
-                childOrder.setOrderId(childOrderId);
-                productNum = product.getProductNum();
-                unitPrice = product.getUnitPrice();
-                totalPrice = unitPrice.multiply(new BigDecimal(productNum));
-                childOrder.setTotalPrice(totalPrice);
+                childOrder.setOrderId(orderId + "-" + warehouseId);
+                childOrder.setOrderPid(orderId);
+                BigDecimal total = tempList.stream()
+                        .map(orderProduct -> orderProduct.getUnitPrice().multiply(new BigDecimal(orderProduct.getProductNum())))
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+                childOrder.setTotalPrice(total);
+                orderMapper.addOrder(childOrder);
 
-                // 插入子订单至订单详情表
-                OrderDetails orderDetails = new OrderDetails();
-                orderDetails.setOrderId(childOrderId);
-                orderDetails.setProductId(product.getProductId());
-                orderDetails.setProductName(product.getProductName());
-                orderDetails.setUnitPrice(unitPrice);
-                orderDetails.setProductNum(productNum);
-                orderDetails.setDescription(product.getDescription());
-                orderMapper.addOrderDetails(orderDetails);
-
-                // 查找同一仓库的子订单，若为同一仓库，将商品总价相加后记录在tempOrders中
-                int len = tempOrders.size();
-                boolean flag = true;
-                if (len > 0) {
-                    for (Order tempOrder : tempOrders) {
-                        String tempOrderId = tempOrder.getOrderId();
-                        BigDecimal tempTotalPrice = tempOrder.getTotalPrice();
-                        if (childOrderId.equals(tempOrderId)) {
-                            tempTotalPrice = tempTotalPrice.add(totalPrice);
-                            tempOrder.setTotalPrice(tempTotalPrice);
-                            flag = false;
-                        }
-                    }
-                    if (flag) {
-                        tempOrders.add(childOrder);
-                    }
-                } else {
-                    tempOrders.add(childOrder);
+                //插入子订单中的商品至订单详情表
+                for (OrderProduct orderProduct : tempList) {
+                    OrderDetails orderDetails = new OrderDetails();
+                    BeanUtils.copyProperties(orderProduct, orderDetails);
+                    orderDetails.setOrderId(childOrder.getOrderId());
+                    orderMapper.addOrderDetails(orderDetails);
                 }
-            }
-
-            // 插入子订单至订单列表中
-            for (Order tempOrder : tempOrders) {
-                orderMapper.addOrder(tempOrder);
             }
         } else {
             //不分单
+            //插入订单/子订单至订单详情表
             for (OrderProduct product : orderProducts) {
                 OrderDetails orderDetails = new OrderDetails();
                 BeanUtils.copyProperties(product, orderDetails);
-                orderDetails.setOrderId(mainOrderId);
+                orderDetails.setOrderId(orderId);
                 orderMapper.addOrderDetails(orderDetails);
             }
         }
