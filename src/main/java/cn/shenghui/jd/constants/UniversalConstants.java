@@ -15,9 +15,4 @@ public class UniversalConstants {
      * 标准日期格式
      */
     public static String PATTERN_TIME = "yyyy-MM-dd HH:mm:ss";
-
-    /**
-     * 将日期作为ID的一部分
-     */
-    public static String PATTERN_TIME_FOR_ID = "yyyy-MM-dd-HH:mm:ss";
 }

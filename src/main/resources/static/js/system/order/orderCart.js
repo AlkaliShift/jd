@@ -75,6 +75,8 @@ layui.use(['form', 'table'], function () {
             data: JSON.stringify(order),
             success: function (data) {
                 if (data.statusCode === 1) {
+                    console.log("!11");
+                    console.log(data);
                     var insufficientProducts = data.insufficientProducts;
                     var flag = false;
                     var productNameList = [];
@@ -93,7 +95,7 @@ layui.use(['form', 'table'], function () {
                         parent.location.reload()
                     }, 1000);
                 } else {
-                    layer.msg(data.msg);
+                    layer.msg("下单失败");
                 }
             }
         });

@@ -78,7 +78,7 @@ public class ProductService {
      * @param productStatus 商品上下架状态
      */
     public void setProductStatus(List<String> productIds, String productStatus) {
-        String time = DateFormatUtils.format(new Date(), UniversalConstants.PATTERN_TIME_FOR_ID);
+        String time = DateFormatUtils.format(new Date(), UniversalConstants.PATTERN_TIME);
         if ((ProductConstants.PRODUCT_UP).equals(productStatus)) {
             productMapper.productUp(productIds, productStatus, time);
         } else if (ProductConstants.PRODUCT_DOWN.equals(productStatus)) {

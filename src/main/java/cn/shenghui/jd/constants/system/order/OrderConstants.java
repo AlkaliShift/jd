@@ -12,6 +12,16 @@ public class OrderConstants {
     }
 
     /**
+     * 库存充足
+     */
+    public static String AVAILABLE_SUFFICIENT = "sufficient";
+
+    /**
+     * 库存不充足
+     */
+    public static String AVAILABLE_INSUFFICIENT = "insufficient";
+
+    /**
      * 订单状态：已下单
      */
     public static String ORDER_STATUS_ORDERED = "ordered" ;

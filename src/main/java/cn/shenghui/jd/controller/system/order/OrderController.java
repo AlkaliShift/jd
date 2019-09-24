@@ -24,6 +24,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author shenghui
@@ -179,20 +181,29 @@ public class OrderController {
     @Transactional(rollbackFor = Exception.class)
     public AddOrderResponse addOrder(@RequestBody AddOrderRequest addOrderRequest) {
         AddOrderResponse response = new AddOrderResponse();
-        List<OrderProduct> orderProducts = productService.getProductDetails(CurrentUserUtils.getUserName(), addOrderRequest.getProductIds());
+        List<OrderProduct> orderProducts = productService.getProductDetails(CurrentUserUtils.getUserName(),
+                addOrderRequest.getProductIds());
         if (ObjectUtils.isEmpty(orderProducts)) {
             response.setStatusInfo(0, "查找不到该商品。");
         } else {
-            IfSufficient ifSufficient = orderService.ifSufficient(orderProducts);
-            if (ifSufficient.getInsufficientProducts().size() > 0) {
-                response.setInsufficientProducts(ifSufficient.getInsufficientProducts());
+            Map<String, List<OrderProduct>> ifSufficient = orderProducts.stream()
+                    .collect(Collectors.groupingBy(orderProduct -> {
+                        if (orderProduct.getAvailableNum() > 0) {
+                            return OrderConstants.AVAILABLE_SUFFICIENT;
+                        } else {
+                            return OrderConstants.AVAILABLE_INSUFFICIENT;
+                        }
+                    }));
+            if (!ObjectUtils.isEmpty(ifSufficient.get(OrderConstants.AVAILABLE_INSUFFICIENT))) {
+                response.setInsufficientProducts(ifSufficient.get(OrderConstants.AVAILABLE_INSUFFICIENT));
             }
 
-            if (ifSufficient.getSufficientProducts().size() > 0) {
-                productService.freezeNum(ifSufficient.getSufficientProducts());
-                orderService.addOrder(CurrentUserUtils.getUserName(), ifSufficient.getSufficientProducts(), addOrderRequest.getAddress());
+            if (!ObjectUtils.isEmpty(ifSufficient.get(OrderConstants.AVAILABLE_SUFFICIENT))) {
+                productService.freezeNum(ifSufficient.get(OrderConstants.AVAILABLE_SUFFICIENT));
+                orderService.addOrder(CurrentUserUtils.getUserName(),
+                        ifSufficient.get(OrderConstants.AVAILABLE_SUFFICIENT), addOrderRequest.getAddress());
                 List<String> productIds = new ArrayList<>();
-                for (OrderProduct product : ifSufficient.getSufficientProducts()) {
+                for (OrderProduct product : ifSufficient.get(OrderConstants.AVAILABLE_SUFFICIENT)) {
                     productIds.add(product.getProductId());
                 }
                 cartService.deleteProducts(CurrentUserUtils.getUserName(), productIds);
@@ -242,7 +253,7 @@ public class OrderController {
                     } else {
                         orderService.updateOrderStatus(orderId, orderStatus);
                         String orderPid = previousOrder.getOrderPid();
-                        if (OrderConstants.ORDER_STATUS_CANCELLED.equals(orderStatus)){
+                        if (OrderConstants.ORDER_STATUS_CANCELLED.equals(orderStatus)) {
                             this.unFreezeNum(orderId);
                             if (orderService.ifAllThisStatus(orderPid, OrderConstants.ORDER_STATUS_CANCELLED)) {
                                 orderService.updateOrderStatus(orderPid, orderStatus);

@@ -74,32 +74,6 @@ public class OrderService {
     }
 
     /**
-     * 判断商品库存是否充足
-     *
-     * @param orderProducts 商品详细信息列表
-     * @return 充足：库存充足的商品集/不足:库存不足的商品集
-     */
-    public IfSufficient ifSufficient(List<OrderProduct> orderProducts) {
-        IfSufficient ifSufficient = new IfSufficient();
-        int productNum;
-        int availableNum;
-        List<OrderProduct> sufficientProducts = new ArrayList<>();
-        List<OrderProduct> insufficientProducts = new ArrayList<>();
-        for (OrderProduct product : orderProducts) {
-            productNum = product.getProductNum();
-            availableNum = product.getAvailableNum();
-            if (productNum > availableNum) {
-                insufficientProducts.add(product);
-            } else {
-                sufficientProducts.add(product);
-            }
-        }
-        ifSufficient.setSufficientProducts(sufficientProducts);
-        ifSufficient.setInsufficientProducts(insufficientProducts);
-        return ifSufficient;
-    }
-
-    /**
      * 增加一个订单
      *
      * @param userId        用户ID
@@ -107,16 +81,18 @@ public class OrderService {
      * @param address       收货地址
      */
     public void addOrder(String userId, List<OrderProduct> orderProducts, String address) {
-        //主订单
+        //新增主订单
         Order order = new Order();
-        String orderTime = DateFormatUtils.format(new Date(), UniversalConstants.PATTERN_TIME_FOR_ID);
-        String orderId = orderTime + "-" + (orderMapper.countOrder() + 1);
+        String orderTime = DateFormatUtils.format(new Date(), UniversalConstants.PATTERN_TIME);
+        String orderId = orderTime.replaceAll("[-:\\s]", "") + (orderMapper.countOrder() + 1);
         order.setOrderId(orderId);
         order.setUserId(userId);
         order.setOrderPid("");
         order.setOrderTime(orderTime);
         order.setArrivalTime("");
         order.setAddress(address);
+
+        //计算订单总价
         BigDecimal totalPrice = orderProducts.stream()
                 .map(orderProduct -> orderProduct.getUnitPrice().multiply(new BigDecimal(orderProduct.getProductNum())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -137,7 +113,7 @@ public class OrderService {
                 List<OrderProduct> tempList = entry.getValue();
                 Order childOrder = new Order();
                 BeanUtils.copyProperties(order, childOrder);
-                childOrder.setOrderId(orderId + "-" + warehouseId);
+                childOrder.setOrderId(orderId + warehouseId);
                 childOrder.setOrderPid(orderId);
                 BigDecimal total = tempList.stream()
                         .map(orderProduct -> orderProduct.getUnitPrice().multiply(new BigDecimal(orderProduct.getProductNum())))
