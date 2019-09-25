@@ -5,12 +5,15 @@ layui.use('form', function () {
 
     $('#addToCart').on('click', function () {
         var cart = {};
-        var productNum = parseInt($('#productNum').val());
+        var productNum = $('#productNum').val();
         if (isNaN(productNum)) {
-            layer.msg("商品未加入购物车。");
-        } else if (productNum < 0){
-            layer.msg("选购数量不能小于0");
+            layer.msg("商品未加入购物车");
+        } else if (productNum < 0) {
+            layer.msg("商品库存不能小于0");
+        } else if (productNum - parseInt(productNum) !== 0){
+            layer.msg("请输入整数");
         } else {
+            productNum = parseInt(productNum);
             cart.productId = $('#productId').val();
             cart.productNum = productNum;
             $.ajax({

@@ -31,9 +31,9 @@ layui.use(['form', 'layer', 'treeGrid'], function () {
             , treeUpId: 'orderPid'//树形父id字段名称
             , treeShowName: 'orderId'//以树形式显示的字段
             , cols: [[
-                {field: 'orderId', width: 300, title: '订单ID'}
+                {field: 'orderId', width: 200, title: '订单ID'}
                 , {field: 'userId', width: 100, title: '用户ID'}
-                , {field: 'orderPid', width: 300, title: '父订单ID'}
+                , {field: 'orderPid', width: 150, title: '父订单ID'}
                 , {
                     field: 'totalPrice', width: 100, title: '订单总价', templet: function (data) {
                         return parseFloat(data.totalPrice).toFixed(2);
@@ -58,10 +58,10 @@ layui.use(['form', 'layer', 'treeGrid'], function () {
                         return orderStatus;
                     }
                 }
-                , {field: 'orderTime', width: 300, title: '下单时间'}
-                , {field: 'arrivalTime', width: 300, title: '到货时间'}
+                , {field: 'orderTime', width: 160, title: '下单时间'}
+                , {field: 'arrivalTime', width: 160, title: '到货时间'}
                 , {field: 'address', width: 100, title: '用户地址'}
-                , {title: '操作', align: 'center', width: 200, toolbar: '#operation'}
+                , {title: '操作', align: 'center', width: 260, toolbar: '#operation'}
             ]]
             , id: 'treeGrid'
             , page: false
@@ -114,7 +114,7 @@ layui.use(['form', 'layer', 'treeGrid'], function () {
                 layer.open({
                     type: 2,
                     content: '/order/orderDetails?orderId=' + orderId,
-                    area: ['1000px', '600px'],
+                    area: ['600px', '300px'],
                     closeBtn: 2,
                     shadeClose: true,
                     title: '订单详情'

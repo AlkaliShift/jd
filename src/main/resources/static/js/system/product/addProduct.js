@@ -20,9 +20,12 @@ layui.use('form', function () {
     $('#save').on('click', function () {
         var product = {};
         var productName = $('#productName').val();
+        var availableNum = $('#availableNum').val();
         var categoryId = $('#product-category-id-add').val();
         if (productName === '') {
             layer.msg("商品名称不能为空，请填写商品名称。");
+        } else if (availableNum - parseInt(availableNum) !== 0){
+            layer.msg("请输入整数");
         } else if (categoryId === '') {
             layer.msg("请先添加商品种类。");
             setTimeout(function () {
@@ -38,7 +41,7 @@ layui.use('form', function () {
         } else {
             product.productName = productName;
             product.categoryId = categoryId;
-            product.availableNum = parseInt($('#availableNum').val());
+            product.availableNum = parseInt(availableNum);
             product.unitPrice = $('#unitPrice').val();
             product.description = $('#description').val();
             $.ajax({

@@ -2,7 +2,6 @@ package cn.shenghui.jd.service.system.order;
 
 import cn.shenghui.jd.constants.UniversalConstants;
 import cn.shenghui.jd.constants.system.order.OrderConstants;
-import cn.shenghui.jd.dao.system.order.dto.IfSufficient;
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.order.mapper.OrderMapper;
 import cn.shenghui.jd.dao.system.order.model.Order;
@@ -87,9 +86,7 @@ public class OrderService {
         String orderId = orderTime.replaceAll("[-:\\s]", "") + (orderMapper.countOrder() + 1);
         order.setOrderId(orderId);
         order.setUserId(userId);
-        order.setOrderPid("");
         order.setOrderTime(orderTime);
-        order.setArrivalTime("");
         order.setAddress(address);
 
         //计算订单总价

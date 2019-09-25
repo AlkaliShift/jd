@@ -1,7 +1,6 @@
 package cn.shenghui.jd.controller.system.order;
 
 import cn.shenghui.jd.constants.system.order.OrderConstants;
-import cn.shenghui.jd.dao.system.order.dto.IfSufficient;
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
 import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.resthttp.system.order.request.AddOrderRequest;
@@ -222,6 +221,7 @@ public class OrderController {
     @ApiOperation(value = "修改订单状态", notes = "状态码1:修改成功")
     @RequestMapping(value = "/setOrderStatus", method = RequestMethod.POST)
     @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
     public OrderBasicResponse setOrderStatus(@RequestBody Order order) {
         OrderBasicResponse response = new OrderBasicResponse();
         String orderId = order.getOrderId();

@@ -25,7 +25,7 @@ public class Order {
     /**
      * 订单父ID
      */
-    String orderPid;
+    String orderPid = "";
 
     /**
      * 订单总价
@@ -45,7 +45,7 @@ public class Order {
     /**
      * 到货时间
      */
-    String arrivalTime;
+    String arrivalTime = "";
 
     /**
      * 收货地址

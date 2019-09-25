@@ -9,7 +9,7 @@ layui.use(['form', 'table'], function () {
         elem: '#orderDetails'
         , url: '/order/listOrderDetails'
         , where: {orderId: $("#orderId").val()}
-        , width: 990
+        , width: 600
         , response: {
             statusName: 'statusCode' //规定数据状态的字段名称，默认：code
             , statusCode: 1 //规定成功的状态码，默认：0
@@ -23,7 +23,7 @@ layui.use(['form', 'table'], function () {
             }
         }
         , cols: [[
-            {field: 'orderId', width: 300, title: '订单ID'}
+            {field: 'orderId', width: 200, title: '订单ID'}
             , {field: 'productName', title: '商品名称'}
             , {field: 'productNum', title: '购买数量'}
             , {field: 'unitPrice', title: '单位价格'}
