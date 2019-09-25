@@ -26,19 +26,19 @@ layui.use(['form', 'table', 'layer'], function () {
         , toolbar: '#toolbar'
         , cols: [[
             {type: 'checkbox'}
-            , {field: 'productId', width: 100, title: '商品ID'}
-            , {field: 'productName', width: 100, title: '商品名称'}
-            , {field: 'categoryName', width: 100, title: '商品种类'}
-            , {field: 'availableNum', width: 100, title: '可用数量'}
-            , {field: 'frozenNum', width: 100, title: '冻结数量'}
+            , {field: 'productId', width: 80, title: '商品ID'}
+            , {field: 'productName', width: 90, title: '商品名称'}
+            , {field: 'categoryName', width: 90, title: '商品种类'}
+            , {field: 'availableNum', width: 90, title: '可用数量'}
+            , {field: 'frozenNum', width: 90, title: '冻结数量'}
             , {
-                field: 'unitPrice', width: 100, title: '单位价格', templet: function (data) {
+                field: 'unitPrice', width: 90, title: '单位价格', templet: function (data) {
                     return parseFloat(data.unitPrice).toFixed(2);
                 }
             }
-            , {field: 'productStatus', width: 100, title: '商品状态'}
-            , {field: 'startTime', width: 250, title: '上架时间'}
-            , {field: 'endTime', width: 250, title: '下架时间'}
+            , {field: 'productStatus', width: 90, title: '商品状态'}
+            , {field: 'startTime', width: 160, title: '上架时间'}
+            , {field: 'endTime', width: 160, title: '下架时间'}
             , {
                 field: 'path', title: '商品图片', width: 150, style: 'height:60px;', templet: function (data) {
                     return "<img src=\"/product/downloadImage?productId=" + data.productId + "\" alt=\"\"/>";

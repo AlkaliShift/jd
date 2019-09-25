@@ -23,18 +23,11 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/warehouse")
 public class WarehouseController {
 
-    private WarehouseService warehouseService;
-    private CategoryService categoryService;
+    @Autowired
+    WarehouseService warehouseService;
 
     @Autowired
-    public void setWarehouseService(WarehouseService warehouseService) {
-        this.warehouseService = warehouseService;
-    }
-
-    @Autowired
-    public void setCategoryService(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
+    CategoryService categoryService;
 
     /**
      * 仓库列表页

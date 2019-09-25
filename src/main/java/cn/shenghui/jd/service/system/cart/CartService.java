@@ -1,12 +1,11 @@
 package cn.shenghui.jd.service.system.cart;
 
-import cn.shenghui.jd.constants.system.cart.CartConstants;
 import cn.shenghui.jd.dao.system.cart.dto.CartProduct;
 import cn.shenghui.jd.dao.system.cart.mapper.CartMapper;
 import cn.shenghui.jd.dao.system.cart.model.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +18,8 @@ import java.util.List;
 @Service
 public class CartService {
 
-    private CartMapper cartMapper;
-
     @Autowired
-    public void setCartMapper(CartMapper cartMapper) {
-        this.cartMapper = cartMapper;
-    }
+    CartMapper cartMapper;
 
     /**
      * 根据用户ID获取购物车中所有商品
@@ -44,16 +39,16 @@ public class CartService {
      * @param num          用户选择的数量
      * @param availableNum 商品可用库存数量
      */
-    public boolean addToCart(String userId, String productId, int num, int availableNum, String action) {
+    public boolean addToCart(String userId, String productId, int num, int availableNum) {
+        //查询购物车中是否存在选购商品
         int productNum = 0;
         List<String> productIds = new ArrayList<>();
         productIds.add(productId);
         List<CartProduct> products = this.getProductFromCart(userId, productIds);
-        if (!ObjectUtils.isEmpty(products)) {
+        if (!CollectionUtils.isEmpty(products)) {
+            //购物车中已存在的该商品数量
             productNum = products.get(0).getProductNum();
-        }
-
-        if (CartConstants.CART_ADD.equals(action) && productNum != 0) {
+            //将选购的商品数量加入购物车中已经存在的该商品数量
             num = productNum + num;
         }
 

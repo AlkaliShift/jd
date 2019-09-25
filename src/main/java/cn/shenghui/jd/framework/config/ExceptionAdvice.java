@@ -1,4 +1,4 @@
-package cn.shenghui.jd.exceptions;
+package cn.shenghui.jd.framework.config;
 
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;

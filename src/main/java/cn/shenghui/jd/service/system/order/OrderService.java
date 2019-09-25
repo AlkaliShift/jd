@@ -24,12 +24,8 @@ import static java.util.stream.Collectors.groupingBy;
 @Service
 public class OrderService {
 
-    private OrderMapper orderMapper;
-
     @Autowired
-    public void setOrderMapper(OrderMapper orderMapper) {
-        this.orderMapper = orderMapper;
-    }
+    OrderMapper orderMapper;
 
     /**
      * 模糊查询订单信息，若搜索内容为空，用户为空，则返回所有用户订单

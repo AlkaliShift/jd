@@ -31,9 +31,8 @@ layui.use(['form', 'layer', 'treeGrid'], function () {
             , treeUpId: 'orderPid'//树形父id字段名称
             , treeShowName: 'orderId'//以树形式显示的字段
             , cols: [[
-                {field: 'orderId', width: 200, title: '订单ID'}
+                {field: 'orderId', width: 250, title: '订单ID'}
                 , {field: 'userId', width: 100, title: '用户ID'}
-                , {field: 'orderPid', width: 150, title: '父订单ID'}
                 , {
                     field: 'totalPrice', width: 100, title: '订单总价', templet: function (data) {
                         return parseFloat(data.totalPrice).toFixed(2);
@@ -60,7 +59,7 @@ layui.use(['form', 'layer', 'treeGrid'], function () {
                 }
                 , {field: 'orderTime', width: 160, title: '下单时间'}
                 , {field: 'arrivalTime', width: 160, title: '到货时间'}
-                , {field: 'address', width: 100, title: '用户地址'}
+                , {field: 'address', width: 200, title: '用户地址'}
                 , {title: '操作', align: 'center', width: 260, toolbar: '#operation'}
             ]]
             , id: 'treeGrid'
@@ -83,7 +82,7 @@ layui.use(['form', 'layer', 'treeGrid'], function () {
                     success: function (data) {
                         if (data.statusCode === 1) {
                             layer.msg("确认收货成功");
-                            reloadTable($('#content').val());
+                            loadTreeGrid($("#content").val());
                         } else {
                             layer.msg(data.msg);
                         }
@@ -102,7 +101,7 @@ layui.use(['form', 'layer', 'treeGrid'], function () {
                                 if (data.statusCode === 1) {
                                     layer.msg("取消成功");
                                     layer.close(index);
-                                    reloadTable($('#content').val());
+                                    loadTreeGrid($("#content").val());
                                 } else {
                                     layer.msg(data.msg);
                                 }

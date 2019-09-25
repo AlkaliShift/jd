@@ -23,12 +23,8 @@ import java.util.List;
 @Service
 public class ProductService {
 
-    private ProductMapper productMapper;
-
     @Autowired
-    public void setProductMapper(ProductMapper productMapper) {
-        this.productMapper = productMapper;
-    }
+    ProductMapper productMapper;
 
     /**
      * 模糊查询商品信息，若搜索内容为空，则返回所有商品信息列表
@@ -162,7 +158,7 @@ public class ProductService {
     }
 
     /**
-     * 冻结/解冻库存的事务管理
+     * 冻结/解冻库存
      *
      * @param orderProduct 商品详细信息
      */

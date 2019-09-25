@@ -15,12 +15,8 @@ import java.util.List;
 @Service
 public class WarehouseService {
 
-    private WarehouseMapper warehouseMapper;
-
     @Autowired
-    public void setWarehouseMapper(WarehouseMapper warehouseMapper) {
-        this.warehouseMapper = warehouseMapper;
-    }
+    WarehouseMapper warehouseMapper;
 
     /**
      * 根据仓库ID查找仓库信息

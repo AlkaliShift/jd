@@ -18,7 +18,7 @@ layui.use('form', function () {
             cart.productNum = productNum;
             $.ajax({
                 type: 'POST',
-                url: '/cart/add?action=add',
+                url: '/cart/add',
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(cart),
                 success: function (data) {

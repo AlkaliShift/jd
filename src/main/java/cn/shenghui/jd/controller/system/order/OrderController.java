@@ -15,6 +15,7 @@ import cn.shenghui.jd.utils.CurrentUserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -36,24 +37,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/order")
 public class OrderController {
 
-    private OrderService orderService;
-    private ProductService productService;
-    private CartService cartService;
+    @Autowired
+    OrderService orderService;
 
     @Autowired
-    public void setOrderService(OrderService orderService) {
-        this.orderService = orderService;
-    }
+    ProductService productService;
 
     @Autowired
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
-    }
-
-    @Autowired
-    public void setCartService(CartService cartService) {
-        this.cartService = cartService;
-    }
+    CartService cartService;
 
     /**
      * 返回所有订单列表页
@@ -61,6 +52,7 @@ public class OrderController {
      * @return 页面
      */
     @RequestMapping(value = "")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView orderPage() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("system/order/order");
@@ -101,6 +93,7 @@ public class OrderController {
      * @return 页面
      */
     @RequestMapping(value = "/updateOrderStatus")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView updateOrderStatusPage(@RequestParam("orderId") String orderId) {
         ModelAndView mv = new ModelAndView();
         mv.addObject("orderId", orderId);

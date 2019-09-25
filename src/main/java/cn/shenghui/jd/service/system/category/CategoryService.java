@@ -16,12 +16,8 @@ import java.util.List;
 @Service
 public class CategoryService {
 
-    private CategoryMapper categoryMapper;
-
     @Autowired
-    public void setCategoryMapper(CategoryMapper categoryMapper) {
-        this.categoryMapper = categoryMapper;
-    }
+    CategoryMapper categoryMapper;
 
     /**
      * 根据商品种类ID查找商品种类

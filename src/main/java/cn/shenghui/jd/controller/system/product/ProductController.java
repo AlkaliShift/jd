@@ -10,6 +10,7 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -31,14 +32,11 @@ import java.util.List;
 @Controller
 @Api(value = "Product")
 @RequestMapping("/product")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class ProductController {
 
-    private ProductService productService;
-
     @Autowired
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
-    }
+    ProductService productService;
 
     /**
      * 商品列表页
@@ -236,6 +234,7 @@ public class ProductController {
     @ApiOperation(value = "获取商品列表", notes = "状态码1:搜索成功")
     @RequestMapping(value = "/listUser")
     @ResponseBody
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ProductResponse getProductListUser(@RequestParam("content") String content,
                                               @RequestParam(name = "page") int page,
                                               @RequestParam(name = "limit") int limit) {
@@ -254,6 +253,7 @@ public class ProductController {
      * @return 带商品信息的页面页面
      */
     @RequestMapping("/productCart")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ModelAndView productCartPage(@RequestParam(name = "productId") String productId) {
         ModelAndView mv = new ModelAndView();
         List<String> productIds = new ArrayList<>();
@@ -340,6 +340,7 @@ public class ProductController {
      */
     @ApiOperation(value = "下载图片", notes = "状态码1:上传成功")
     @RequestMapping(value = "/downloadImage")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public void downloadImage(@RequestParam(name = "productId") String productId,
                               HttpServletResponse httpServletResponse) {
         List<String> productIds = new ArrayList<>();

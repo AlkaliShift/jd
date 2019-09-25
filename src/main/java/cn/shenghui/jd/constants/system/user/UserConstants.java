@@ -14,10 +14,10 @@ public class UserConstants {
     /**
      * 管理员
      */
-    public static String ROLE_ADMIN = "ROLE_ADMIN" ;
+    public static final String ROLE_ADMIN = "ROLE_ADMIN" ;
 
     /**
      * 用户
      */
-    public static String ROLE_CUSTOMER = "ROLE_CUSTOMER";
+    public static final String ROLE_CUSTOMER = "ROLE_CUSTOMER";
 }

@@ -18,34 +18,23 @@
 <div id="type" class="layui-form">
     <div class="layui-form-item">
         <input type="hidden" id="productId" th:value="${product.productId}"/>
-        <label class="layui-form-label">商品名称</label>
-        <div class="layui-input-inline">
-            <input type="text" id="productName" th:value="${product.productName}" readonly="readonly"
-                   required="required" autocomplete="off" class="layui-input"/>
-        </div>
+        <label class="layui-form-label">商品名称: </label>
+        <label class="layui-form-label" id="productName" th:text="${product.productName}"></label>
     </div>
 
     <div class="layui-form-item">
-        <label class="layui-form-label">商品种类</label>
-        <div class="layui-input-inline">
-            <input type="text" id="categoryName" th:value="${product.categoryName}" readonly="readonly"
-                   required="required" autocomplete="off" class="layui-input"/>
-        </div>
+        <label class="layui-form-label">商品种类: </label>
+        <label class="layui-form-label" id="categoryName" th:text="${product.categoryName}"></label>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">库存数量</label>
-        <div class="layui-input-inline">
-            <input type="text" id="availableNum" th:value="${product.availableNum}" readonly="readonly"
-                   class="layui-input"/>
-        </div>
+        <label class="layui-form-label" id="availableNum" th:text="${product.availableNum}"></label>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">单位价格</label>
-        <div class="layui-input-inline">
-            <input type="text" id="unitPrice" th:value="${product.unitPrice}" readonly="readonly" class="layui-input"/>
-        </div>
+        <label class="layui-form-label" id="unitPrice" th:text="${product.unitPrice}"></label>
     </div>
 
     <div class="layui-form-item">

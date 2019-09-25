@@ -14,5 +14,5 @@ public class UniversalConstants {
     /**
      * 标准日期格式
      */
-    public static String PATTERN_TIME = "yyyy-MM-dd HH:mm:ss";
+    public static final String PATTERN_TIME = "yyyy-MM-dd HH:mm:ss";
 }

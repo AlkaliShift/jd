@@ -14,30 +14,30 @@ public class OrderConstants {
     /**
      * 库存充足
      */
-    public static String AVAILABLE_SUFFICIENT = "sufficient";
+    public static final String AVAILABLE_SUFFICIENT = "sufficient";
 
     /**
      * 库存不充足
      */
-    public static String AVAILABLE_INSUFFICIENT = "insufficient";
+    public static final String AVAILABLE_INSUFFICIENT = "insufficient";
 
     /**
      * 订单状态：已下单
      */
-    public static String ORDER_STATUS_ORDERED = "ordered" ;
+    public static final String ORDER_STATUS_ORDERED = "ordered" ;
 
     /**
      * 订单状态：已发货
      */
-    public static String ORDER_STATUS_DELIVERED = "delivered" ;
+    public static final String ORDER_STATUS_DELIVERED = "delivered" ;
 
     /**
      * 订单状态：已完成
      */
-    public static String ORDER_STATUS_COMPLETED = "completed" ;
+    public static final String ORDER_STATUS_COMPLETED = "completed" ;
 
     /**
      * 订单状态：已取消
      */
-    public static String ORDER_STATUS_CANCELLED = "cancelled" ;
+    public static final String ORDER_STATUS_CANCELLED = "cancelled" ;
 }

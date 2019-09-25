@@ -14,15 +14,15 @@ public class ProductConstants {
     /**
      * 商品上架
      */
-    public static String PRODUCT_UP = "up" ;
+    public static final String PRODUCT_UP = "up" ;
 
     /**
      * 商品下架
      */
-    public static String PRODUCT_DOWN = "down";
+    public static final String PRODUCT_DOWN = "down";
 
     /**
      * 图片根目录
      */
-    public static String IMAGE_ROOT_PATH = "D:/image";
+    public static final String IMAGE_ROOT_PATH = "D:/image";
 }

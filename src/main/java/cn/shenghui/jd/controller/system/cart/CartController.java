@@ -30,18 +30,11 @@ import java.util.List;
 @RequestMapping("/cart")
 public class CartController {
 
-    private CartService cartService;
-    private ProductService productService;
+    @Autowired
+    CartService cartService;
 
     @Autowired
-    public void setCartService(CartService cartService) {
-        this.cartService = cartService;
-    }
-
-    @Autowired
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
-    }
+    ProductService productService;
 
     /**
      * 购物车页面
@@ -115,7 +108,7 @@ public class CartController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public CartBasicResponse addCartProduct(@RequestBody Cart cart, @RequestParam("action") String action) {
+    public CartBasicResponse addCartProduct(@RequestBody Cart cart) {
         CartBasicResponse response = new CartBasicResponse();
         List<String> productIds = new ArrayList<>();
         productIds.add(cart.getProductId());
@@ -124,7 +117,7 @@ public class CartController {
             int availableNum = productService.getProductsByIds(productIds).get(0).getAvailableNum();
             cart.setUserId(CurrentUserUtils.getUserName());
             boolean check = cartService.addToCart(cart.getUserId(), cart.getProductId(),
-                    cart.getProductNum(), availableNum, action);
+                    cart.getProductNum(), availableNum);
             if (!check) {
                 response.setStatusInfo(0, "订购数量超过商品库存数量");
             } else {

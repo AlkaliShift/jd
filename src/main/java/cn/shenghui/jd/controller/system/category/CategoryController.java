@@ -1,7 +1,6 @@
 package cn.shenghui.jd.controller.system.category;
 
 import cn.shenghui.jd.dao.system.category.model.Category;
-import cn.shenghui.jd.dao.system.product.model.Product;
 import cn.shenghui.jd.resthttp.system.category.response.CategoryBasicResponse;
 import cn.shenghui.jd.resthttp.system.category.response.CategoryResponse;
 import cn.shenghui.jd.service.system.category.CategoryService;
@@ -9,6 +8,7 @@ import cn.shenghui.jd.service.system.product.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -22,20 +22,14 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @Api(value = "Category")
 @RequestMapping("/category")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class CategoryController {
 
-    private CategoryService categoryService;
-    private ProductService productService;
+    @Autowired
+    CategoryService categoryService;
 
     @Autowired
-    public void setCategoryService(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
-
-    @Autowired
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
-    }
+    ProductService productService;
 
     /**
      * 商品种类列表页
