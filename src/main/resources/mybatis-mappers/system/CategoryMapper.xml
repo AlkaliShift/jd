@@ -29,7 +29,10 @@
 
     <insert id="addCategory" parameterType="cn.shenghui.jd.dao.system.category.model.Category">
         insert into category
-        values (#{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, #{warehouseId,jdbcType=VARCHAR}, 0)
+        values (#{categoryId,jdbcType=VARCHAR},
+                #{categoryName,jdbcType=VARCHAR},
+                #{warehouseId,jdbcType=VARCHAR},
+                0)
     </insert>
 
     <update id="removeCategory" parameterType="java.lang.String">

@@ -1,6 +1,7 @@
 package cn.shenghui.jd.dao.system.order.mapper;
 
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
+import cn.shenghui.jd.dao.system.order.dto.QueryOrder;
 import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.dao.system.order.model.OrderDetails;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,11 +20,10 @@ public interface OrderMapper {
     /**
      * 模糊查询订单信息，若搜索内容为空，用户为空，则返回所有用户订单
      *
-     * @param content 搜索内容
-     * @param userId  用户ID
+     * @param queryOrder 搜索内容包
      * @return 订单列表
      */
-    List<Order> getOrderList(@Param("content") String content, @Param("userId") String userId);
+    List<Order> getOrderList(QueryOrder queryOrder);
 
     /**
      * 根据订单ID获取订单详情列表

@@ -3,6 +3,7 @@ package cn.shenghui.jd.service.system.order;
 import cn.shenghui.jd.constants.UniversalConstants;
 import cn.shenghui.jd.constants.system.order.OrderConstants;
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
+import cn.shenghui.jd.dao.system.order.dto.QueryOrder;
 import cn.shenghui.jd.dao.system.order.mapper.OrderMapper;
 import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.dao.system.order.model.OrderDetails;
@@ -30,12 +31,11 @@ public class OrderService {
     /**
      * 模糊查询订单信息，若搜索内容为空，用户为空，则返回所有用户订单
      *
-     * @param content 搜索内容
-     * @param userId  用户ID
+     * @param queryOrder 搜索内容包
      * @return 订单列表
      */
-    public List<Order> getOrderList(String content, String userId) {
-        return orderMapper.getOrderList(content, userId);
+    public List<Order> getOrderList(QueryOrder queryOrder) {
+        return orderMapper.getOrderList(queryOrder);
     }
 
     /**

@@ -17,9 +17,8 @@
 <body>
 <div id="type" class="layui-form">
     <div class="layui-form-item">
-        <label class="layui-form-label">商品ID</label>
         <div class="layui-input-inline">
-            <input type="text" id="productId" th:value="${product.productId}" readonly="readonly" autocomplete="off" class="layui-input"/>
+            <input type="hidden" id="productId" th:value="${product.productId}" readonly="readonly" autocomplete="off" class="layui-input"/>
         </div>
     </div>
 

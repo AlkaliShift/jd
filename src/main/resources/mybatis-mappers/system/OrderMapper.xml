@@ -29,21 +29,26 @@
         <result column="frozen_num" jdbcType="INTEGER" property="frozenNum"/>
     </resultMap>
 
-    <select id="getOrderList" parameterType="java.lang.String" resultMap="orderResult">
+    <select id="getOrderList" parameterType="cn.shenghui.jd.dao.system.order.dto.QueryOrder" resultMap="orderResult">
         select *
         from `order`
         <where>
             del_flag = 0
             <if test="userId != null and userId != ''">and user_id = #{userId,jdbcType=VARCHAR}</if>
             <if test="content != null and content != ''">
-                and order_id like concat('%', #{content,jdbcType=VARCHAR} '%')
-                or user_id like concat('%', #{content,jdbcType=VARCHAR} '%')
-                or order_pid like concat('%', #{content,jdbcType=VARCHAR} '%')
-                or total_price like concat('%', #{content,jdbcType=VARCHAR} '%')
-                or order_status like concat('%', #{content,jdbcType=VARCHAR} '%')
-                or order_time like concat('%', #{content,jdbcType=VARCHAR} '%')
-                or arrival_time like concat('%', #{content,jdbcType=VARCHAR} '%')
-                or address like concat('%', #{content,jdbcType=VARCHAR} '%')
+                and order_id like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or user_id like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or order_pid like concat('%', #{content,jdbcType=VARCHAR}, '%')
+                or address like concat('%', #{content,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="priceMin != null">and total_price &gt;= #{priceMin,jdbcType=DECIMAL}</if>
+            <if test="priceMax != null">and total_price &lt;= #{priceMax,jdbcType=DECIMAL}</if>
+            <if test="orderStatus != null and orderStatus != ''">and order_status = #{orderStatus,jdbcType=VARCHAR}</if>
+            <if test="start != null and start != ''">and order_time &gt;= #{start,jdbcType=VARCHAR}
+                or arrival_time &gt;= #{start,jdbcType=VARCHAR}
+            </if>
+            <if test="end != null and end != ''">and order_time &lt;= #{end,jdbcType=VARCHAR}
+                or arrival_time &lt;= #{end,jdbcType=VARCHAR}
             </if>
         </where>
     </select>

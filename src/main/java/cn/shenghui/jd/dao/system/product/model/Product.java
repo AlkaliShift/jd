@@ -65,5 +65,5 @@ public class Product {
     /**
      * path
      */
-    String path;
+    String path = "";
 }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -86,7 +87,7 @@ public class ProductController {
         List<String> productIds = new ArrayList<>();
         productIds.add(productId);
         List<Product> products = productService.getProductsByIds(productIds);
-        if (!ObjectUtils.isEmpty(products)) {
+        if (!CollectionUtils.isEmpty(products)) {
             mv.addObject("product", products.get(0));
         }
         mv.setViewName("system/product/updateProduct");

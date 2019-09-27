@@ -2,6 +2,7 @@ package cn.shenghui.jd.controller.system.order;
 
 import cn.shenghui.jd.constants.system.order.OrderConstants;
 import cn.shenghui.jd.dao.system.order.dto.OrderProduct;
+import cn.shenghui.jd.dao.system.order.dto.QueryOrder;
 import cn.shenghui.jd.dao.system.order.model.Order;
 import cn.shenghui.jd.resthttp.system.order.request.AddOrderRequest;
 import cn.shenghui.jd.resthttp.system.order.response.AddOrderResponse;
@@ -116,15 +117,16 @@ public class OrderController {
     /**
      * 模糊查询订单信息，若搜索内容为空，则返回所有用户订单
      *
-     * @param content 搜索内容
+     * @param queryOrder 搜索内容包
      * @return 订单列表和状态码：1
      */
     @ApiOperation(value = "获取订单信息", notes = "状态码1:查询成功")
-    @RequestMapping(value = "/list")
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public OrderResponse getOrderList(@RequestParam("content") String content) {
+    public OrderResponse getOrderList(@RequestBody QueryOrder queryOrder) {
         OrderResponse response = new OrderResponse();
-        response.setOrders(orderService.getOrderList(content, ""));
+        queryOrder.setUserId("");
+        response.setOrders(orderService.getOrderList(queryOrder));
         response.setStatusCode(1);
         return response;
     }
@@ -148,15 +150,16 @@ public class OrderController {
     /**
      * 模糊查询订单信息，若搜索内容为空，则返回当前用户所有订单
      *
-     * @param content 搜索内容
+     * @param queryOrder 搜索内容包
      * @return 订单列表和状态码：1
      */
     @ApiOperation(value = "获取订单信息", notes = "状态码1:查询成功")
     @RequestMapping(value = "/listUser")
     @ResponseBody
-    public OrderResponse getOrderListUser(@RequestParam("content") String content) {
+    public OrderResponse getOrderListUser(@RequestBody QueryOrder queryOrder) {
         OrderResponse response = new OrderResponse();
-        response.setOrders(orderService.getOrderList(content, CurrentUserUtils.getUserName()));
+        queryOrder.setUserId(CurrentUserUtils.getUserName());
+        response.setOrders(orderService.getOrderList(queryOrder));
         response.setStatusCode(1);
         return response;
     }

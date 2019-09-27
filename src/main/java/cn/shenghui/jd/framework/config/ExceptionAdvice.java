@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author shenghui
@@ -21,7 +22,7 @@ public class ExceptionAdvice {
     public Map<String, Object> handleValidate(MethodArgumentNotValidException e) {
         Map<String, Object> map = new HashMap<>(2);
         map.put("statusCode", 0);
-        map.put("msg", e.getBindingResult().getFieldError().getDefaultMessage());
+        map.put("msg", Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage());
         return map;
     }
 

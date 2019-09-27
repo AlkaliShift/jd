@@ -1,17 +1,63 @@
-layui.use(['form', 'layer', 'treeGrid'], function () {
+layui.use(['form', 'layer', 'laydate', 'treeGrid'], function () {
     var form = layui.form
         , layer = layui.layer
         , treeGrid = layui.treeGrid
-        , $ = layui.$;
+        , $ = layui.$
+        , laydate = layui.laydate;
+
     form.render();
 
-    loadTreeGrid($("#content").val());
+    var start = "";
+    var end = "";
 
-    function loadTreeGrid(content) {
+    var startTime = laydate.render({
+        elem: '#start'
+        , type: 'datetime'
+        , btns: ['confirm']
+        , done: function (value, date) {
+            start = value;
+            endTime.config.min = {
+                year: date.year,
+                month: date.month - 1,//关键
+                date: date.date,
+                hours: date.hours,
+                minutes: date.minutes,
+                seconds: date.seconds
+            };
+        }
+    });
+
+    var endTime = laydate.render({
+        elem: '#end'
+        , type: 'datetime'
+        , btns: ['confirm']
+        , done: function (value, date) {
+            end = value;
+            startTime.config.max = {
+                year: date.year,
+                month: date.month - 1,
+                date: date.date,
+                hours: date.hours,
+                minutes: date.minutes,
+                seconds: date.seconds
+            }
+        }
+    });
+
+    loadTreeGrid();
+    function loadTreeGrid() {
+        var queryOrder = {};
+        queryOrder.content = $("#content").val();
+        queryOrder.priceMin = $('#priceMin').val();
+        queryOrder.priceMax = $('#priceMax').val();
+        queryOrder.orderStatus = $('#orderStatus').val();
+        queryOrder.start = start;
+        queryOrder.end = end;
         $.ajax({
-            type: 'GET',
-            url: '/order/listUser?content=' + content,
+            type: 'POST',
+            url: '/order/listUser',
             contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(queryOrder),
             success: function (data) {
                 if (data.statusCode === 1) {
                     var dataTreeGrid = data.orders;
@@ -123,22 +169,16 @@ layui.use(['form', 'layer', 'treeGrid'], function () {
     }
 
     $('#search').on('click', function () {
-        loadTreeGrid($('#content').val());
+        loadTreeGrid();
     });
 
     $('#reset').on('click', function () {
         $('#content').val("");
-    });
-
-    $('#ordered').on('click', function () {
-        loadTreeGrid('ordered');
-    });
-
-    $('#delivered').on('click', function () {
-        loadTreeGrid('delivered');
-    });
-
-    $('#cancelled').on('click', function () {
-        loadTreeGrid('cancelled');
+        $('#priceMin').val("");
+        $('#priceMax').val("");
+        $('#start').val("");
+        $('#end').val("");
+        endTime.config.min = '1900-1-1 00:00:00';
+        startTime.config.max = endTime.config.max;
     });
 });

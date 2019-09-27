@@ -21,5 +21,5 @@ public class ProductResponse extends AbstractResponse {
     protected List<ProductDetails> products;
 
     @ApiModelProperty(value = "商品总个数", required = true)
-    long total;
+    protected long total;
 }

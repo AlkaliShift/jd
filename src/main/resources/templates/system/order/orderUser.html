@@ -13,6 +13,10 @@
 </head>
 
 <body>
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>订单查询</legend>
+</fieldset>
+
 <div class="layui-form">
     <div class="layui-form-item">
         <div class="layui-inline">
@@ -24,11 +28,46 @@
         </div>
 
         <div class="layui-inline">
+            <label class="layui-form-label">价格范围</label>
+            <div class="layui-input-inline">
+                <input type="text" id="priceMin" placeholder="￥" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid">-</div>
+            <div class="layui-input-inline">
+                <input type="text" id="priceMax" placeholder="￥" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">订单状态</label>
+            <div class="layui-input-inline">
+                <label>
+                    <select id="orderStatus" lay-verify="">
+                        <option value="">所有</option>
+                        <option value="ordered">已下单</option>
+                        <option value="delivered">已发货</option>
+                        <option value="completed">已完成</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">时间范围</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="start" placeholder="从">
+            </div>
+            <div class="layui-form-mid">-</div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="end" placeholder="至">
+            </div>
+        </div>
+
+        <div class="layui-inline">
             <button id="search" data-type="reload" class="layui-btn">查询</button>
             <button id="reset" data-type="reload" class="layui-btn layui-btn-normal">重置</button>
-            <button id="ordered" data-type="reload" class="layui-btn layui-btn-warm">待发货</button>
-            <button id="delivered" data-type="reload" class="layui-btn layui-btn-danger">待收货</button>
-            <button id="cancelled" data-type="reload" class="layui-btn layui-btn">已取消</button>
         </div>
     </div>
 </div>
