@@ -26,4 +26,4 @@ swagger2:
 
 logging:
   level:
-    cn.shenghui.jd.dao.mapper: debug
+    cn.shenghui.jd.dao.system: debug

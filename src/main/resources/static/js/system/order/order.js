@@ -10,37 +10,15 @@ layui.use(['form', 'layer', 'laydate', 'treeGrid'], function () {
     var start = "";
     var end = "";
 
-    var startTime = laydate.render({
-        elem: '#start'
+    laydate.render({
+        elem: '#time'
         , type: 'datetime'
-        , btns: ['confirm']
-        , done: function (value, date) {
-            start = value;
-            endTime.config.min = {
-                year: date.year,
-                month: date.month - 1,//关键
-                date: date.date,
-                hours: date.hours,
-                minutes: date.minutes,
-                seconds: date.seconds
-            };
-        }
-    });
-
-    var endTime = laydate.render({
-        elem: '#end'
-        , type: 'datetime'
-        , btns: ['confirm']
-        , done: function (value, date) {
-            end = value;
-            startTime.config.max = {
-                year: date.year,
-                month: date.month - 1,
-                date: date.date,
-                hours: date.hours,
-                minutes: date.minutes,
-                seconds: date.seconds
-            }
+        , max: 0
+        , range: true
+        , done: function (value) {
+            var temp = value.toString().split(" - ");
+            start = temp[0];
+            end = temp[1];
         }
     });
 
@@ -53,6 +31,7 @@ layui.use(['form', 'layer', 'laydate', 'treeGrid'], function () {
         queryOrder.orderStatus = $('#orderStatus').val();
         queryOrder.start = start;
         queryOrder.end = end;
+        //TODO
         $.ajax({
             type: 'POST',
             url: '/order/list',
@@ -118,9 +97,6 @@ layui.use(['form', 'layer', 'laydate', 'treeGrid'], function () {
         $('#content').val("");
         $('#priceMin').val("");
         $('#priceMax').val("");
-        $('#start').val("");
-        $('#end').val("");
-        endTime.config.min = '1900-1-1 00:00:00';
-        startTime.config.max = endTime.config.max;
+        $('#time').val("");
     });
 });
