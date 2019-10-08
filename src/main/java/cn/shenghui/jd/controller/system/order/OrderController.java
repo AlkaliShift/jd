@@ -219,33 +219,40 @@ public class OrderController {
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
     public OrderBasicResponse setOrderStatus(@RequestBody Order order) {
-        OrderBasicResponse response = new OrderBasicResponse();
+        OrderBasicResponse orderBasicResponse = new OrderBasicResponse();
         String orderId = order.getOrderId();
         String orderStatus = order.getOrderStatus();
         Order previousOrder = orderService.getOrder(orderId);
         if (ObjectUtils.isEmpty(previousOrder)) {
-            response.setStatusInfo(0, "找不到该订单。");
+            orderBasicResponse.setStatusInfo(0, "找不到该订单。");
         } else {
             if (orderService.ifParent(orderId)) {
-                response.setStatusInfo(0, "无法修改主订单状态。");
+                orderBasicResponse.setStatusInfo(0, "无法修改主订单状态。");
             } else {
+                if (OrderConstants.ORDER_STATUS_CANCELLED.equals(orderStatus)){
+                    orderBasicResponse = cancel(orderStatus);
+                } else if(OrderConstants.ORDER_STATUS_DELIVERED.equals(orderStatus)){
+                    orderBasicResponse = deliver(orderStatus);
+                } else if(OrderConstants.ORDER_STATUS_COMPLETED.equals(orderStatus)){
+                    orderBasicResponse = confirm(orderStatus);
+                }
                 if (OrderConstants.ORDER_STATUS_ORDERED.equals(orderStatus) || OrderConstants.ORDER_STATUS_DELIVERED.equals(orderStatus) ||
                         OrderConstants.ORDER_STATUS_COMPLETED.equals(orderStatus) || OrderConstants.ORDER_STATUS_CANCELLED.equals(orderStatus)) {
                     String previousOrderStatus = previousOrder.getOrderStatus();
                     if (OrderConstants.ORDER_STATUS_COMPLETED.equals(orderStatus) && OrderConstants.ORDER_STATUS_ORDERED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单尚未发货，请先安排发货。");
+                        orderBasicResponse.setStatusInfo(0, "订单尚未发货，请先安排发货。");
                     } else if (OrderConstants.ORDER_STATUS_ORDERED.equals(orderStatus) && OrderConstants.ORDER_STATUS_ORDERED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已下单，无法重复下单。");
+                        orderBasicResponse.setStatusInfo(0, "订单已下单，无法重复下单。");
                     } else if (OrderConstants.ORDER_STATUS_DELIVERED.equals(orderStatus) && OrderConstants.ORDER_STATUS_DELIVERED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已发货，无法重复发货。");
+                        orderBasicResponse.setStatusInfo(0, "订单已发货，无法重复发货。");
                     } else if (OrderConstants.ORDER_STATUS_COMPLETED.equals(orderStatus) && OrderConstants.ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已完成，无法重复确认。");
+                        orderBasicResponse.setStatusInfo(0, "订单已完成，无法重复确认。");
                     } else if (OrderConstants.ORDER_STATUS_ORDERED.equals(orderStatus) && OrderConstants.ORDER_STATUS_DELIVERED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已发货，无法重新下单。");
+                        orderBasicResponse.setStatusInfo(0, "订单已发货，无法重新下单。");
                     } else if (OrderConstants.ORDER_STATUS_ORDERED.equals(orderStatus) && OrderConstants.ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已完成，无法重新下单。");
+                        orderBasicResponse.setStatusInfo(0, "订单已完成，无法重新下单。");
                     } else if (OrderConstants.ORDER_STATUS_DELIVERED.equals(orderStatus) && OrderConstants.ORDER_STATUS_COMPLETED.equals(previousOrderStatus)) {
-                        response.setStatusInfo(0, "订单已完成，无法重新发货。");
+                        orderBasicResponse.setStatusInfo(0, "订单已完成，无法重新发货。");
                     } else {
                         orderService.updateOrderStatus(orderId, orderStatus);
                         String orderPid = previousOrder.getOrderPid();
@@ -259,14 +266,14 @@ public class OrderController {
                                 orderService.updateOrderStatus(orderPid, orderStatus);
                             }
                         }
-                        response.setStatusCode(1);
+                        orderBasicResponse.setStatusCode(1);
                     }
                 } else {
-                    response.setStatusInfo(0, "前端发送的订单状态与后端不匹配。");
+                    orderBasicResponse.setStatusInfo(0, "前端发送的订单状态与后端不匹配。");
                 }
             }
         }
-        return response;
+        return orderBasicResponse;
     }
 
     /**
@@ -276,5 +283,62 @@ public class OrderController {
      */
     private void unFreezeNum(String orderId) {
         productService.unFreezeNum(orderService.getProductsByOrderId(orderId));
+    }
+
+    private OrderBasicResponse cancel(String state){
+        OrderBasicResponse orderBasicResponse = new OrderBasicResponse();
+        String message = "ERROR";
+        orderBasicResponse.setStatusInfo(0, message);
+        if (OrderConstants.ORDER_STATUS_ORDERED.equals(state)){
+            state = OrderConstants.ORDER_STATUS_CANCELLED;
+            message = "取消订单成功";
+            orderBasicResponse.setStatusCode(1);
+        } else if (OrderConstants.ORDER_STATUS_CANCELLED.equals(state)){
+            message = "订单已取消，无法重复取消";
+        } else if (OrderConstants.ORDER_STATUS_DELIVERED.equals(state)){
+            message = "订单已发货，无法取消订单";
+        } else if (OrderConstants.ORDER_STATUS_COMPLETED.equals(state)){
+            message = "订单已完成，无法取消订单";
+        }
+        orderBasicResponse.setMsg(message);
+        return orderBasicResponse;
+    }
+
+    private OrderBasicResponse deliver(String state){
+        OrderBasicResponse orderBasicResponse = new OrderBasicResponse();
+        String message = "ERROR";
+        orderBasicResponse.setStatusInfo(0, message);
+        if (OrderConstants.ORDER_STATUS_ORDERED.equals(state)){
+            state = OrderConstants.ORDER_STATUS_DELIVERED;
+            message = "发货";
+            orderBasicResponse.setStatusCode(1);
+        } else if (OrderConstants.ORDER_STATUS_CANCELLED.equals(state)){
+            message = "订单已取消";
+        } else if (OrderConstants.ORDER_STATUS_DELIVERED.equals(state)){
+            message = "订单已发货，无法重复发货";
+        } else if (OrderConstants.ORDER_STATUS_COMPLETED.equals(state)){
+            message = "订单已完成，无法重复发货";
+        }
+        orderBasicResponse.setMsg(message);
+        return orderBasicResponse;
+    }
+
+    private OrderBasicResponse confirm(String state){
+        OrderBasicResponse orderBasicResponse = new OrderBasicResponse();
+        String message = "ERROR";
+        orderBasicResponse.setStatusInfo(0, message);
+        if (OrderConstants.ORDER_STATUS_ORDERED.equals(state)){
+            message = "订单尚未发货，无法确认";
+        } else if (OrderConstants.ORDER_STATUS_CANCELLED.equals(state)){
+            message = "订单已取消，无法确认";
+        } else if (OrderConstants.ORDER_STATUS_DELIVERED.equals(state)){
+            state = OrderConstants.ORDER_STATUS_COMPLETED;
+            message = "确认订单";
+            orderBasicResponse.setStatusCode(1);
+        } else if (OrderConstants.ORDER_STATUS_COMPLETED.equals(state)){
+            message = "订单已完成，无法重复确认";
+        }
+        orderBasicResponse.setMsg(message);
+        return orderBasicResponse;
     }
 }

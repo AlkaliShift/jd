@@ -44,12 +44,8 @@
             <if test="priceMin != null">and total_price &gt;= #{priceMin,jdbcType=DECIMAL}</if>
             <if test="priceMax != null">and total_price &lt;= #{priceMax,jdbcType=DECIMAL}</if>
             <if test="orderStatus != null and orderStatus != ''">and order_status = #{orderStatus,jdbcType=VARCHAR}</if>
-            <if test="start != null and start != ''">and order_time &gt;= #{start,jdbcType=VARCHAR}
-                or arrival_time &gt;= #{start,jdbcType=VARCHAR}
-            </if>
-            <if test="end != null and end != ''">and order_time &lt;= #{end,jdbcType=VARCHAR}
-                or arrival_time &lt;= #{end,jdbcType=VARCHAR}
-            </if>
+            <if test="start != null and start != ''">and order_time &gt;= #{start,jdbcType=VARCHAR}</if>
+            <if test="end != null and end != ''">and order_time &lt;= #{end,jdbcType=VARCHAR}</if>
         </where>
     </select>
 

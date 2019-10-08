@@ -31,7 +31,6 @@ layui.use(['form', 'layer', 'laydate', 'treeGrid'], function () {
         queryOrder.orderStatus = $('#orderStatus').val();
         queryOrder.start = start;
         queryOrder.end = end;
-        //TODO
         $.ajax({
             type: 'POST',
             url: '/order/list',
