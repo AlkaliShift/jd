@@ -7,7 +7,7 @@ layui.use('form', function () {
     $('#save').on('click', function () {
         var order = {};
         order.orderId = $('#orderId').val();
-        order.orderStatus = $('#orderStatus').val();
+        order.orderStatus = "delivered";
         $.ajax({
             type: 'POST',
             url: '/order/setOrderStatus',
@@ -16,12 +16,12 @@ layui.use('form', function () {
             success: function (data) {
                 if (data.statusCode === 1) {
                     layer.msg("修改成功");
-                    setTimeout(function () {
-                        parent.location.reload()
-                    }, 1000);
                 } else {
                     layer.msg(data.msg);
                 }
+                setTimeout(function () {
+                    parent.location.reload()
+                }, 1000);
             }
         });
     });

@@ -1,8 +1,10 @@
 package cn.shenghui.jd;
 
+import cn.shenghui.jd.utils.ApplicationContextUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author shenghui
@@ -14,6 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan(basePackages = "cn.shenghui.jd.dao.system")
 public class JdApplication {
     public static void main(String[] args) {
-        SpringApplication.run(JdApplication.class, args);
+        ApplicationContext ctx = SpringApplication.run(JdApplication.class, args);
+        ApplicationContextUtil.setApplicationContext(ctx);
     }
 }
