@@ -64,18 +64,6 @@ public class ProductController {
     }
 
     /**
-     * 返回商品列表
-     *
-     * @return 商品列表页
-     */
-    @RequestMapping("/getProductList")
-    public ModelAndView listProductPage() {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("system/product/product");
-        return mv;
-    }
-
-    /**
      * 更新商品页面
      *
      * @param productId 商品ID
